@@ -1,0 +1,80 @@
+package dreamengine.plugins.input.devices;
+
+import haxe.io.Bytes;
+import haxe.Constraints;
+import dreamengine.core.math.Vector.Vector2i;
+
+class BaseMouse implements IPointer implements IKeyDevice {
+	public var index:Int;
+
+	var pointerPosition = new Vector2i();
+	var pointerDelta = new Vector2i();
+
+	var keyPressed:Map<Int, Array<Function>> = new Map<Int, Array<Function>>();
+	var keyReleased:Map<Int, Array<Function>> = new Map<Int, Array<Function>>();
+	var deltaChanged:Array<Vector2i->Void> = new Array<Vector2i->Void>();
+
+	public function new(index:Int) {
+		this.index = index;
+	}
+
+	public function getPointerPosition():Vector2i {
+		return pointerPosition;
+	}
+
+	public function getPointerDelta():Vector2i {
+		return pointerDelta;
+	}
+
+	public function addKeyPressedListener(key:Int, f:Function) {
+		if (!keyPressed.exists(key)) {
+			keyPressed.set(key, new Array());
+		}
+		keyPressed.get(key).push(f);
+	}
+
+	public function removeKeyPressedListener(f:Function) {
+		var t = -1;
+		for (v in keyPressed.keyValueIterator()) {
+			if (v.value.contains(f)) {
+				t = v.key;
+				break;
+			}
+		}
+		if (t != -1) {
+			keyPressed.get(t).remove(f);
+		}
+	}
+
+	public function addDeltaChangedListener(f:Vector2i->Void) {
+		deltaChanged.push(f);
+	}
+
+	public function removeDeltaChangedListener(f:Vector2i->Void) {
+		deltaChanged.remove(f);
+	}
+
+	public function addKeyReleasedListener(key:Int, f:Function) {
+		if (!keyPressed.exists(key)) {
+			keyPressed.set(key, new Array());
+		}
+		keyPressed.get(key).push(f);
+	}
+
+	public function removeKeyReleasedListener(f:Function) {
+		var t = -1;
+		for (v in keyReleased.keyValueIterator()) {
+			if (v.value.contains(f)) {
+				t = v.key;
+				break;
+			}
+		}
+		if (t != -1) {
+			keyPressed.get(t).remove(f);
+		}
+	}
+
+	public function isKeyPressed(key:Int):Bool {
+		return false;
+	}
+}
