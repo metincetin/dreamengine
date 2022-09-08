@@ -9,7 +9,7 @@ class Time{
     public static function getDeltaTime():Float{
         return deltaTime;
     }
-    public static function getCurrentTime():Float{
+    public static function getTime():Float{
         return current;
     }
 

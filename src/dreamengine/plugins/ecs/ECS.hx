@@ -50,7 +50,7 @@ class ECS implements IPlugin {
 		customTicks.remove(name);
 	}
 
-	public function executeCustomTick(name:String, e:Array<Any>) {
+	function executeCustomTick(name:String, e:Array<Any>) {
 		if (customTicks.exists(name)) {
 			trace(entities.length);
 			var tick = customTicks.get(name);
@@ -79,7 +79,7 @@ class ECS implements IPlugin {
 		}
 	}
 
-	public function tickGame(engine) {
+	function tickGame(engine) {
 		for (system in systems) {
 			for (entity in entities) {
 				var targets = system.getTargetComponents();
@@ -100,7 +100,7 @@ class ECS implements IPlugin {
 		}
 	}
 
-	public function tickRender(framebuffer:Framebuffer) {
+	function tickRender(framebuffer:Framebuffer) {
 		for (contextProvider in renderContextProviders) {
 			for (i in 0...ActiveCamera.getCameraCount()) {
 				var cam = ActiveCamera.getCamera(i);

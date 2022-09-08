@@ -16,8 +16,6 @@ class IMGUIPlugin implements IPlugin {
 
 	function render(fb:Framebuffer) {
 		fb.g2.begin(false);
-		fb.g2.font = Assets.fonts.OpenSans_Regular;
-		fb.g2.fontSize = 14;
 		for (renderer in RenderStack.renderers) {
 			renderer.render(fb.g2);
 		}

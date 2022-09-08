@@ -4,5 +4,5 @@
     "description": "Dream Engine",
     "version": "0.1.0",
     "contributors": ["metinc"],
-    "classPath": "src",
+    "classPath": "src"
   }
