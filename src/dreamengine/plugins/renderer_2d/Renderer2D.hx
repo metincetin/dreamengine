@@ -1,5 +1,8 @@
 package dreamengine.plugins.renderer_2d;
 
+import dreamengine.plugins.ecs.Component;
+import dreamengine.plugins.ecs.System.RenderContext;
+import dreamengine.plugins.renderer_base.IRenderContextProvider;
 import dreamengine.plugins.ecs.System.SystemContext;
 import kha.Framebuffer;
 import dreamengine.plugins.renderer_2d.components.Camera;
@@ -8,12 +11,12 @@ import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 import dreamengine.plugins.renderer_2d.systems.*;
 
-class Renderer2D implements IPlugin {
+class Renderer2D implements IPlugin implements IRenderContextProvider {
 	var ecs:ECS;
+	var engine:Engine;
 
 	// systems
 	var spriteRenderer = new SpriteRenderer();
-
 	var currentCamera:Camera;
 
 	public function new() {}
@@ -27,24 +30,18 @@ class Renderer2D implements IPlugin {
 	}
 
 	public function initialize(engine:Engine) {
-		var pluginResult = engine.pluginContainer.getPlugin("ecs");
-		switch (pluginResult) {
-			case Some(v):
-				ecs = cast(v, ECS);
-			case None:
-				throw "Could not find ECS plugin";
+		this.engine = engine;
+		ecs = engine.pluginContainer.getPlugin(ECS);
+
+		if (ecs == null) {
+			throw "Could not find ECS plugin";
 		}
 
 		engine.registerRenderEvent(onRender);
-
-		ecs.registerSystem(spriteRenderer);
-		ecs.registerCustomTick("renderer_2d", [spriteRenderer], onSystemRenderRequested);
-
+		ecs.registerRenderSystem(spriteRenderer);
 		ecs.registerSystem(new SpriteAnimationPlayer());
-	}
 
-	function onSystemRenderRequested(ctx:SystemContext, args:Array<Any>) {
-		spriteRenderer.render(ctx, args);
+		ecs.registerRenderContextProvider(this);
 	}
 
 	function onRender(frameBuffer:Framebuffer) {
@@ -62,7 +59,7 @@ class Renderer2D implements IPlugin {
 	}
 
 	public function finalize() {
-		ecs.unregisterSystem(spriteRenderer);
+		ecs.unregisterRenderSystem(spriteRenderer);
 	}
 
 	public function getName():String {
@@ -79,5 +76,10 @@ class Renderer2D implements IPlugin {
 				return new ECS();
 		}
 		return null;
+	}
+
+	public function getRenderContext(components:Array<Component>, framebuffer:Framebuffer,
+			camera:dreamengine.plugins.renderer_base.components.Camera):RenderContext {
+		return new RenderContext(components, engine, framebuffer, null, camera);
 	}
 }

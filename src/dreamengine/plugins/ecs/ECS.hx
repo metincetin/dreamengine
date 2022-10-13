@@ -50,7 +50,7 @@ class ECS implements IPlugin {
 		customTicks.remove(name);
 	}
 
-	function executeCustomTick(name:String, e:Array<Any>) {
+	public function executeCustomTick(name:String, e:Array<Any>) {
 		if (customTicks.exists(name)) {
 			trace(entities.length);
 			var tick = customTicks.get(name);

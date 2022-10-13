@@ -82,7 +82,7 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 	public function finalize() {}
 
 	public function getName():String {
-		return "renderer_2d";
+		return "renderer_3d";
 	}
 
 	public function getDependentPlugins():Array<Class<IPlugin>> {

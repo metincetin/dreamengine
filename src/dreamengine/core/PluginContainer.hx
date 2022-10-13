@@ -42,13 +42,14 @@ class PluginContainer implements IPlugin {
 		return false;
 	}
 
-	public function getPlugin(name:String):Option<IPlugin> {
+	@:generic
+	public function getPlugin<T>(t:Class<T>):T {
 		for (plugin in plugins) {
-			if (plugin.getName() == name) {
-				return Some(plugin);
+			if (Std.isOfType(plugin, t)) {
+				return cast plugin;
 			}
 		}
-		return None;
+		return null;
 	}
 
 	public function initialize(engine:Engine) {

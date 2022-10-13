@@ -31,6 +31,11 @@ class Widget {
 		return slot;
 	}
 
+	@:generic
+	public function getSlotAs<T>(type:Class<T>):T {
+		return cast slot;
+	}
+
 	public function setLocalScale(scale:Vector2) {
 		localScale = scale;
 		isDirty = true;

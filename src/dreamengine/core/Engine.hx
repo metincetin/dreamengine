@@ -7,107 +7,104 @@ import kha.Assets;
 import kha.Framebuffer;
 import haxe.Timer;
 import kha.Scheduler;
-
 import dreamengine.core.Plugin.IPlugin;
 import haxe.Constraints;
 
+class Engine {
+	public var pluginContainer:PluginContainer;
 
-class Engine{
-    public var pluginContainer:PluginContainer;
-    
-    var version:String;
-    var shouldExit = false;
+	var version:String;
+	var shouldExit = false;
 
+	var renderEvents:Array<Function> = new Array<Function>();
+	var postRenderEvents:Array<Function> = new Array<Function>();
 
-    var renderEvents:Array<Function> = new Array<Function>();
-    var postRenderEvents:Array<Function> = new Array<Function>();
+	var loopEvents:Array<Function> = new Array<Function>();
 
-    var loopEvents:Array<Function> = new Array<Function>();
+	var mainWindow:kha.Window;
 
-    var mainWindow:kha.Window;
+	var mainFrameBuffer:kha.Framebuffer;
 
-    var mainFrameBuffer:kha.Framebuffer;
+	public function new(corePlugins:Array<IPlugin> = null) {
+		pluginContainer = new PluginContainer(this);
 
-    public function new(corePlugins: Array<IPlugin>){
-        pluginContainer = new PluginContainer(this);
+		trace("Initializing Engine");
 
+		trace("Setting up Kha");
+		kha.System.start(new SystemOptions("Dream Game", 800, 400), onSystemStarted);
+		kha.System.notifyOnFrames(onFrame);
+		trace("Setting up game loop");
+		Scheduler.addTimeTask(onTick, 0, 1 / 60);
+		Scheduler.addFrameTask(onRender, 0);
 
-        trace("Initializing Engine");
+		if (corePlugins != null) {
+			trace("Setting up core plugins");
+			for (plugin in corePlugins) {
+				pluginContainer.addPlugin(plugin);
+			}
+		}
 
-        trace("Setting up Kha");
-        kha.System.start(new SystemOptions("Dream Game", 800, 400), onSystemStarted);
-        kha.System.notifyOnFrames(onFrame);
-        trace("Setting up game loop");
-        Scheduler.addTimeTask(onTick, 0, 1 / 60);
-        Scheduler.addFrameTask(onRender, 0);
+		initializeDevice();
 
+		trace("Done");
+	}
 
-        trace("Setting up core plugins");
+	function onSystemStarted(window:Window) {
+		mainWindow = window;
+	}
 
-        if (corePlugins != null){
-            for (plugin in corePlugins){
-                pluginContainer.addPlugin(plugin);
-            }
-        }
+	function initializeDevice() {}
 
-        initializeDevice();
+	public function registerRenderEvent(event:Function) {
+		renderEvents.push(event);
+	}
 
-        trace("Done");
-    }
+	public function unregisterRenderEvent(event:Function) {
+		renderEvents.remove(event);
+	}
 
-    function onSystemStarted(window:Window){
-        mainWindow = window;
-    }
-    function initializeDevice(){
-    }
+	public function registerPostRenderEvent(event:Function) {
+		postRenderEvents.push(event);
+	}
 
-    public function registerRenderEvent(event:Function){
-        renderEvents.push(event);
-    }
+	public function unregisterPostRenderEvent(event:Function) {
+		postRenderEvents.remove(event);
+	}
 
-    public function unregisterRenderEvent(event:Function){
-        renderEvents.remove(event);
-    }
+	public function registerLoopEvent(event:Function) {
+		loopEvents.push(event);
+	}
 
-    public function registerPostRenderEvent(event:Function){
-        postRenderEvents.push(event);
-    }
+	public function unregisterLoopEvent(event:Function) {
+		loopEvents.remove(event);
+	}
 
-    public function unregisterPostRenderEvent(event:Function){
-        postRenderEvents.remove(event);
-    }
+	function onFrame(framebuffers:Array<kha.Framebuffer>) {
+		if (framebuffers.length == 0)
+			return;
+		mainFrameBuffer = framebuffers[0];
+	}
 
-    public function registerLoopEvent(event:Function){
-        loopEvents.push(event);
-    }
+	// executes main update loop. Returns true if game should exit
+	public function onTick() {
+		for (e in loopEvents) {
+			e();
+		}
+		Time.update();
+		return false;
+	}
 
-    public function unregisterLoopEvent(event:Function){
-        loopEvents.remove(event);
-    }
+	function onRender() {
+		if (mainFrameBuffer == null)
+			return;
+		for (e in renderEvents) {
+			e(mainFrameBuffer);
+		}
+	}
 
-    function onFrame(framebuffers:Array<kha.Framebuffer>){
-        if (framebuffers.length == 0) return;
-        mainFrameBuffer = framebuffers[0];
-    }
+	function finalize() {
+		pluginContainer.finalize();
+	}
 
-    // executes main update loop. Returns true if game should exit
-    public function onTick(){
-        for (e in loopEvents){
-            e();
-        }
-        Time.update();
-        return false;
-    }
-    function onRender(){
-        if (mainFrameBuffer == null) return;
-        for(e in renderEvents){
-            e(mainFrameBuffer);
-        }
-    }
-
-    function finalize(){
-        pluginContainer.finalize();
-    }
-
-    function loadProject(path:String){}
+	function loadProject(path:String) {}
 }

@@ -179,6 +179,11 @@ class Vector2 {
 		this.x *= scalar;
 		this.y *= scalar;
 	}
+
+	public function set(x:Float, y:Float) {
+		this.x = x;
+		this.y = y;
+	}
 }
 
 class Vector2i {

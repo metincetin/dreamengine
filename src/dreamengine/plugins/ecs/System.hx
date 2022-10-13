@@ -67,10 +67,11 @@ class SystemContext {
 		this.engine = engine;
 	}
 
-	public function getComponent(type:Class<Component>) {
+	@:generic
+	public function getComponent<T>(type:Class<T>):T {
 		for (c in components) {
 			if (Std.isOfType(c, type))
-				return c;
+				return cast c;
 		}
 		return null;
 	}
