@@ -8,4 +8,8 @@ class Mathf {
 	public static inline function sign(value:Float) {
 		return value >= 0 ? return 1 : -1;
 	}
+
+	public static function clamp(value:Float, min:Float, max:Float) {
+		return Math.max(Math.min(value, max), min);
+	}
 }

@@ -104,8 +104,17 @@ class ECS implements IPlugin {
 		for (contextProvider in renderContextProviders) {
 			for (i in 0...ActiveCamera.getCameraCount()) {
 				var cam = ActiveCamera.getCamera(i);
-				cam.renderTexture.g4.begin();
-				cam.renderTexture.g4.clear(Transparent, 8);
+
+				switch (contextProvider.getRenderingBackend()) {
+					case G4:
+						cam.renderTexture.g4.begin();
+						cam.renderTexture.g4.clear(Transparent, 8);
+						break;
+					case G2:
+						cam.renderTexture.g2.begin();
+					case G1:
+						cam.renderTexture.g1.begin();
+				}
 				for (renderSystem in renderSystems) {
 					for (entity in entities) {
 						var targets = renderSystem.getTargetComponents();
@@ -124,7 +133,15 @@ class ECS implements IPlugin {
 						}
 					}
 				}
-				cam.renderTexture.g4.end();
+				switch (contextProvider.getRenderingBackend()) {
+					case G4:
+						cam.renderTexture.g4.end();
+						break;
+					case G2:
+						cam.renderTexture.g2.end();
+					case G1:
+						cam.renderTexture.g1.end();
+				}
 			}
 		}
 		framebuffer.g2.begin(false);

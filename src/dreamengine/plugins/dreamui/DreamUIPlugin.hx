@@ -1,5 +1,8 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.Time;
+import dreamengine.plugins.dreamui.slots.CanvasSlot;
 import kha.Framebuffer;
 import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;

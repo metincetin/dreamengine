@@ -25,7 +25,7 @@ class KhaInputHandler implements IInputHandler {
 	}
 
 	public function getKeyboard(index:Int):BaseKeyboard {
-		if (index < mice.length)
+		if (index < keyboards.length)
 			return keyboards[index];
 		var m = new dreamengine.plugins.input.handlers.kha.devices.Keyboard(index);
 		keyboards.push(m);

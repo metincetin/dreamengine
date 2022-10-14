@@ -12,8 +12,6 @@ class SpriteRenderer extends RenderSystem {
 		super.execute(ctx);
 		var graphics = ctx.getFramebuffer().g2;
 
-		graphics.begin();
-
 		var transform = ctx.getComponent(Transform);
 
 		var spr = ctx.getComponent(Sprite);
@@ -26,7 +24,7 @@ class SpriteRenderer extends RenderSystem {
 
 		var pos = transform.getPosition();
 		var scale = transform.getScale();
-		var ppuScale = image.width / ppu;
+		var ppuScale = image.width / ppu * 0.1;
 		trace('Scale with ppu: $ppuScale, total scale is ${scale.toString()}');
 		scale = Vector3.multiply(scale, ppuScale);
 
@@ -38,10 +36,9 @@ class SpriteRenderer extends RenderSystem {
 		var actualPosition = new Vector3(pos.x - pivotOffset.x * scale.x, pos.y - pivotOffset.y * scale.y);
 
 		// graphics.pushRotation(transform.angle, actualPosition.x, actualPosition.y);
+		// graphics.drawImage(image, 0, 0);
 		graphics.drawScaledImage(image, actualPosition.x, actualPosition.y, image.width * scale.x * vFlipMultiplier, image.height * scale.y);
 		// graphics.popTransformation();
-
-		graphics.end();
 	}
 
 	override function getTargetComponents():Array<Class<Component>> {

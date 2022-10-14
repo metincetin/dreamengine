@@ -36,6 +36,10 @@ class Widget {
 		return cast slot;
 	}
 
+	public function getChild(index:Int) {
+		return children[index];
+	}
+
 	public function setLocalScale(scale:Vector2) {
 		localScale = scale;
 		isDirty = true;

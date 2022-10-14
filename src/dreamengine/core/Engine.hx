@@ -25,32 +25,25 @@ class Engine {
 
 	var mainFrameBuffer:kha.Framebuffer;
 
-	public function new(corePlugins:Array<IPlugin> = null) {
+	public function new() {
 		pluginContainer = new PluginContainer(this);
 
 		trace("Initializing Engine");
 
 		trace("Setting up Kha");
 		kha.System.start(new SystemOptions("Dream Game", 800, 400), onSystemStarted);
+	}
+
+	function onSystemStarted(window:Window) {
+		mainWindow = window;
 		kha.System.notifyOnFrames(onFrame);
 		trace("Setting up game loop");
 		Scheduler.addTimeTask(onTick, 0, 1 / 60);
 		Scheduler.addFrameTask(onRender, 0);
 
-		if (corePlugins != null) {
-			trace("Setting up core plugins");
-			for (plugin in corePlugins) {
-				pluginContainer.addPlugin(plugin);
-			}
-		}
-
 		initializeDevice();
 
 		trace("Done");
-	}
-
-	function onSystemStarted(window:Window) {
-		mainWindow = window;
 	}
 
 	function initializeDevice() {}

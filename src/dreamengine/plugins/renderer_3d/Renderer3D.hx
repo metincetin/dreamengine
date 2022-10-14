@@ -49,12 +49,9 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 	public function initialize(engine:Engine) {
 		initializeRenderer();
 		this.engine = engine;
-		var pluginResult = engine.pluginContainer.getPlugin("ecs");
-		switch (pluginResult) {
-			case Some(v):
-				ecs = cast(v, ECS);
-			case None:
-				throw "Could not find ECS plugin";
+		ecs = engine.pluginContainer.getPlugin(ECS);
+		if (ecs == null) {
+			throw "ECS is not found";
 		}
 
 		var meshRenderer = new MeshRenderer();
@@ -99,5 +96,9 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 
 	public function getRenderContext(components:Array<Component>, framebuffer:Framebuffer, camera:Camera):RenderContext {
 		return new RenderContext(components, engine, framebuffer, pipelineState, camera);
+	}
+
+	public function getRenderingBackend():RenderingBackend {
+		return RenderingBackend.G4;
 	}
 }

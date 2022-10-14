@@ -2,15 +2,14 @@ package dreamengine.plugins.input.devices;
 
 import haxe.Constraints.Function;
 
-interface IKeyDevice{
-    public function addKeyPressedListener(key:Int, f:Function):Void;
-    public function removeKeyPressedListener(f:Function):Void;
-    
-    public function addKeyReleasedListener(key:Int, f:Function):Void;
-    public function removeKeyReleasedListener(f:Function):Void;
+interface IKeyDevice {
+	public function addKeyPressedListener(key:Int, f:Void->Void):Void;
+	public function removeKeyPressedListener(f:Void->Void):Void;
 
-    public function isKeyPressed(key:Int):Bool;
+	public function addKeyReleasedListener(key:Int, f:Void->Void):Void;
+	public function removeKeyReleasedListener(f:Void->Void):Void;
 
+	public function isKeyPressed(key:Int):Bool;
 }
 
-class KeyEventInfo{}
+class KeyEventInfo {}
