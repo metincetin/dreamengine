@@ -10,8 +10,8 @@ class BaseMouse implements IPointer implements IKeyDevice {
 	var pointerPosition = new Vector2i();
 	var pointerDelta = new Vector2i();
 
-	var keyPressed:Map<Int, Array<Function>> = new Map<Int, Array<Function>>();
-	var keyReleased:Map<Int, Array<Function>> = new Map<Int, Array<Function>>();
+	var keyPressed:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
+	var keyReleased:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var deltaChanged:Array<Vector2i->Void> = new Array<Vector2i->Void>();
 
 	public function new(index:Int) {
@@ -26,16 +26,16 @@ class BaseMouse implements IPointer implements IKeyDevice {
 		return pointerDelta;
 	}
 
-	public function addKeyPressedListener(key:Int, f:Function) {
+	public function addKeyPressedListener(key:Int, f:Void->Void) {
 		if (!keyPressed.exists(key)) {
 			keyPressed.set(key, new Array());
 		}
 		keyPressed.get(key).push(f);
 	}
 
-	public function removeKeyPressedListener(f:Function) {
+	public function removeKeyPressedListener(f:Void->Void) {
 		var t = -1;
-		for (v in keyPressed.keyValueIterator()) {
+		for (v in keyReleased.keyValueIterator()) {
 			if (v.value.contains(f)) {
 				t = v.key;
 				break;
@@ -54,14 +54,14 @@ class BaseMouse implements IPointer implements IKeyDevice {
 		deltaChanged.remove(f);
 	}
 
-	public function addKeyReleasedListener(key:Int, f:Function) {
-		if (!keyPressed.exists(key)) {
-			keyPressed.set(key, new Array());
+	public function addKeyReleasedListener(key:Int, f:Void->Void) {
+		if (!keyReleased.exists(key)) {
+			keyReleased.set(key, new Array());
 		}
-		keyPressed.get(key).push(f);
+		keyReleased.get(key).push(f);
 	}
 
-	public function removeKeyReleasedListener(f:Function) {
+	public function removeKeyReleasedListener(f:Void->Void) {
 		var t = -1;
 		for (v in keyReleased.keyValueIterator()) {
 			if (v.value.contains(f)) {
@@ -70,7 +70,7 @@ class BaseMouse implements IPointer implements IKeyDevice {
 			}
 		}
 		if (t != -1) {
-			keyPressed.get(t).remove(f);
+			keyReleased.get(t).remove(f);
 		}
 	}
 

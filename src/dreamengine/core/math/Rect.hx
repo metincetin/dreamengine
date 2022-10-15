@@ -26,4 +26,12 @@ class Rect {
 		r.size = size;
 		return r;
 	}
+
+	public static function zero() {
+		return new Rect();
+	}
+
+	public function isPointInside(point:Vector2) {
+		return point.x >= position.x && point.y >= position.y && point.x <= position.x + size.x && point.y <= position.y + size.y;
+	}
 }

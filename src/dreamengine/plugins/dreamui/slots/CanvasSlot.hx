@@ -50,8 +50,8 @@ class CanvasSlot extends BaseSlot {
 
 		var size = Vector2.zero();
 
-		size.x = parentSize.x * anchorsMax.x + sizeOffset.x;
-		size.y = parentSize.y * anchorsMax.y + sizeOffset.y;
+		size.x = parentSize.x * (anchorsMax.x - anchorsMin.x) + sizeOffset.x;
+		size.y = parentSize.y * (anchorsMax.y - anchorsMin.y) + sizeOffset.y;
 
 		return size;
 	}

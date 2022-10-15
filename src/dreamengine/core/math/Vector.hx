@@ -180,6 +180,12 @@ class Vector2 {
 		this.y *= scalar;
 	}
 
+	public function scaled(scalar:Float) {
+		var r = copy();
+		r.scale(scalar);
+		return r;
+	}
+
 	public function set(x:Float, y:Float) {
 		this.x = x;
 		this.y = y;
@@ -203,7 +209,7 @@ class Vector2i {
 		return '($x,$y)';
 	}
 
-	public function asVector2() {
+	public inline function asVector2() {
 		return new Vector2(cast x, cast y);
 	}
 }

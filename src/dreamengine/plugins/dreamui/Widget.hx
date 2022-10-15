@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.core.math.Rect;
 import dreamengine.plugins.dreamui.slots.CanvasSlot;
 import dreamengine.plugins.dreamui.slots.ScreenSlot;
 import dreamengine.plugins.dreamui.slots.AbsoluteSlot;
@@ -19,6 +20,29 @@ class Widget {
 	var slot:BaseSlot;
 
 	var localScale:Vector2 = Vector2.one();
+
+	var enabled:Bool = true;
+
+	var renderOpacity:Float = 1;
+
+	public function getEnabled() {
+		return enabled;
+	}
+
+	public function setEnabled(value:Bool) {
+		enabled = value;
+		for (c in children) {
+			c.setEnabled(value);
+		}
+	}
+
+	public function setRenderOpacity(renderOpacity:Float) {
+		this.renderOpacity = renderOpacity;
+	}
+
+	public function getRenderOpacity() {
+		return this.renderOpacity;
+	}
 
 	public function getLocalScale() {
 		return localScale;
@@ -40,6 +64,10 @@ class Widget {
 		return children[index];
 	}
 
+	public function getChildren() {
+		return children;
+	}
+
 	public function setLocalScale(scale:Vector2) {
 		localScale = scale;
 		isDirty = true;
@@ -58,11 +86,15 @@ class Widget {
 		return isDirty;
 	}
 
-	public final function render(g2:Graphics) {
+	public final function render(g2:Graphics, opacity:Float) {
+		if (!getEnabled())
+			return;
+		g2.opacity = opacity * renderOpacity;
 		onRender(g2);
 		for (c in children) {
-			c.render(g2);
+			c.render(g2, renderOpacity);
 		}
+		g2.opacity = 1;
 	}
 
 	function onRender(g2:Graphics) {}
@@ -94,5 +126,19 @@ class Widget {
 
 	function createSlotForChild():BaseSlot {
 		return new AbsoluteSlot(this);
+	}
+
+	public function getRect() {
+		if (!enabled)
+			return Rect.zero();
+		var slot = getSlot();
+		if (slot == null)
+			return Rect.zero();
+
+		return Rect.fromVectors(slot.getPosition(), slot.getSize());
+	}
+
+	public inline function getChildCount() {
+		return children.length;
 	}
 }

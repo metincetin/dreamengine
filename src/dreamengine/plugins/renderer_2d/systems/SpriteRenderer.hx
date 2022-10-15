@@ -25,7 +25,6 @@ class SpriteRenderer extends RenderSystem {
 		var pos = transform.getPosition();
 		var scale = transform.getScale();
 		var ppuScale = image.width / ppu * 0.1;
-		trace('Scale with ppu: $ppuScale, total scale is ${scale.toString()}');
 		scale = Vector3.multiply(scale, ppuScale);
 
 		var vFlipMultiplier = spr.flip ? -1 : 1;
