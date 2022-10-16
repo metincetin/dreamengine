@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_base;
 
+import kha.Image;
 import dreamengine.plugins.renderer_base.components.Camera;
 import kha.Framebuffer;
 import dreamengine.plugins.renderer_base.*;
@@ -13,6 +14,6 @@ enum RenderingBackend {
 }
 
 interface IRenderContextProvider {
-	public function getRenderContext(components:Array<Component>, framebuffer:Framebuffer, camera:Camera):RenderContext;
+	public function getRenderContext(components:Array<Component>, camera:Camera):RenderContext;
 	public function getRenderingBackend():RenderingBackend;
 }

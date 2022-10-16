@@ -3,19 +3,19 @@ package dreamengine.plugins.dreamui.containers;
 import dreamengine.plugins.dreamui.slots.FullSlot;
 import dreamengine.plugins.dreamui.slots.BaseSlot;
 
-class WidgetSwitcher extends Widget {
-	var currentWidget = 0;
+class ElementSwitcher extends Element {
+	var currentElement = 0;
 
-	public function setCurrentWidget(value:Int) {
-		currentWidget = value;
+	public function setCurrentElement(value:Int) {
+		currentElement = value;
 		activateChild();
 	}
 
-	public function nextWidget(shouldReturn:Bool) {
+	public function nextElement(shouldReturn:Bool) {
 		if (shouldReturn) {
-			setCurrentWidget((currentWidget + 1) % getChildCount());
-		} else if (currentWidget + 1 < getChildCount()) {
-			setCurrentWidget(currentWidget + 1);
+			setCurrentElement((currentElement + 1) % getChildCount());
+		} else if (currentElement + 1 < getChildCount()) {
+			setCurrentElement(currentElement + 1);
 		}
 	}
 
@@ -23,16 +23,16 @@ class WidgetSwitcher extends Widget {
 		if (getChildCount() == 0)
 			return;
 		for (i in 0...getChildCount()) {
-			getChild(i).setEnabled(i == currentWidget);
+			getChild(i).setEnabled(i == currentElement);
 		}
 	}
 
-	override function addChild(c:Widget) {
+	override function addChild(c:Element) {
 		super.addChild(c);
 		if (getChildCount() == 1) {
-			setCurrentWidget(0);
+			setCurrentElement(0);
 		} else {
-			if (getChildCount() - 1 != currentWidget) {
+			if (getChildCount() - 1 != currentElement) {
 				c.setEnabled(false);
 			}
 		}

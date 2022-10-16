@@ -3,9 +3,9 @@ package dreamengine.plugins.dreamui.slots;
 import dreamengine.core.math.Vector.Vector2;
 
 class BaseSlot {
-	var parent:Widget;
+	var parent:Element;
 
-	public function new(parent:Widget) {
+	public function new(parent:Element) {
 		this.parent = parent;
 	}
 
@@ -13,7 +13,7 @@ class BaseSlot {
 		return parent;
 	}
 
-	public function setParent(p:Widget) {
+	public function setParent(p:Element) {
 		this.parent = p;
 	}
 

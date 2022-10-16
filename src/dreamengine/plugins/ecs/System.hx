@@ -35,18 +35,12 @@ class RenderSystem {
 
 class RenderContext extends SystemContext {
 	var pipelineState:PipelineState;
-	var frameBuffer:Framebuffer;
 	var camera:Camera;
 
-	public function new(components:Array<Component>, engine:Engine, framebuffer:Framebuffer, pipelineState:PipelineState, camera:Camera) {
+	public function new(components:Array<Component>, engine:Engine, pipelineState:PipelineState, camera:Camera) {
 		super(components, engine);
-		this.frameBuffer = framebuffer;
 		this.pipelineState = pipelineState;
 		this.camera = camera;
-	}
-
-	public function getFramebuffer():Framebuffer {
-		return frameBuffer;
 	}
 
 	public function getPipelineState():PipelineState {
@@ -55,6 +49,10 @@ class RenderContext extends SystemContext {
 
 	public function getCamera() {
 		return camera;
+	}
+
+	public function getRenderTarget() {
+		return camera.renderTexture;
 	}
 }
 

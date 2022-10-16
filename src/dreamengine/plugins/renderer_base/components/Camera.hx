@@ -79,7 +79,7 @@ class Camera extends Component {
 
 	function createRenderTexture() {
 		var res = Screen.getResolution();
-		renderTexture = Image.createRenderTarget(Std.int(res.x * 1), Std.int(res.y * 1), TextureFormat.RGBA32, DepthAutoStencilAuto, 1);
+		renderTexture = Image.createRenderTarget(Std.int(res.x * 1), Std.int(res.y * 1), TextureFormat.RGBA128, DepthAutoStencilAuto, 1);
 	}
 }
 

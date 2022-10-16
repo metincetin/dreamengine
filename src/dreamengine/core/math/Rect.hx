@@ -31,6 +31,20 @@ class Rect {
 		return new Rect();
 	}
 
+	public function getMax() {
+		var max = new Vector2();
+		max.x = position.x + size.x;
+		max.y = position.y + size.y;
+		return max;
+	}
+
+	public function getMin() {
+		var min = new Vector2();
+		min.x = position.x - size.x;
+		min.y = position.y - size.y;
+		return min;
+	}
+
 	public function isPointInside(point:Vector2) {
 		return point.x >= position.x && point.y >= position.y && point.x <= position.x + size.x && point.y <= position.y + size.y;
 	}

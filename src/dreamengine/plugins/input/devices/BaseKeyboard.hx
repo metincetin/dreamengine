@@ -1,5 +1,6 @@
 package dreamengine.plugins.input.devices;
 
+import dreamengine.plugins.input.events.KeyboardKeyEvent;
 import haxe.Constraints.Function;
 
 class BaseKeyboard implements IKeyDevice {
@@ -7,9 +8,18 @@ class BaseKeyboard implements IKeyDevice {
 
 	var keyPressed:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var keyReleased:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
+	var inputReceived:Array<KeyboardKeyEvent->Void> = new Array<KeyboardKeyEvent->Void>();
 
 	public function new(index:Int) {
 		this.index = index;
+	}
+
+	public function addInputListener(f:KeyboardKeyEvent->Void) {
+		inputReceived.push(f);
+	}
+
+	public function removeInputListener(f:KeyboardKeyEvent->Void) {
+		inputReceived.remove(f);
 	}
 
 	public function addKeyPressedListener(key:Int, f:Void->Void) {

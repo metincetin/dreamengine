@@ -8,12 +8,12 @@ import dreamengine.plugins.dreamui.slots.BaseSlot;
 import dreamengine.core.math.Vector.Vector2;
 import kha.graphics2.Graphics;
 
-class Widget {
+class Element {
 	public var name = "";
 
-	public var parent:Widget;
+	public var parent:Element;
 
-	var children:Array<Widget> = new Array<Widget>();
+	var children:Array<Element> = new Array<Element>();
 
 	var isDirty = false;
 
@@ -90,16 +90,16 @@ class Widget {
 		if (!getEnabled())
 			return;
 		g2.opacity = opacity * renderOpacity;
-		onRender(g2);
+		onRender(g2, opacity);
 		for (c in children) {
 			c.render(g2, renderOpacity);
 		}
 		g2.opacity = 1;
 	}
 
-	function onRender(g2:Graphics) {}
+	function onRender(g2:Graphics, opacity:Float) {}
 
-	public function addChild(c:Widget) {
+	public function addChild(c:Element) {
 		if (children.contains(c))
 			return;
 

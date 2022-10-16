@@ -12,4 +12,16 @@ class Mathf {
 	public static function clamp(value:Float, min:Float, max:Float) {
 		return Math.max(Math.min(value, max), min);
 	}
+
+	public static inline function lerp(a:Float, b:Float, t:Float) {
+		return a + (b - a) * t;
+	}
+
+	public static inline function sin(rad:Float) {
+		return Math.sin(rad);
+	}
+
+	public static function sind(deg:Float) {
+		return sin(degToRad(deg));
+	}
 }

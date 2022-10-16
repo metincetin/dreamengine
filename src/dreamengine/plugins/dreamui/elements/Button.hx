@@ -1,4 +1,4 @@
-package dreamengine.plugins.dreamui.widgets;
+package dreamengine.plugins.dreamui.elements;
 
 import dreamengine.plugins.dreamui.events.IClickable;
 import dreamengine.plugins.dreamui.events.IFocusable;
@@ -6,7 +6,7 @@ import dreamengine.plugins.dreamui.events.IPointerTarget;
 import dreamengine.core.math.Vector.Vector2;
 import kha.graphics2.Graphics;
 
-class Button extends Widget implements IPointerTarget implements IClickable implements IFocusable {
+class Button extends Element implements IPointerTarget implements IClickable implements IFocusable {
 	var text:String = "";
 
 	var color:kha.Color = kha.Color.fromBytes(125, 125, 125);
@@ -18,7 +18,7 @@ class Button extends Widget implements IPointerTarget implements IClickable impl
 		this.text = text;
 	}
 
-	override function onRender(g2:Graphics) {
+	override function onRender(g2:Graphics, opacity:Float) {
 		var pos = getSlot().getPosition();
 		var size = getSlot().getSize();
 		var center = pos.copy();
@@ -51,13 +51,9 @@ class Button extends Widget implements IPointerTarget implements IClickable impl
 		return true;
 	}
 
-	public function onFocused():Bool {
-		return true;
-	}
+	public function onFocused() {}
 
-	public function onFocusLost():Bool {
-		return true;
-	}
+	public function onFocusLost() {}
 
 	public function isFocused():Bool {
 		return true;

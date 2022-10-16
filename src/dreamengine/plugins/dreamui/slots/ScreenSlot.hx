@@ -4,7 +4,7 @@ import dreamengine.core.math.Vector.Vector2;
 import dreamengine.device.Screen;
 
 class ScreenSlot extends BaseSlot {
-	public function new(p:Widget) {
+	public function new(p:Element) {
 		super(p);
 	}
 

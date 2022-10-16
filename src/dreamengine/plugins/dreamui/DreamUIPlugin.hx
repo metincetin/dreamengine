@@ -10,18 +10,18 @@ import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 
 class DreamUIPlugin implements IPlugin {
-	var mainWidget:Widget;
+	var mainElement:Element;
 
 	var eventSystem:EventSystem;
 
 	public function new() {}
 
-	public function setMainWidget(w:Widget) {
-		mainWidget = w;
+	public function setMainElement(w:Element) {
+		mainElement = w;
 	}
 
-	public function getMainWidget() {
-		return mainWidget;
+	public function getMainElement() {
+		return mainElement;
 	}
 
 	public function initialize(engine:Engine) {
@@ -42,10 +42,10 @@ class DreamUIPlugin implements IPlugin {
 	}
 
 	function onRender(fb:Framebuffer) {
-		if (mainWidget == null)
+		if (mainElement == null)
 			return;
 		fb.g2.begin(false);
-		mainWidget.render(fb.g2, 1);
+		mainElement.render(fb.g2, 1);
 		fb.g2.end();
 	}
 

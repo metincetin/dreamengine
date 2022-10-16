@@ -1,13 +1,13 @@
 package dreamengine.plugins.tweening.tweens;
 
+import dreamengine.core.math.Mathf;
 
-class FloatTween extends Tween<Float>{
-    public override function getValue():Float{
-        var rate = getRate();
+class FloatTween extends Tween<Float> {
+	public function new() {
+		super();
+	}
 
-        // todo apply easing function here
-        var value = targetValue * rate;
-
-        return value;
-    }
+	override function getValueOfTime(t:Float):Float {
+		return Mathf.lerp(startValue, targetValue, t);
+	}
 }

@@ -1,8 +1,8 @@
-package dreamengine.plugins.dreamui.widgets;
+package dreamengine.plugins.dreamui.elements;
 
 import kha.graphics2.Graphics;
 
-class Line extends Widget {
+class Line extends Element {
 	public var thickness = 1.0;
 
 	public function new() {

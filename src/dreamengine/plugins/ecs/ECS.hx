@@ -128,7 +128,7 @@ class ECS implements IPlugin {
 							components.push(entity.getComponent(target));
 						}
 						if (valid) {
-							var context = contextProvider.getRenderContext(components, framebuffer, cam);
+							var context = contextProvider.getRenderContext(components, cam);
 							renderSystem.execute(context);
 						}
 					}
@@ -149,7 +149,8 @@ class ECS implements IPlugin {
 			var cam = ActiveCamera.getCamera(i);
 			framebuffer.g2.clear(Color.Blue);
 			var res = Screen.getResolution();
-			framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
+			framebuffer.g2.drawImage(cam.renderTexture, 0, 0);
+			// framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
 		}
 		framebuffer.g2.end();
 	}
@@ -161,7 +162,7 @@ class ECS implements IPlugin {
 		}
 		entities.push(entity);
 		entity.onSpawned();
-		return null;
+		return entity;
 	}
 
 	public function despawn(entity:Entity) {

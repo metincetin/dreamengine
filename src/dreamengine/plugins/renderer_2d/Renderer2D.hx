@@ -58,8 +58,8 @@ class Renderer2D implements IPlugin implements IRenderContextProvider {
 		return null;
 	}
 
-	public function getRenderContext(components:Array<Component>, framebuffer:Framebuffer, camera:Camera):RenderContext {
-		return new RenderContext(components, engine, framebuffer, null, camera);
+	public function getRenderContext(components:Array<Component>, camera:Camera):RenderContext {
+		return new RenderContext(components, engine, null, camera);
 	}
 
 	public function getRenderingBackend():RenderingBackend {

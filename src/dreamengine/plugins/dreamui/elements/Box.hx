@@ -1,8 +1,8 @@
-package dreamengine.plugins.dreamui.widgets;
+package dreamengine.plugins.dreamui.elements;
 
 import kha.graphics2.Graphics;
 
-class Box extends Widget {
+class Box extends Element {
 	public function new() {
 		super();
 	}

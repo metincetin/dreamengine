@@ -11,7 +11,7 @@ class CanvasSlot extends BaseSlot {
 	public var offset:Vector2 = Vector2.zero();
 	public var sizeOffset:Vector2 = Vector2.zero();
 
-	public function new(parent:Widget) {
+	public function new(parent:Element) {
 		super(parent);
 	}
 
@@ -61,7 +61,7 @@ class CanvasSlot extends BaseSlot {
 		anchorsMax = Vector2.one();
 	}
 
-	public static function fullRect(p:Widget) {
+	public static function fullRect(p:Element) {
 		var ret = new CanvasSlot(p);
 		ret.toFullRect();
 		return ret;

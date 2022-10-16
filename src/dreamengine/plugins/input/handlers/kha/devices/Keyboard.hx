@@ -1,5 +1,6 @@
 package dreamengine.plugins.input.handlers.kha.devices;
 
+import dreamengine.plugins.input.events.KeyboardKeyEvent;
 import kha.input.KeyCode;
 import dreamengine.plugins.input.devices.BaseKeyboard;
 
@@ -23,6 +24,9 @@ class Keyboard extends BaseKeyboard {
 			}
 		}
 		pressedKeys.push(conv);
+		for (f in inputReceived) {
+			f(new KeyboardKeyEvent(cast key, false, false));
+		}
 	}
 
 	function onKhaKeyUp(key:KeyCode) {
