@@ -8,10 +8,16 @@ class QuickTween {
 		tweener = t;
 	}
 
-	public static function tween(getter:Void->Float, setter:Float->Void, target:Float, duration:Float) {
-		var builder = TweenBuilder.Float();
+	public static function tween(getter:Void->Float, setter:Float->Void, from:Float, target:Float, duration:Float, ease:Float->Float,
+			onCompleted:Void->Void = null) {
+		var builder = TweenBuilder.float();
 		builder.setter(setter);
 		builder.getter(getter);
+		builder.ease(ease);
+		builder.onCompleted(onCompleted);
+		builder.startValue(from);
+		builder.targetValue(target);
+		builder.play();
 	}
 
 	static function check() {

@@ -126,6 +126,37 @@ class ECS implements IPlugin {
 		return entity;
 	}
 
+	public function spawnTemplate(template:kha.Blob) {
+		var str = template.toString();
+		var entity = new Entity();
+		var xml = Xml.parse(str).firstElement();
+		for (i in xml.elementsNamed("Component")) {
+			if (i.exists("type")) {
+				var type = i.get("type");
+				var cl = Type.resolveClass(type);
+				if (cl == null) {
+					trace("Component with given type is not found (" + type + ")");
+					continue;
+				}
+				var inst = Type.createInstance(cl, []);
+				for (field in Reflect.fields(inst)) {
+					var elm = i.elementsNamed(field);
+					for (e in elm) {
+						trace(e.firstChild());
+						Reflect.setField(inst, field, e.firstChild().toString());
+					}
+				}
+
+				entity.addComponent(inst);
+			}
+		}
+		ecsContext.addEntity(entity);
+		entity.onSpawned();
+		return entity;
+	}
+
+	function resolveType(inst:Component, node:Xml) {}
+
 	public function despawn(entity:Entity) {
 		ecsContext.removeEntity(entity);
 		entity.onDespawned();

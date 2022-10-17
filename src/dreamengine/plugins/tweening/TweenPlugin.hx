@@ -9,6 +9,8 @@ class TweenPlugin implements IPlugin {
 	var tweener:Tweener;
 	var engine:Engine;
 
+	public function new() {}
+
 	function getTweener() {
 		return tweener;
 	}
@@ -16,6 +18,8 @@ class TweenPlugin implements IPlugin {
 	public function initialize(engine:Engine) {
 		this.engine = engine;
 		tweener = new Tweener();
+		QuickTween.init(getTweener());
+		TweenBuilder.init(getTweener());
 		engine.registerLoopEvent(onTick);
 	}
 
@@ -28,7 +32,7 @@ class TweenPlugin implements IPlugin {
 	}
 
 	public function getName():String {
-		return "tweener";
+		return "tween";
 	}
 
 	public function getDependentPlugins():Array<Class<IPlugin>> {

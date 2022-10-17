@@ -18,8 +18,13 @@ class Tweener {
 
 	public function tick(delta:Float) {
 		for (tween in tweens) {
+			if (tween.getTime() == 0 && tween.onStarted != null) {
+				tween.onStarted();
+			}
 			tween.update(delta);
 			if (tween.isCompleted()) {
+				if (tween.onCompleted != null)
+					tween.onCompleted();
 				pendingKill.push(tween);
 			}
 		}

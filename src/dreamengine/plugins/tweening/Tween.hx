@@ -13,7 +13,7 @@ class Tween<T> extends BaseTween {
 	extern public function getValueOfTime(t:Float):T;
 
 	override function applyValues(time:Float) {
-		valueSetter(getValueOfTime(time));
+		valueSetter(getValueOfTime(getTimeEased()));
 	}
 }
 
@@ -22,12 +22,20 @@ class BaseTween {
 
 	public var duration:Float = 1.0;
 
+	public var onCompleted:Void->Void;
+	public var onStarted:Void->Void;
+	public var ease:Float->Float = EasingFunctions.linear;
+
 	function getRate():Float {
 		return time / duration;
 	}
 
-	function getTime():Float {
+	public function getTime():Float {
 		return time;
+	}
+
+	function getTimeEased():Float {
+		return ease(getTime());
 	}
 
 	public function update(delta:Float) {

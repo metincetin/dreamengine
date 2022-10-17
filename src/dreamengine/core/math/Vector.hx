@@ -82,6 +82,14 @@ class Vector3 {
 		this.z *= scalar;
 	}
 
+	public static function lerp(a:Vector3, b:Vector3, t:Float) {
+		var n = new Vector3();
+		n.x = Mathf.lerp(a.x, b.x, t);
+		n.y = Mathf.lerp(a.y, b.y, t);
+		n.z = Mathf.lerp(a.z, b.z, t);
+		return n;
+	}
+
 	public static function scaled(vector:Vector3, scalar:Float) {
 		var n = vector.copy();
 		n.scale(scalar);
@@ -261,6 +269,13 @@ class Vector2 {
 		var dot = dot(this, normal);
 		var n = multiply(normal, dot * 2);
 		return subtract(this, n);
+	}
+
+	public static function lerp(a:Vector2, b:Vector2, t:Float) {
+		var n = new Vector2();
+		n.x = Mathf.lerp(a.x, b.x, t);
+		n.y = Mathf.lerp(a.y, b.y, t);
+		return n;
 	}
 
 	public function asVector3() {
