@@ -48,4 +48,11 @@ class Rect {
 	public function isPointInside(point:Vector2) {
 		return point.x >= position.x && point.y >= position.y && point.x <= position.x + size.x && point.y <= position.y + size.y;
 	}
+
+	public function overlaps(rect:Rect) {
+		return !(this.position.x + this.size.x < rect.position.x
+			|| this.position.y + this.size.y < rect.position.y
+			|| this.position.x > rect.position.x + rect.size.x
+			|| this.position.y > rect.position.y + rect.size.y);
+	}
 }

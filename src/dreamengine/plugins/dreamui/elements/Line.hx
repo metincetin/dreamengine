@@ -9,7 +9,7 @@ class Line extends Element {
 		super();
 	}
 
-	override function onRender(g2:Graphics) {
+	override function onRender(g2:Graphics, opacity:Float) {
 		g2.drawLine(0, 0, 0, 0, thickness);
 	}
 }

@@ -142,7 +142,10 @@ class Vector3 {
 		var n = normal.normalized();
 		var dot = dot(this, normal);
 		var n = multiply(normal, dot * 2);
-		return subtract(this, n);
+		var r = subtract(this, n);
+		x = r.x;
+		y = r.y;
+		z = r.z;
 	}
 
 	public function asVector2():Vector2 {

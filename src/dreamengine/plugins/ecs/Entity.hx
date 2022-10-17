@@ -3,6 +3,8 @@ package dreamengine.plugins.ecs;
 class Entity {
 	public var components = new Array<Component>();
 
+	var pendingKill:Bool;
+
 	public function new() {}
 
 	public function addComponent(component:Component) {
@@ -37,4 +39,12 @@ class Entity {
 	public function onSpawned() {}
 
 	public function onDespawned() {}
+
+	public function queueKill() {
+		pendingKill = true;
+	}
+
+	public function isPendingKill() {
+		return pendingKill;
+	}
 }

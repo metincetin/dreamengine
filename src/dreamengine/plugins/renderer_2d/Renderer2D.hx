@@ -5,7 +5,6 @@ import dreamengine.plugins.renderer_base.components.Camera;
 import dreamengine.plugins.ecs.Component;
 import dreamengine.plugins.ecs.System.RenderContext;
 import dreamengine.plugins.renderer_base.IRenderContextProvider;
-import dreamengine.plugins.ecs.System.SystemContext;
 import kha.Framebuffer;
 import dreamengine.plugins.ecs.ECS;
 import dreamengine.core.Engine;
@@ -58,8 +57,8 @@ class Renderer2D implements IPlugin implements IRenderContextProvider {
 		return null;
 	}
 
-	public function getRenderContext(components:Array<Component>, camera:Camera):RenderContext {
-		return new RenderContext(components, engine, null, camera);
+	public function getRenderContext(camera:Camera):RenderContext {
+		return new RenderContext(engine, null, camera);
 	}
 
 	public function getRenderingBackend():RenderingBackend {

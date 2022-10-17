@@ -42,8 +42,6 @@ class Engine {
 		Scheduler.addFrameTask(onRender, 0);
 
 		initializeDevice();
-
-		trace("Done");
 	}
 
 	function initializeDevice() {}

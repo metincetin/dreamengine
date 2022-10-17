@@ -8,37 +8,29 @@ import dreamengine.plugins.renderer_base.components.Material;
 import kha.graphics4.PipelineState;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
+import dreamengine.plugins.ecs.ECSContext;
 
 class System {
 	public function new() {}
 
-	public function execute(ctx:SystemContext) {}
+	public function execute(ctx:ECSContext) {}
 
 	public function onRegistered(engine:Engine) {}
 
 	public function onUnregistered(engine:Engine) {}
-
-	public function getTargetComponents():Array<Class<Component>> {
-		return [];
-	}
 }
 
 class RenderSystem {
 	public function new() {}
 
-	public function execute(ctx:RenderContext) {}
-
-	public function getTargetComponents():Array<Class<Component>> {
-		return [];
-	}
+	public function execute(ecsContext:ECSContext, renderContext:RenderContext) {}
 }
 
-class RenderContext extends SystemContext {
+class RenderContext {
 	var pipelineState:PipelineState;
 	var camera:Camera;
 
-	public function new(components:Array<Component>, engine:Engine, pipelineState:PipelineState, camera:Camera) {
-		super(components, engine);
+	public function new(engine:Engine, pipelineState:PipelineState, camera:Camera) {
 		this.pipelineState = pipelineState;
 		this.camera = camera;
 	}
@@ -53,28 +45,5 @@ class RenderContext extends SystemContext {
 
 	public function getRenderTarget() {
 		return camera.renderTexture;
-	}
-}
-
-class SystemContext {
-	var components = new Array<Component>();
-	var engine:Engine;
-
-	public function new(components:Array<Component>, engine:Engine) {
-		this.components = components;
-		this.engine = engine;
-	}
-
-	@:generic
-	public function getComponent<T>(type:Class<T>):T {
-		for (c in components) {
-			if (Std.isOfType(c, type))
-				return cast c;
-		}
-		return null;
-	}
-
-	public function getEngine() {
-		return engine;
 	}
 }

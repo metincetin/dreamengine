@@ -43,7 +43,7 @@ class PluginContainer implements IPlugin {
 	}
 
 	@:generic
-	public function getPlugin<T>(t:Class<T>):T {
+	public function getPlugin<T:IPlugin>(t:Class<T>):T {
 		for (plugin in plugins) {
 			if (Std.isOfType(plugin, t)) {
 				return cast plugin;

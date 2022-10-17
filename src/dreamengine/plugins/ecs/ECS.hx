@@ -9,17 +9,17 @@ import dreamengine.plugins.ecs.System.RenderSystem;
 import haxe.macro.Expr;
 import haxe.ds.Map;
 import haxe.Constraints.Function;
-import dreamengine.plugins.ecs.System.SystemContext;
 import kha.graphics2.Graphics;
 import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 import dreamengine.device.Screen;
 
 class ECS implements IPlugin {
-	var entities = new Array<Entity>();
 	var systems = new Array<System>();
 	var renderSystems = new Array<RenderSystem>();
 	var renderContextProviders = new Array<IRenderContextProvider>();
+
+	var ecsContext = new ECSContext();
 
 	public function new() {}
 
@@ -29,6 +29,8 @@ class ECS implements IPlugin {
 
 	public function initialize(engine:Engine) {
 		this.engine = engine;
+		ecsContext = new ECSContext();
+
 		engine.registerLoopEvent(tickGame);
 		engine.registerRenderEvent(tickRender);
 	}
@@ -50,53 +52,26 @@ class ECS implements IPlugin {
 		customTicks.remove(name);
 	}
 
-	public function executeCustomTick(name:String, e:Array<Any>) {
-		if (customTicks.exists(name)) {
-			trace(entities.length);
-			var tick = customTicks.get(name);
-			for (system in tick.forSystems) {
-				for (entity in entities) {
-					var targets = system.getTargetComponents();
-					trace('System: ${Type.getClassName(Type.getClass(system))} TargetComponents: ${targets}');
-					var valid = true;
-					var components = new Array<Component>();
-					for (target in targets) {
-						if (!entity.hasComponent(target)) {
-							valid = false;
-							break;
-						} else {
-							trace('pushing component ${Type.getClassName(target)}');
-							components.push(entity.getComponent(target));
-						}
-					}
-					if (valid) {
-						var context = new SystemContext(components, engine);
-						trace("Completed");
-						tick.func(context, e);
-					}
-				}
-			}
-		}
-	}
-
 	function tickGame(engine) {
 		for (system in systems) {
-			for (entity in entities) {
-				var targets = system.getTargetComponents();
-				var valid = true;
-				var components = new Array<Component>();
-				for (target in targets) {
-					if (!entity.hasComponent(target)) {
-						valid = false;
-						break;
-					}
-					components.push(entity.getComponent(target));
-				}
-				if (valid) {
-					var context = new SystemContext(components, engine);
-					system.execute(context);
-				}
+			system.execute(ecsContext);
+		}
+		killPendingEntities();
+	}
+
+	function killPendingEntities() {
+		var pendingKill = new Array<Entity>();
+
+		for (entity in ecsContext.getEntities()) {
+			if (entity.isPendingKill()) {
+				pendingKill.push(entity);
 			}
+		}
+		for (entity in pendingKill) {
+			despawn(entity);
+		}
+		while (pendingKill.length > 0) {
+			pendingKill.pop();
 		}
 	}
 
@@ -115,24 +90,11 @@ class ECS implements IPlugin {
 					case G1:
 						cam.renderTexture.g1.begin();
 				}
+
 				for (renderSystem in renderSystems) {
-					for (entity in entities) {
-						var targets = renderSystem.getTargetComponents();
-						var valid = true;
-						var components = new Array<Component>();
-						for (target in targets) {
-							if (!entity.hasComponent(target)) {
-								valid = false;
-								break;
-							}
-							components.push(entity.getComponent(target));
-						}
-						if (valid) {
-							var context = contextProvider.getRenderContext(components, cam);
-							renderSystem.execute(context);
-						}
-					}
+					renderSystem.execute(ecsContext, contextProvider.getRenderContext(cam));
 				}
+
 				switch (contextProvider.getRenderingBackend()) {
 					case G4:
 						cam.renderTexture.g4.end();
@@ -149,8 +111,7 @@ class ECS implements IPlugin {
 			var cam = ActiveCamera.getCamera(i);
 			framebuffer.g2.clear(Color.Blue);
 			var res = Screen.getResolution();
-			framebuffer.g2.drawImage(cam.renderTexture, 0, 0);
-			// framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
+			framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
 		}
 		framebuffer.g2.end();
 	}
@@ -160,13 +121,13 @@ class ECS implements IPlugin {
 		for (comp in params) {
 			entity.addComponent(comp);
 		}
-		entities.push(entity);
+		ecsContext.addEntity(entity);
 		entity.onSpawned();
 		return entity;
 	}
 
 	public function despawn(entity:Entity) {
-		entities.remove(entity);
+		ecsContext.removeEntity(entity);
 		entity.onDespawned();
 	}
 
