@@ -99,16 +99,20 @@ class Element {
 
 	function onRender(g2:Graphics, opacity:Float) {}
 
-	public function addChild(c:Element) {
+	public function addChild(c:Element, withSlot:BaseSlot = null) {
 		if (children.contains(c))
 			return;
 
 		children.push(c);
 		c.parent = c;
-		if (!Std.isOfType(c.getSlot(), getChildSlotType())) {
-			c.slot = createSlotForChild();
+		if (withSlot != null) {
+			c.slot = withSlot;
 		} else {
-			c.slot.setParent(this);
+			if (!Std.isOfType(c.getSlot(), getChildSlotType())) {
+				c.slot = createSlotForChild(getChildCount() - 1);
+			} else {
+				c.slot.setParent(this);
+			}
 		}
 		isDirty = true;
 	}
@@ -124,8 +128,8 @@ class Element {
 		return AbsoluteSlot;
 	}
 
-	function createSlotForChild():BaseSlot {
-		return new AbsoluteSlot(this);
+	function createSlotForChild(childIndex:Int):BaseSlot {
+		return new AbsoluteSlot(this, childIndex);
 	}
 
 	public function getRect() {
@@ -140,5 +144,16 @@ class Element {
 
 	public inline function getChildCount() {
 		return children.length;
+	}
+
+	public function getPreferredSize(): Vector2{
+		return Vector2.zero();
+	}
+
+	public function getSize(){
+		return slot.getSize();
+	}
+	public function getPosition(){
+		return slot.getPosition();
 	}
 }

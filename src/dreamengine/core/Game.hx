@@ -3,6 +3,9 @@ package dreamengine.core;
 import dreamengine.core.Plugin.IPlugin;
 
 class Game implements IPlugin {
+
+	public function new(){}
+
 	public function initialize(engine:Engine) {}
 
 	public function finalize() {}
