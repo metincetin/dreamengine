@@ -11,6 +11,16 @@ class ElementSwitcher extends Element {
 		activateChild();
 	}
 
+	public function setElementByElementType<T:Class<Element>>(type:T) {
+		for (i in 0...getChildCount()) {
+			var element = getChild(i);
+			if (Std.isOfType(element, type)) {
+				setCurrentElement(i);
+				return;
+			}
+		}
+	}
+
 	public function nextElement(shouldReturn:Bool) {
 		if (shouldReturn) {
 			setCurrentElement((currentElement + 1) % getChildCount());
