@@ -1,6 +1,5 @@
 package dreamengine.plugins.dreamui;
 
-import dreamengine.plugins.dreamui.slots.BaseSlot;
 
 class ElementBuilder{
     var UIBuilder:UIBuilder;
@@ -9,7 +8,6 @@ class ElementBuilder{
 	var parent:ElementBuilder;
 	var element:Element;
 
-	var slotCreator:Void->BaseSlot;
 
 	public function new(UIBuilder:UIBuilder) {
 		this.UIBuilder = UIBuilder;
@@ -21,11 +19,8 @@ class ElementBuilder{
     }
 
 	public function populate(parent:Element) {
-		if (slotCreator != null) {
-			parent.addChild(element, slotCreator());
-		} else {
-			parent.addChild(element);
-		}
+		parent.addChild(element);
+		
 		for (c in children) {
 			c.populate(element);
 		}
@@ -40,10 +35,6 @@ class ElementBuilder{
 
 	public function complete() {
 		return UIBuilder;
-	}
-
-	public function applySlot(f:Void->BaseSlot) {
-		slotCreator = f;
 	}
 
 	public function child(element:Element) {

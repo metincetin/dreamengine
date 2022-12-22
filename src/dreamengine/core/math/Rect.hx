@@ -2,7 +2,7 @@ package dreamengine.core.math;
 
 import dreamengine.core.math.Vector.Vector2;
 
-class Rect {
+class Rect{
 	public var position:Vector2;
 	public var size:Vector2;
 

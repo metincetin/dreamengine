@@ -50,8 +50,8 @@ class Label extends Element {
 		var cachedFontSize = g2.fontSize;
 		g2.fontSize = fontSize;
 
-		var position = getSlot().getPosition();
-		var size = getSlot().getSize();
+		var position = getRect().position;
+		var size = getRect().size;
 		var offset = Vector2.zero();
 		var prefSize = getPreferredSize();
 

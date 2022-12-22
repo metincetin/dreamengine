@@ -1,10 +1,7 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.plugins.dreamui.layout_parameters.LayoutParameters;
 import dreamengine.core.math.Rect;
-import dreamengine.plugins.dreamui.slots.CanvasSlot;
-import dreamengine.plugins.dreamui.slots.ScreenSlot;
-import dreamengine.plugins.dreamui.slots.AbsoluteSlot;
-import dreamengine.plugins.dreamui.slots.BaseSlot;
 import dreamengine.core.math.Vector.Vector2;
 import kha.graphics2.Graphics;
 
@@ -17,13 +14,15 @@ class Element {
 
 	var isDirty = false;
 
-	var slot:BaseSlot;
+	var layoutParameters = new LayoutParameters();
 
 	var localScale:Vector2 = Vector2.one();
 
 	var enabled:Bool = true;
 
 	var renderOpacity:Float = 1;
+
+	var rect:Rect = new Rect();
 
 	public function getEnabled() {
 		return enabled;
@@ -48,16 +47,20 @@ class Element {
 		return localScale;
 	}
 
-	public function getSlot() {
-		if (slot == null) {
-			slot = CanvasSlot.fullRect(null);
-		}
-		return slot;
+
+	public function getLayoutParameters() {
+		return layoutParameters;
+	}
+	public function getLayoutParametersAs<T:LayoutParameters>(type:Class<T>):T {
+		return cast layoutParameters;
 	}
 
-	@:generic
-	public function getSlotAs<T>(type:Class<T>):T {
-		return cast slot;
+	function getChildLayoutParameterType():Class<LayoutParameters>{
+		return LayoutParameters;
+	}
+
+	function createLayoutParametersForChild(): LayoutParameters{
+		return new LayoutParameters();
 	}
 
 	public function getChild(index:Int) {
@@ -87,6 +90,10 @@ class Element {
 	}
 
 	public final function render(g2:Graphics, opacity:Float) {
+		if (isDirty){
+			layout();
+			isDirty = false;
+		}
 		if (!getEnabled())
 			return;
 		g2.opacity = opacity * renderOpacity;
@@ -99,21 +106,17 @@ class Element {
 
 	function onRender(g2:Graphics, opacity:Float) {}
 
-	public function addChild(c:Element, withSlot:BaseSlot = null) {
+	public function addChild(c:Element) {
 		if (children.contains(c))
 			return;
 
 		children.push(c);
 		c.parent = c;
-		if (withSlot != null) {
-			c.slot = withSlot;
-		} else {
-			if (!Std.isOfType(c.getSlot(), getChildSlotType())) {
-				c.slot = createSlotForChild(getChildCount() - 1);
-			} else {
-				c.slot.setParent(this);
-			}
+
+		if (!Std.isOfType(c.getLayoutParameters(), getChildLayoutParameterType())) {
+			c.layoutParameters = createLayoutParametersForChild();
 		}
+		
 		isDirty = true;
 	}
 
@@ -124,23 +127,12 @@ class Element {
 		}
 	}
 
-	function getChildSlotType():Class<BaseSlot> {
-		return AbsoluteSlot;
-	}
-
-	function createSlotForChild(childIndex:Int):BaseSlot {
-		return new AbsoluteSlot(this, childIndex);
-	}
 
 	public function getRect() {
-		if (!enabled)
-			return Rect.zero();
-		var slot = getSlot();
-		if (slot == null)
-			return Rect.zero();
-
-		return Rect.fromVectors(slot.getPosition(), slot.getSize());
+		return rect;
 	}
+
+	function layout(){}
 
 	public inline function getChildCount() {
 		return children.length;
@@ -148,12 +140,5 @@ class Element {
 
 	public function getPreferredSize(): Vector2{
 		return Vector2.zero();
-	}
-
-	public function getSize(){
-		return slot.getSize();
-	}
-	public function getPosition(){
-		return slot.getPosition();
 	}
 }

@@ -1,7 +1,5 @@
 package dreamengine.plugins.dreamui.containers;
 
-import dreamengine.plugins.dreamui.slots.FullSlot;
-import dreamengine.plugins.dreamui.slots.BaseSlot;
 
 class ElementSwitcher extends Element {
 	var currentElement = 0;

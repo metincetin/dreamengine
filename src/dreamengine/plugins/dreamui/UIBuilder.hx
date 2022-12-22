@@ -1,7 +1,5 @@
 package dreamengine.plugins.dreamui;
 
-import dreamengine.plugins.dreamui.slots.BaseSlot;
-
 class UIBuilder{
     var elements = new Array<ElementBuilder>();
 

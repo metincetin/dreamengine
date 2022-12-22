@@ -310,3 +310,10 @@ class Vector2i {
 		return new Vector2(x, y);
 	}
 }
+
+class Vector4{
+	public var x = 0.0;
+	public var y = 0.0;
+	public var z = 0.0;
+	public var w = 0.0;
+}

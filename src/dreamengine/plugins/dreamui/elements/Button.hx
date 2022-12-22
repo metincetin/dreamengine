@@ -19,8 +19,8 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 	}
 
 	override function onRender(g2:Graphics, opacity:Float) {
-		var pos = getSlot().getPosition();
-		var size = getSlot().getSize();
+		var pos = rect.position;
+		var size = rect.size;
 		var center = pos.copy();
 		center.x += size.x * 0.5;
 		center.y += size.y * 0.5;
