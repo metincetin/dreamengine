@@ -87,6 +87,11 @@ class Vector3 {
 		this.y *= scalar;
 		this.z *= scalar;
 	}
+	public function scaled(scalar:Float){
+		var n = copy();
+		n.scale(scalar);
+		return n;
+	}
 
 	public static function lerp(a:Vector3, b:Vector3, t:Float) {
 		var n = new Vector3();
@@ -96,11 +101,6 @@ class Vector3 {
 		return n;
 	}
 
-	public static function scaled(vector:Vector3, scalar:Float) {
-		var n = vector.copy();
-		n.scale(scalar);
-		return n;
-	}
 
 	public static function reflected(vector:Vector3, normal:Vector3) {
 		normal.normalize();
