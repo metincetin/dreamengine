@@ -32,6 +32,9 @@ class ElementBuilder{
 
 		return element;
     }
+	public function buildTo(root:Element){
+		root.addChild(build()); 
+	}
 
 	public function complete() {
 		return UIBuilder;

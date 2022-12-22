@@ -3,10 +3,10 @@ package dreamengine.core.math;
 import dreamengine.core.math.Vector.Vector3;
 
 class Quaternion {
-	var x:Float;
-	var y:Float;
-	var z:Float;
-	var w:Float;
+	public var x:Float;
+	public var y:Float;
+	public var z:Float;
+	public var w:Float;
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0, w:Float = 0) {
 		this.x = x;
@@ -16,42 +16,51 @@ class Quaternion {
 	}
 
 	public static function fromEuler(x:Float, y:Float, z:Float) {
-		var cy = Math.cos(x * 0.5);
-		var sy = Math.sin(x * 0.5);
-		var cp = Math.cos(y * 0.5);
-		var sp = Math.sin(y * 0.5);
-		var cr = Math.cos(z * 0.5);
-		var sr = Math.sin(z * 0.5);
+		var roll:Float = Mathf.degToRad(x);
+		var pitch:Float = Mathf.degToRad(y);
+		var yaw:Float = Mathf.degToRad(z);
 
-		var q = new Quaternion();
-		q.w = cr * cp * cy + sr * sp * sy;
-		q.x = sr * cp * cy - cr * sp * sy;
-		q.y = cr * sp * cy + sr * cp * sy;
-		q.z = cr * cp * sy - sr * sp * cy;
-		return q;
+		var cy:Float = Math.cos(yaw * 0.5);
+		var sy:Float = Math.sin(yaw * 0.5);
+		var cp:Float = Math.cos(pitch * 0.5);
+		var sp:Float = Math.sin(pitch * 0.5);
+		var cr:Float = Math.cos(roll * 0.5);
+		var sr:Float = Math.sin(roll * 0.5);
+
+		var qw:Float = cy * cp * cr + sy * sp * sr;
+		var qx:Float = cy * cp * sr - sy * sp * cr;
+		var qy:Float = sy * cp * sr + cy * sp * cr;
+		var qz:Float = sy * cp * cr - cy * sp * sr;
+
+		return new Quaternion(qx, qy, qz, qw);
 	}
 
-	// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+	public function conjugated() {
+		return new Quaternion(-x, -y, -z, -w);
+	}
+
 	public function toEuler() {
-		var x:Float = 0;
-		var y:Float = 0;
-		var z:Float = 0;
-		var sinrCosp = 2 * (w * x + y * z);
-		var cosrCosp = 1 - 2 * (x * x + y * y);
-		x = Math.atan2(sinrCosp, cosrCosp);
-		// pitch (y-axis rotation)
-		var sinp = 2 * (w * y - z * x);
-		if (Math.abs(sinp) >= 1)
-			y = (Math.PI / 2 * Mathf.sign(sinp)); // use 90 degrees if out of range
-		else
-			y = Math.asin(sinp);
+		var qx:Float = this.x;
+		var qy:Float = this.y;
+		var qz:Float = this.z;
+		var qw:Float = this.w;
 
-		// yaw (z-axis rotation)
-		var sinyCosp = 2 * (w * z + x * y);
-		var cosyCosp = 1 - 2 * (y * y + z * z);
-		z = Math.atan2(sinyCosp, cosyCosp);
+		var ysqr:Float = qy * qy;
 
-		var ret = new Vector3(x, y, z);
+		var t0:Float = -2.0 * (ysqr + qz * qz) + 1.0;
+		var t1:Float = 2.0 * (qx * qy + qw * qz);
+		var t2:Float = -2.0 * (qx * qz - qw * qy);
+		var t3:Float = 2.0 * (qy * qz + qw * qx);
+		var t4:Float = -2.0 * (qx * qx + ysqr) + 1.0;
+
+		t2 = t2 > 1.0 ? 1.0 : t2;
+		t2 = t2 < -1.0 ? -1.0 : t2;
+
+		var roll:Float = Math.atan2(t3, t4);
+		var pitch:Float = Math.asin(t2);
+		var yaw:Float = Math.atan2(t1, t0);
+
+		return new Vector3(Mathf.radToDeg(roll), Mathf.radToDeg(pitch), Mathf.radToDeg(yaw));
 	}
 
 	public function inverse() {
@@ -62,7 +71,34 @@ class Quaternion {
 		var cz = -z;
 	}
 
-	public function multiply(b:Quaternion) {}
+	public function multiply(b:Quaternion) {
+		this.w= this.w * b.w - this.x * b.x - this.y * b.y - this.z * b.z;
+		this.x= this.w * b.x + this.x * b.w + this.y * b.z - this.z * b.y;
+		this.y= this.w * b.y - this.x * b.z + this.y * b.w + this.z * b.x;
+		this.z= this.w * b.z + this.x * b.y - this.y * b.x + this.z * b.w;
+	}
+	public function multiplied(b:Quaternion){
+		var n = new Quaternion();
+		n.x = x;
+		n.y = y;
+		n.z = z;
+		n.w = w;
+		n.multiply(b);
+		return n;
+	}
+	public function multiplyV(euler:Vector3){
+		var q = Quaternion.fromEuler(euler.x, euler.y, euler.z);
+		multiply(q);
+	}
+	public function multipliedV(euler:Vector3){
+		var q = copy();
+		q.multiplyV(euler);
+		return q;
+	}
+
+	function copy(){
+		return new Quaternion(x, y, z, w);
+	}
 
 	public function magnitude():Float {
 		return Math.sqrt(w * w + x * x + y * y + z * z);

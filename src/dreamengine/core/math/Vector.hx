@@ -45,6 +45,12 @@ class Vector3 {
 		z /= length;
 	}
 
+	public static function added(a:Vector3, b:Vector3){
+		var nx = a.x + b.x;
+		var ny = a.y + b.y;
+		var nz = a.z + b.z;
+		return new Vector3(nx, ny, nz);
+	}
 	public static function subtract(a:Vector3, b:Vector3) {
 		var nx = a.x - b.x;
 		var ny = a.y - b.y;
@@ -224,8 +230,9 @@ class Vector2 {
 		return new Vector2(nx, ny);
 	}
 
-	public static function multiply(a:Vector2, b:Float) {
-		return new Vector2(a.x * b, a.y * b);
+	public function multiply(v:Vector2) {
+		x *= v.x;
+		y *= v.y;	
 	}
 
 	public static function multiplyV(a:Vector2, b:Vector2) {
@@ -235,7 +242,8 @@ class Vector2 {
 	public static function reflected(vector:Vector2, normal:Vector2) {
 		var n = normal.normalized();
 		var dot = dot(vector, normal);
-		var n = multiply(normal, dot * 2);
+		n.scale(dot * 2);
+
 		return subtract(vector, n);
 	}
 
@@ -267,7 +275,7 @@ class Vector2 {
 	public function reflect(normal:Vector2) {
 		var n = normal.normalized();
 		var dot = dot(this, normal);
-		var n = multiply(normal, dot * 2);
+		n.scale(dot * 2);
 		return subtract(this, n);
 	}
 

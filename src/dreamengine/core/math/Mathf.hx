@@ -2,7 +2,10 @@ package dreamengine.core.math;
 
 class Mathf {
 	public static inline function degToRad(degrees:Float):Float {
-		return (degrees * 0.017453);
+		return (degrees * 0.017453292519943295);
+	}
+	public static inline function radToDeg(radians:Float):Float{
+		return (radians * 180 / Math.PI);
 	}
 
 	public static inline function sign(value:Float) {

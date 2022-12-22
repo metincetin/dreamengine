@@ -40,17 +40,18 @@ class Transform extends Component {
 	}
 
 	public function getRight():Vector3 {
-		return Vector3.right();
+		var q = getRotation();
+		var ret = new Vector3(1 - 2 * (q.y * q.y + q.z * q.z), 2 * (q.x * q.y - q.w * q.z), 2 * (q.x * q.z + q.w * q.y));
+		ret.normalize();
+		return ret;
 	}
 
 	public function getUp():Vector3 {
-		var right = getRight();
-		var forward = getForward();
-		return Vector3.up();
+		return getRotation().multipliedV(Vector3.up()).conjugated().toEuler();
 	}
 
 	public function getPosition():Vector3 {
-		return position;
+		return position.copy();
 	}
 
 	public function setPosition(value:Vector3) {
