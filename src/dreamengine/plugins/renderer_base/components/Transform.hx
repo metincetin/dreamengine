@@ -36,7 +36,10 @@ class Transform extends Component {
 	}
 
 	public function getForward():Vector3 {
-		return Vector3.forward();
+		var q = getRotation();
+		var ret = new Vector3(2.0 * (q.x * q.z - q.w * q.y), 2.0 * (q.y * q.z + q.w * q.x), 1.0 - 2.0 * (q.x * q.x + q.y * q.y));
+		ret.normalize();
+		return ret;
 	}
 
 	public function getRight():Vector3 {
@@ -47,7 +50,12 @@ class Transform extends Component {
 	}
 
 	public function getUp():Vector3 {
-		return getRotation().multipliedV(Vector3.up()).conjugated().toEuler();
+		var q = getRotation();
+		var ret = new Vector3(2.0 * (q.x * q.y + q.w * q.z),
+                1.0 - 2.0 * (q.x * q.x + q.z * q.z),
+                2.0 * (q.y * q.z - q.w * q.x));
+		ret.normalize();
+		return ret;
 	}
 
 	public function getPosition():Vector3 {
@@ -75,8 +83,13 @@ class Transform extends Component {
 		updateMatrix();
 	}
 
-	public function rotate(axis:Vector3, angle:Float) {
+	public function setEulerAngles(value:Vector3) {
+		this.rotation = Quaternion.fromEuler(value.x, value.y, value.z);
 		updateMatrix();
+	}
+
+	public function rotate(axis:Vector3, angle:Float) {
+		throw("Not implemented");
 	}
 
 	public function getScale():Vector3 {

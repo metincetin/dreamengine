@@ -23,6 +23,9 @@ class Mathf {
 	public static inline function sin(rad:Float) {
 		return Math.sin(rad);
 	}
+	public static inline function atan2(y:Float, x:Float){
+		return Math.atan2(y, x);
+	}
 
 	public static function sind(deg:Float) {
 		return sin(degToRad(deg));

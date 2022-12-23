@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d;
 
+import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_2d.systems.ParticleRenderer2D.ParticleRenderer;
 import kha.graphics4.PipelineState;
 import dreamengine.plugins.renderer_base.components.Camera;
@@ -34,7 +35,9 @@ class Renderer2D implements IPlugin implements IRenderContextProvider {
 
 		ecs.registerRenderSystem(spriteRenderer);
 		ecs.registerRenderSystem(new ParticleRenderer());
+		ecs.registerSystem(new CameraSystem());
 		ecs.registerSystem(new SpriteAnimationPlayer());
+		ecs.registerSystem(new CameraSystem());
 
 		ecs.registerRenderContextProvider(this);
 	}
