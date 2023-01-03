@@ -1,9 +1,10 @@
 package dreamengine.plugins.dreamui.elements;
 
+import dreamengine.core.math.Vector.Vector2;
+import dreamengine.plugins.dreamui.utils.TextRenderingUtils;
 import dreamengine.plugins.input.events.KeyboardKeyEvent;
 import dreamengine.plugins.input.devices.BaseKeyboard.KeyboardKey;
 import dreamengine.plugins.dreamui.events.IInputTarget;
-import kha.math.Vector2;
 import dreamengine.core.math.Mathf;
 import dreamengine.core.Time;
 import kha.graphics2.Graphics;
@@ -12,7 +13,7 @@ import dreamengine.plugins.dreamui.Element.Element;
 
 class InputField extends Element implements IFocusable implements IPointerTarget implements IClickable implements IInputTarget {
 	var text:String = "";
-
+	var placeholder:String = "Enter text..";
 	var focused = false;
 
 	public function new() {
@@ -58,33 +59,39 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 	override function onRender(g2:Graphics, opacity:Float) {
 		var rect = getRect();
 
-		g2.font = kha.Assets.fonts.arial;
-		g2.color = kha.Color.Black;
-
+		g2.font = kha.Assets.fonts.OpenSans_Regular;
+		g2.color = kha.Color.Red;
+		g2.fontSize = 14;
 		g2.fillRect(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
 
 		g2.color = kha.Color.White;
+		
+		var prefSize = new Vector2(
+			g2.font.width(g2.fontSize, text),
+			g2.font.height(g2.fontSize)
+		);
+		var textPos = TextRenderingUtils.getAlignedPosition(rect, prefSize, MiddleLeft);
 
-		g2.drawString(text, rect.position.x, rect.position.y + g2.font.height(g2.fontSize) * 0.5);
-
+		if (text.length == 0 && !isFocused()) {
+			g2.drawString(placeholder, textPos.x, textPos.y);
+		} else {
+			g2.drawString(text, textPos.x, textPos.y);
+		}
 		if (isFocused())
-			renderBlink(g2, opacity);
+			renderBlink(g2, textPos, opacity);
 	}
 
-	function renderBlink(g2:Graphics, opacity:Float) {
-		var offset = new Vector2(1, 3);
+	function renderBlink(g2:Graphics, alignedPos:Vector2, opacity:Float) {
 		var x = g2.font.width(g2.fontSize, text) + 4;
-		var pos = getSlot().getPosition();
-		var height = getSlot().getSize().y;
-
+		var pos = alignedPos;
+		var height = g2.font.height(g2.fontSize);
+		var halfHeight = height * 0.5;
 		var time = Time.getTime();
 		var blink = (Mathf.sin(time * 8) + 1) * 0.5;
 
-		// g2.pushOpacity(opacity);
-
 		g2.pushOpacity(opacity * blink);
 
-		g2.drawLine(pos.x + x + offset.x, pos.y + offset.y, pos.x + x + offset.x, pos.y + height - offset.y, 2);
+		g2.drawLine(pos.x + x, pos.y + 2, pos.x + x, pos.y + height - 2, 2);
 
 		g2.popOpacity();
 	}

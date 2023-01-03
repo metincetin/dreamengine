@@ -63,6 +63,5 @@ class HorizontalBoxContainer extends Element{
     }
 
     override function onRender(g2:Graphics, opacity:Float) {
-        g2.drawRect(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
     }
 }

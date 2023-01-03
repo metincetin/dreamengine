@@ -81,6 +81,10 @@ class Camera extends Component {
 		var res = Screen.getResolution();
 		renderTexture = Image.createRenderTarget(Std.int(res.x * 1), Std.int(res.y * 1), TextureFormat.RGBA128, DepthAutoStencilAuto, 1);
 	}
+
+	public function isInsideView(point: Vector3): Bool{
+		return true;
+	}
 }
 
 enum Projection {

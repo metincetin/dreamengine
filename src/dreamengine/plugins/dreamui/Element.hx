@@ -120,6 +120,9 @@ class Element {
 		isDirty = true;
 	}
 
+	public function setDirty(){
+		setDirtyAllChildren();
+	}
 	function setDirtyAllChildren() {
 		isDirty = true;
 		for (c in children) {

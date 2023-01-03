@@ -11,9 +11,8 @@ class Box extends Element {
 
 	override function onRender(g2:Graphics, opacity:Float) {
 		g2.color = color;
-		var pos = getSlot().getPosition();
-		var size = getSlot().getSize();
-		g2.fillRect(pos.x, pos.y, size.x, size.y);
+		var rect = getRect();
+		g2.fillRect(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
 		g2.color = kha.Color.White;
 	}
 }
