@@ -4,11 +4,22 @@ import dreamengine.core.Plugin.IPlugin;
 
 class Game implements IPlugin {
 
+	var engine:Engine;
+
 	public function new(){}
 
-	public function initialize(engine:Engine) {}
+	public final function initialize(engine:Engine) {
+		this.engine = engine;
+		beginGame();
+	}
 
-	public function finalize() {}
+	
+	public final function finalize() {
+		endGame();
+	}
+	
+	function beginGame() {}
+	function endGame() {}
 
 	public function getName():String {
 		return "dream_game";

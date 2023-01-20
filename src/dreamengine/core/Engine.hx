@@ -16,10 +16,10 @@ class Engine {
 	var version:String;
 	var shouldExit = false;
 
-	var renderEvents:Array<Function> = new Array<Function>();
-	var postRenderEvents:Array<Function> = new Array<Function>();
+	var renderEvents:Array<Framebuffer->Void> = new Array<Framebuffer->Void>();
+	var postRenderEvents:Array<Framebuffer->Void> = new Array<Framebuffer->Void>();
 
-	var loopEvents:Array<Function> = new Array<Function>();
+	var loopEvents:Array<Void->Void> = new Array<Void->Void>();
 
 	var mainWindow:kha.Window;
 
@@ -46,27 +46,27 @@ class Engine {
 
 	function initializeDevice() {}
 
-	public function registerRenderEvent(event:Function) {
+	public function registerRenderEvent(event:Framebuffer->Void) {
 		renderEvents.push(event);
 	}
 
-	public function unregisterRenderEvent(event:Function) {
+	public function unregisterRenderEvent(event:Framebuffer->Void) {
 		renderEvents.remove(event);
 	}
 
-	public function registerPostRenderEvent(event:Function) {
+	public function registerPostRenderEvent(event:Framebuffer->Void) {
 		postRenderEvents.push(event);
 	}
 
-	public function unregisterPostRenderEvent(event:Function) {
+	public function unregisterPostRenderEvent(event:Framebuffer->Void) {
 		postRenderEvents.remove(event);
 	}
 
-	public function registerLoopEvent(event:Function) {
+	public function registerLoopEvent(event:Void->Void) {
 		loopEvents.push(event);
 	}
 
-	public function unregisterLoopEvent(event:Function) {
+	public function unregisterLoopEvent(event:Void->Void) {
 		loopEvents.remove(event);
 	}
 
@@ -88,6 +88,7 @@ class Engine {
 	function onRender() {
 		if (mainFrameBuffer == null)
 			return;
+		
 		for (e in renderEvents) {
 			e(mainFrameBuffer);
 		}

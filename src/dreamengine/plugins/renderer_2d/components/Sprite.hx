@@ -46,10 +46,13 @@ class Sprite extends Component {
 		// do pivot here
 		var pivotOffset = new Vector2(image.width * -pivot.x, image.height * -pivot.y);
 
-		rect.position = pivotOffset; 
-		rect.size.x = image.width * vFlipMultiplier;
-		rect.size.y = image.height; 
-
+		var size = new Vector2();
+		
+		size.x = image.width * vFlipMultiplier;
+		size.y = image.height; 
+		
+		rect.setPosition(pivotOffset);
+		rect.setSize(size);
 		return rect;
 	}
 }

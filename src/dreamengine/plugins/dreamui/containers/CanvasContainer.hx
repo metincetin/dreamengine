@@ -16,8 +16,8 @@ class CanvasContainer extends Element {
 
 	override function layout() {
 		for (c in children){
-			c.rect.size = getSizeFor(c);
-			c.rect.position = getPositionFor(c);
+			c.rect.setSize(getSizeFor(c));
+			c.rect.setPosition(getPositionFor(c));
 		}
 	}
 
@@ -28,16 +28,26 @@ class CanvasContainer extends Element {
 		var parameters = element.getLayoutParametersAs(CanvasLayoutParameters);
 
 		if (parent != null) {
-			parentPos = parent.getRect().position;
-			parentSize = parent.getRect().size;
+			parentPos = parent.getRect().getPosition();
+			parentSize = parent.getRect().getPosition();
 		} else {
 			parentPos = Vector2.zero();
 			parentSize = Screen.getResolution().asVector2();
 		}
+
+		var pivotOffset = Vector2.zero();
+		var pivot = element.getPivot();
+
+		var selfSize = element.getRect().getSize();
+
+		pivotOffset.x = -selfSize.x * pivot.x;
+		pivotOffset.y = -selfSize.y * pivot.y;
+
+
 		var pos = Vector2.zero();
 		
-		pos.x = parentPos.x + parentSize.x * parameters.anchorsMin.x + parameters.offset.x;
-		pos.y = parentPos.y + parentSize.y * parameters.anchorsMin.y + parameters.offset.y;
+		pos.x = parentPos.x + parentSize.x * parameters.anchorsMin.x + parameters.offset.x + pivotOffset.x;
+		pos.y = parentPos.y + parentSize.y * parameters.anchorsMin.y + parameters.offset.y + pivotOffset.y;
 		
 		
 		return pos;
@@ -50,8 +60,8 @@ class CanvasContainer extends Element {
 		var parameters = element.getLayoutParametersAs(CanvasLayoutParameters);
 
 		if (parent != null) {
-			parentPos = parent.getRect().position;
-			parentSize = parent.getRect().size;
+			parentPos = parent.getRect().getPosition();
+			parentSize = parent.getRect().getSize();
 		} else {
 			parentPos = Vector2.zero();
 			parentSize = Screen.getResolution().asVector2();

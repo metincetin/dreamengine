@@ -1,5 +1,15 @@
 package dreamengine.plugins.renderer_2d.systems;
 
+import dreamengine.core.math.Vector.Vector2;
+import dreamengine.device.Screen;
+import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Mathf;
+import dreamengine.plugins.ecs.System.RenderContext;
+import dreamengine.plugins.renderer_base.components.Transform;
+import dreamengine.plugins.renderer_2d.components.Sprite;
+import dreamengine.plugins.ecs.ECSContext;
+import dreamengine.plugins.ecs.System.RenderSystem;
+
 
 
 class SpriteRenderer extends RenderSystem {
@@ -18,30 +28,43 @@ class SpriteRenderer extends RenderSystem {
 
 			if (image == null)
 				return;
-
+			
 			var localRect = spr.getLocalRect();
-			var drawRect = new Rect();
-			drawRect.position = localRect.position;
+			var localPos = localRect.getPosition();
+			
+			
+			var worldPosition = localPos.copy();
+			worldPosition .x += position.x;
+			worldPosition .y += position.y;
+			
 
-			drawRect.size = localRect.size;
-			drawRect.size.multiply(scale.asVector2());
+			var drawSize = localRect.getSize();
+			drawSize.multiply(scale.asVector2());
 
 			var camera = renderContext.getCamera();
 			var viewMatrix = camera.getViewMatrix();
 			var cameraPos = new Vector3(viewMatrix._30, viewMatrix._31);
 			var cameraRight = new Vector3(viewMatrix._00, viewMatrix._01, viewMatrix._02);
 			var screenRes = Screen.getResolution();
+			
+			 
+			var drawPosition = worldPosition.copy();
 
-			graphics.pushTranslation(position.x, position.y);
-			graphics.pushRotation(rotation, position.x, position.y);
-
-			graphics.pushTranslation(-cameraPos.x + screenRes.x * 0.5, -cameraPos.y + screenRes.y * 0.5);graphics.pushRotation(rotation, position.x, position.y);
-			graphics.pushRotation((Math.atan2(cameraRight.y, cameraRight.x)), cameraPos.x + screenRes.x * 0.5, cameraPos.y + screenRes.y * 0.5);
+			drawPosition.x -= cameraPos.x - screenRes.x * 0.5;
+			drawPosition.y -= cameraPos.y - screenRes.y * 0.5;
 
 			
-			graphics.drawScaledImage(image, drawRect.position.x, drawRect.position.y, drawRect.size.x, drawRect.size.y);
+
+			graphics.pushTranslation(drawPosition.x, drawPosition.y);
 			
-			graphics.popTransformation();
+			graphics.pushRotation(rotation, drawPosition.x, drawPosition.y);
+			//graphics.pushTranslation(-cameraPos.x + screenRes.x * 0.5, -cameraPos.y + screenRes.y * 0.5);
+			
+			
+			graphics.pushRotation((Math.atan2(cameraRight.y, cameraRight.x)), screenRes.x * 0.5 + localPos.x, screenRes.y * 0.5 + localPos.y);
+			
+			graphics.drawScaledImage(image, localRect.getPosition().x, localRect.getPosition().y, drawSize.x, drawSize.y);
+			
 			graphics.popTransformation();
 			graphics.popTransformation();
 			graphics.popTransformation();

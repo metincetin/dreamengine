@@ -52,7 +52,7 @@ class ECS implements IPlugin {
 		customTicks.remove(name);
 	}
 
-	function tickGame(engine) {
+	function tickGame() {
 		for (system in systems) {
 			system.execute(ecsContext);
 		}

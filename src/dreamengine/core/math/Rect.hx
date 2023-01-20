@@ -3,12 +3,26 @@ package dreamengine.core.math;
 import dreamengine.core.math.Vector.Vector2;
 
 class Rect{
-	public var position:Vector2;
-	public var size:Vector2;
+	var position:Vector2;
+	var size:Vector2;
 
 	public function new() {
 		position = new Vector2();
 		size = new Vector2();
+	}
+
+	public function getPosition(){
+		return position.copy();
+	}
+	public function setPosition(value:Vector2){
+		position = value;
+	}
+
+	public function getSize(){
+		return size.copy();
+	}
+	public function setSize(value:Vector2){
+		size = value;
 	}
 
 	public static function create(x:Float, y:Float, width:Float, height:Float):Rect {

@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui.elements;
 
+import dreamengine.plugins.dreamui.utils.LayoutUtils;
 import dreamengine.plugins.dreamui.events.IClickable;
 import dreamengine.plugins.dreamui.events.IFocusable;
 import dreamengine.plugins.dreamui.events.IPointerTarget;
@@ -19,18 +20,21 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 	}
 
 	override function onRender(g2:Graphics, opacity:Float) {
-		var pos = rect.position;
-		var size = rect.size;
+		var pos = rect.getPosition();
+		var size = rect.getSize();
 		var center = pos.copy();
 		center.x += size.x * 0.5;
 		center.y += size.y * 0.5;
 
 		g2.color = color;
 
+		var pivotOffset = LayoutUtils.getPivotOffset(this);
+
+
 		var textSize = new Vector2();
 		textSize.x = g2.font.width(g2.fontSize, text) * 0.5;
 		textSize.y = g2.font.height(g2.fontSize) * 0.5;
-		g2.fillRect(pos.x, pos.y, size.x, size.y);
+		g2.fillRect(pos.x + pivotOffset.x, pos.y + pivotOffset.y, size.x, size.y);
 		g2.color = kha.Color.White;
 		g2.drawString(text, center.x - textSize.x, center.y - textSize.y);
 	}

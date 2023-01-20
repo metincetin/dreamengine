@@ -24,6 +24,8 @@ class Element {
 
 	var rect:Rect = new Rect();
 
+	var pivot = Vector2.half();
+
 	public function getEnabled() {
 		return enabled;
 	}
@@ -133,6 +135,14 @@ class Element {
 
 	public function getRect() {
 		return rect;
+	}
+
+	public function getPivot(){
+		return pivot.copy();
+	}
+
+	public function setPivot(value:Vector2){
+		this.pivot = value;
 	}
 
 	function layout(){}
