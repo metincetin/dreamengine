@@ -1,5 +1,7 @@
 package dreamengine.plugins.physics_2d;
 
+import dreamengine.plugins.physics_2d.systems.CollisionDetectionSystem;
+import box2D.dynamics.B2World;
 import box2D.dynamics.B2BodyType;
 import box2D.dynamics.B2World;
 import box2D.common.math.*;
@@ -13,17 +15,23 @@ import dreamengine.core.Plugin.IPlugin;
 class Physics2D implements IPlugin {
 	var ecs:ECS;
 	var engine:Engine;
-	var world:B2World;
+
+	var world:Physics2DWorld;
 
 	public function new() {}
 
 	public function initialize(engine:Engine) {
 		ecs = engine.pluginContainer.getPlugin(ECS);
 
-		world = new B2World(new B2Vec2(0, 9.81), true);
+		world = new Physics2DWorld(new B2World(new B2Vec2(0, 9.81), true));
 		engine.registerLoopEvent(gameLoop);
 
 		ecs.registerSystem(new RigidBody2DTransformSync());
+		ecs.registerSystem(new CollisionDetectionSystem());
+	}
+
+	public function getWorld():Physics2DWorld {
+		return world;
 	}
 
 	public function finalize() {
@@ -44,11 +52,5 @@ class Physics2D implements IPlugin {
 
 	public function handleDependency(ofType:Class<IPlugin>):IPlugin {
 		return new ECS();
-	}
-
-	public function createBodyComponent(bodyType:B2BodyType) {
-		var rb = new RigidBody2D(world);
-		rb.setType(bodyType);
-		return rb;
 	}
 }

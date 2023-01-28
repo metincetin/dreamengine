@@ -16,17 +16,19 @@ import dreamengine.core.math.Vector.Vector2;
 import dreamengine.plugins.ecs.Component;
 
 class RigidBody2D extends Component {
-	public var bodyType:B2BodyType;
-
 	var bodyDef:B2BodyDef;
 	var fixtureDef:B2FixtureDef;
 
 	var body:B2Body;
-	var world:B2World;
+	var world:Physics2DWorld;
 
     var shape:CollisionShape;
 
-	public function new(world:B2World) {
+	var transformRef:Transform;
+
+	var bodyType = DYNAMIC_BODY;
+
+	public function new() {
 		super();
 		bodyDef = new B2BodyDef();
 		fixtureDef = new B2FixtureDef();
@@ -34,21 +36,29 @@ class RigidBody2D extends Component {
 		fixtureDef.friction = 0.3;
 		fixtureDef.density = 1;
 		bodyDef.angularDamping = 0;
+	}
 
-		body = world.createBody(bodyDef);
-		setType(B2BodyType.DYNAMIC_BODY);
+	/// Sets the physics world entity currently in. Do not call it, as it will be handled by Physics2D plugin
+	public function setWorld(world:Physics2DWorld){
+		this.world = world;
+		body = world.getB2World().createBody(bodyDef);
+		setPosition(transformRef.getPosition().asVector2());
+		body.createFixture(fixtureDef);
 
-		body.applyTorque(75);
+		body.setType(bodyType);
+
+
+	}
+	public function getIsAttachedToWorld(){
+		return world != null;
 	}
 
 	override function onAdded(entity:Entity) {
-		var tr = entity.getComponent(Transform);
-		if (tr != null) {
-			setPosition(tr.getPosition().asVector2());
-		}
+		transformRef = entity.getComponent(Transform);
 	}
 
 	public function getPosition():Vector2 {
+		if (!getIsAttachedToWorld()) return Vector2.zero();
 		var p = body.getPosition();
 		return new Vector2(p.x, p.y);
 	}
@@ -67,7 +77,9 @@ class RigidBody2D extends Component {
 
 	public function setShape(shape:CollisionShape) {
 		fixtureDef.shape = shape.createB2DShape();
-		body.createFixture(fixtureDef);
+		if (getIsAttachedToWorld()){
+			body.createFixture(fixtureDef);
+		}
 	}
 
 	public function setPosition(position:Vector2) {
@@ -76,14 +88,19 @@ class RigidBody2D extends Component {
 	}
 
 	public function getType() {
-		return bodyDef.type;
+		return bodyType;
 	}
 
 	public function setType(value:B2BodyType) {
-		body.setType(value);
+		bodyType = value;
+		if (getIsAttachedToWorld()){
+			body.setType(bodyType);
+		}
+		
 	}
 
 	public function getAngle() {
+		if (!getIsAttachedToWorld()) return 0.0;
 		return body.getAngle();
 	}
 
