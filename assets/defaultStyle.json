@@ -1,0 +1,14 @@
+{
+    "Button" : {
+        "background-color": "#ff8c8c8c",
+        "text-color": "#fd16526",
+        "font-size": 44,
+        "padding-left":32,
+        "padding-right":32,
+        "states": {
+            "hovered": {
+                "background-color": "blue"
+            }
+        }
+    }
+}

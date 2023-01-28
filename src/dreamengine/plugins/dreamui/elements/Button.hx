@@ -30,14 +30,16 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		var pos = rect.getPosition();
 		var size = rect.getSize();
 		
-		size.x = Math.max(size.x, prefSize.x);
-		size.y = Math.max(size.y, prefSize.y);
+		size.x = Math.max(size.x, prefSize.x) + parsedStyle.getFloatValue("padding-left", 0) + parsedStyle.getFloatValue("padding-right", 0);
+		size.y = Math.max(size.y, prefSize.y) + parsedStyle.getFloatValue("padding-top", 0) + parsedStyle.getFloatValue("padding-bottom", 0);
+
 
 		var center = pos.copy();
 		center.x += size.x * 0.5;
 		center.y += size.y * 0.5;
 
-		g2.color = color;
+		g2.color = parsedStyle.getColorValue("background-color", kha.Color.Cyan);
+		g2.fontSize = parsedStyle.getIntValue("font-size", 12);
 
 		var pivotOffset = LayoutUtils.getPivotOffset(this);
 
@@ -50,7 +52,7 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		prefSize.y = textSize.y * 2;
 
 		g2.fillRect(pos.x + pivotOffset.x, pos.y + pivotOffset.y, size.x, size.y);
-		g2.color = kha.Color.White;
+		g2.color = parsedStyle.getColorValue("text-color");
 		g2.drawString(text, center.x - textSize.x, center.y - textSize.y);
 	}
 

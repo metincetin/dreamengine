@@ -1,5 +1,7 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.plugins.dreamui.styling.*;
+import dreamengine.plugins.dreamui.styling.Selector;
 import dreamengine.plugins.dreamui.layout_parameters.LayoutParameters;
 import dreamengine.core.math.Rect;
 import dreamengine.core.math.Vector.Vector2;
@@ -27,6 +29,11 @@ class Element {
 
 	var pivot = Vector2.half();
 
+	var styleClasess = new Array<String>();
+
+	var style:Style;
+	var parsedStyle = ParsedStyle.empty();
+
 	public function getEnabled() {
 		return enabled;
 	}
@@ -36,6 +43,14 @@ class Element {
 		for (c in children) {
 			c.setEnabled(value);
 		}
+	}
+
+	public function getStyle(){
+		return style;
+	}
+	public function setStyle(style:Style){
+		this.style = style;
+		this.parsedStyle = ParsedStyle.forElement(this);
 	}
 
 	public function setRenderOpacity(renderOpacity:Float) {
@@ -50,19 +65,19 @@ class Element {
 		return localScale;
 	}
 
-
 	public function getLayoutParameters() {
 		return layoutParameters;
 	}
+
 	public function getLayoutParametersAs<T:LayoutParameters>(type:Class<T>):T {
 		return cast layoutParameters;
 	}
 
-	function getChildLayoutParameterType():Class<LayoutParameters>{
+	function getChildLayoutParameterType():Class<LayoutParameters> {
 		return LayoutParameters;
 	}
 
-	function createLayoutParametersForChild(): LayoutParameters{
+	function createLayoutParametersForChild():LayoutParameters {
 		return new LayoutParameters();
 	}
 
@@ -93,7 +108,7 @@ class Element {
 	}
 
 	public final function render(g2:Graphics, opacity:Float) {
-		if (isDirty){
+		if (isDirty) {
 			layout();
 			isDirty = false;
 		}
@@ -109,9 +124,8 @@ class Element {
 
 	function onRender(g2:Graphics, opacity:Float) {}
 
-
 	/// returns a default size
-	function getPreferredSize(){
+	function getPreferredSize() {
 		return Vector2.zero();
 	}
 
@@ -125,13 +139,14 @@ class Element {
 		if (!Std.isOfType(c.getLayoutParameters(), getChildLayoutParameterType())) {
 			c.layoutParameters = createLayoutParametersForChild();
 		}
-		
+
 		isDirty = true;
 	}
 
-	public function setDirty(){
+	public function setDirty() {
 		setDirtyAllChildren();
 	}
+
 	function setDirtyAllChildren() {
 		isDirty = true;
 		for (c in children) {
@@ -139,22 +154,46 @@ class Element {
 		}
 	}
 
-
 	public function getRect() {
 		return rect;
 	}
 
-	public function getPivot(){
+	public function getPivot() {
 		return pivot.copy();
 	}
 
-	public function setPivot(value:Vector2){
+	public function setPivot(value:Vector2) {
 		this.pivot = value;
 	}
 
-	function layout(){}
+	function layout() {}
 
 	public inline function getChildCount() {
 		return children.length;
+	}
+
+	public function matchesQuerySelector(selector:Selector) {
+		if (selector.type != null) {
+			var className = std.Type.getClassName(std.Type.getClass(this));
+			var packageHierarchy = className.split(".");
+			if (packageHierarchy.length > 0) {
+				className = packageHierarchy[packageHierarchy.length - 1];
+			}
+			if (selector.type != className) {
+				return false;
+			}
+		}
+
+		for(cl in selector.classes){
+			if (!styleClasess.contains(cl))
+				return false;
+		}
+		if (selector.id != null){
+			if (selector.id != this.name){
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
