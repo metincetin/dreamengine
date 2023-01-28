@@ -5,6 +5,7 @@ import dreamengine.core.math.Rect;
 import dreamengine.core.math.Vector.Vector2;
 import kha.graphics2.Graphics;
 
+@:rtti
 class Element {
 	public var name = "";
 
@@ -108,6 +109,12 @@ class Element {
 
 	function onRender(g2:Graphics, opacity:Float) {}
 
+
+	/// returns a default size
+	function getPreferredSize(){
+		return Vector2.zero();
+	}
+
 	public function addChild(c:Element) {
 		if (children.contains(c))
 			return;
@@ -149,9 +156,5 @@ class Element {
 
 	public inline function getChildCount() {
 		return children.length;
-	}
-
-	public function getPreferredSize(): Vector2{
-		return Vector2.zero();
 	}
 }

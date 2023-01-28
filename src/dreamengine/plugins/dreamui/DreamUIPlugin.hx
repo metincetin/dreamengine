@@ -34,6 +34,9 @@ class DreamUIPlugin implements IPlugin {
 		engine.registerLoopEvent(onLoop);
 
 		eventSystem = new EventSystem(this, inputPlugin.getInputHandler());
+
+		// set up main theme here
+		
 	}
 
 	function onLoop() {
@@ -44,6 +47,7 @@ class DreamUIPlugin implements IPlugin {
 		if (mainElement == null)
 			return;
 		fb.g2.begin(false);
+		fb.g2.font = kha.Assets.fonts.OpenSans_Regular;
 		mainElement.render(fb.g2, 1);
 		fb.g2.end();
 	}

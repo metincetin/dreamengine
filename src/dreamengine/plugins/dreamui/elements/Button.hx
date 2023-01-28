@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui.elements;
 
+import dreamengine.core.math.Mathf;
 import dreamengine.plugins.dreamui.utils.LayoutUtils;
 import dreamengine.plugins.dreamui.events.IClickable;
 import dreamengine.plugins.dreamui.events.IFocusable;
@@ -14,14 +15,24 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 
 	var onClicked:Array<Void->Void> = [];
 
+	var prefSize = new Vector2();
+
 	public function new(text:String = "") {
 		super();
 		this.text = text;
 	}
 
+	override function getPreferredSize():Vector2 {
+		return prefSize;
+	}
+
 	override function onRender(g2:Graphics, opacity:Float) {
 		var pos = rect.getPosition();
 		var size = rect.getSize();
+		
+		size.x = Math.max(size.x, prefSize.x);
+		size.y = Math.max(size.y, prefSize.y);
+
 		var center = pos.copy();
 		center.x += size.x * 0.5;
 		center.y += size.y * 0.5;
@@ -34,6 +45,10 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		var textSize = new Vector2();
 		textSize.x = g2.font.width(g2.fontSize, text) * 0.5;
 		textSize.y = g2.font.height(g2.fontSize) * 0.5;
+
+		prefSize.x = textSize.x * 2;
+		prefSize.y = textSize.y * 2;
+
 		g2.fillRect(pos.x + pivotOffset.x, pos.y + pivotOffset.y, size.x, size.y);
 		g2.color = kha.Color.White;
 		g2.drawString(text, center.x - textSize.x, center.y - textSize.y);
