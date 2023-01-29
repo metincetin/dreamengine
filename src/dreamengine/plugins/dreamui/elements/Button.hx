@@ -11,8 +11,6 @@ import kha.graphics2.Graphics;
 class Button extends Element implements IPointerTarget implements IClickable implements IFocusable {
 	var text:String = "";
 
-	var color:kha.Color = kha.Color.fromBytes(125, 125, 125);
-
 	var onClicked:Array<Void->Void> = [];
 
 	var prefSize = new Vector2();
@@ -30,18 +28,30 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		var pos = rect.getPosition();
 		var size = rect.getSize();
 		
-		size.x = Math.max(size.x, prefSize.x) + parsedStyle.getFloatValue("padding-left", 0) + parsedStyle.getFloatValue("padding-right", 0);
-		size.y = Math.max(size.y, prefSize.y) + parsedStyle.getFloatValue("padding-top", 0) + parsedStyle.getFloatValue("padding-bottom", 0);
+		var padding = new Dimension(
+			parsedStyle.getFloatValue("padding-left", 0),
+			parsedStyle.getFloatValue("padding-top", 0),
+			parsedStyle.getFloatValue("padding-right", 0),
+			parsedStyle.getFloatValue("padding-bottom", 0));
+
+
+		size.x = Math.max(size.x, prefSize.x) + (padding.left + padding.right);
+		size.y = Math.max(size.y, prefSize.y) + (padding.top + padding.bottom);
 
 
 		var center = pos.copy();
-		center.x += size.x * 0.5;
-		center.y += size.y * 0.5;
+		center.x += size.x * pivot.x + (padding.left - padding.right) * 0.5;
+		center.y += size.y * pivot.y + (padding.top - padding.bottom) * 0.5;
 
 		g2.color = parsedStyle.getColorValue("background-color", kha.Color.Cyan);
 		g2.fontSize = parsedStyle.getIntValue("font-size", 12);
 
-		var pivotOffset = LayoutUtils.getPivotOffset(this);
+		var pivotOffset = new Vector2();
+		pivotOffset.x = -size.x * pivot.x;
+		pivotOffset.y = -size.y * pivot.y;
+
+		//pivotOffset.x += (padding.left);
+		// pivotOffset.y += (padding.top- padding.bottom) * 2;
 
 
 		var textSize = new Vector2();
@@ -53,7 +63,12 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 
 		g2.fillRect(pos.x + pivotOffset.x, pos.y + pivotOffset.y, size.x, size.y);
 		g2.color = parsedStyle.getColorValue("text-color");
-		g2.drawString(text, center.x - textSize.x, center.y - textSize.y);
+		g2.drawString(text, center.x - textSize.x + pivotOffset.x, center.y - textSize.y + pivotOffset.y);
+		
+		renderedRect.setPosition(new Vector2(pos.x + pivotOffset.x, pos.y + pivotOffset.y));
+		renderedRect.setSize(size);
+
+		trace(renderedRect);
 	}
 
 	public function canBeTargeted():Bool {
@@ -61,11 +76,11 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 	}
 
 	public function onPointerEntered() {
-		color = kha.Color.fromBytes(140, 140, 140);
+		parsedStyle.setState("hovered");
 	}
 
 	public function onPointerExited() {
-		color = kha.Color.fromBytes(125, 125, 125);
+		parsedStyle.resetState();
 	}
 
 	public function canBeFocused():Bool {
@@ -81,11 +96,11 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 	}
 
 	public function onPressed() {
-		color = kha.Color.fromBytes(90, 90, 90);
+		parsedStyle.setState("pressed");
 	}
 
 	public function onReleased() {
-		color = kha.Color.fromBytes(140, 140, 140);
+		parsedStyle.setState("hovered");
 		invokeOnClicked();
 	}
 

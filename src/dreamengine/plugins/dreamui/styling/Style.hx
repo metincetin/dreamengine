@@ -23,7 +23,7 @@ class Style {
 		var dynAccess:haxe.DynamicAccess<Dynamic> = json;
         var values: DynamicAccess<Dynamic> = dynAccess.get(selector);
         if (values != null){
-            var ret = new Map<String, String>();
+            var ret = new Map<String, Dynamic>();
             for (key => value in values) {
                 ret.set(key, value);
             }

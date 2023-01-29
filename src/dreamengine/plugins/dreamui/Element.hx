@@ -34,6 +34,13 @@ class Element {
 	var style:Style;
 	var parsedStyle = ParsedStyle.empty();
 
+	var renderedRect:Rect = new Rect();
+
+	public function getRenderedRect(){
+		return renderedRect;
+	}
+
+
 	public function getEnabled() {
 		return enabled;
 	}
@@ -50,7 +57,7 @@ class Element {
 	}
 	public function setStyle(style:Style){
 		this.style = style;
-		this.parsedStyle = ParsedStyle.forElement(this);
+		this.parsedStyle.setForElement(this);
 	}
 
 	public function setRenderOpacity(renderOpacity:Float) {
