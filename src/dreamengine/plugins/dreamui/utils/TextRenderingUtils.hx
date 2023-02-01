@@ -6,9 +6,9 @@ import dreamengine.plugins.dreamui.elements.Label.Alignment;
 
 class TextRenderingUtils {
 	public static function getAlignedPosition(rect:Rect, prefSize:Vector2, alignment:Alignment) {
-        var position = rect.position;
+        var position = rect.getPosition();
         var offset = Vector2.zero();
-        var size = rect.size;
+        var size = rect.getSize();
 		switch (alignment) {
 			case TopLeft:
 				offset.x = 0;

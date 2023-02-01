@@ -14,16 +14,18 @@ class Image extends Element {
 
 	override function onRender(g2:Graphics, opacity:Float) {
 		var rect = getRect();
+		var size = rect.getSize();
+		var pos = rect.getPosition();
 
 		if (preserveAspect) {
-			if (rect.size.x > rect.size.y) {
-				rect.size.x = rect.size.y;
+			if (size.x > size.y) {
+				size.x = size.y;
 			} else {
-				rect.size.y = rect.size.x;
+				size.y = size.x;
 			}
 		}
 
-		g2.drawScaledImage(image, rect.position.x, rect.position.y, rect.size.x, rect.size.y);
+		g2.drawScaledImage(image, pos.x, pos.y, pos.x, pos.y);
 	}
 }
 

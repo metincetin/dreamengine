@@ -58,11 +58,13 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 
 	override function onRender(g2:Graphics, opacity:Float) {
 		var rect = getRect();
+		var pos = rect.getPosition();
+		var size = rect.getSize();
 
 		g2.font = kha.Assets.fonts.OpenSans_Regular;
 		g2.color = kha.Color.Red;
 		g2.fontSize = 14;
-		g2.fillRect(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
+		g2.fillRect(pos.x, pos.y, size.x, size.y);
 
 		g2.color = kha.Color.White;
 		

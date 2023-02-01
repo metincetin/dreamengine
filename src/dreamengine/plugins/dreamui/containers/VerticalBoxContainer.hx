@@ -1,11 +1,12 @@
 package dreamengine.plugins.dreamui.containers;
 
+import dreamengine.plugins.dreamui.layout_parameters.VerticalBoxLayoutParameters;
 import kha.graphics2.Graphics;
 import dreamengine.core.math.Vector.Vector2;
 import dreamengine.plugins.dreamui.layout_parameters.HorizontalBoxLayoutParameters;
 import dreamengine.plugins.dreamui.layout_parameters.LayoutParameters;
 
-class HorizontalBoxContainer extends Element{
+class VerticalBoxContainer extends Element{
     var spacing = 0.0;
     var padding = Dimension.allSides(12);
 
@@ -33,17 +34,17 @@ class HorizontalBoxContainer extends Element{
             var size = new Vector2(32, 32);
             
 
-            var yPos = 0.0;
-            switch(c.getLayoutParametersAs(HorizontalBoxLayoutParameters).verticalAlignment){
-                case Top:
-                    yPos = rectPos.y + padding.top;
+            var xPos = 0.0;
+            switch(c.getLayoutParametersAs(VerticalBoxLayoutParameters).horizontalAlignment){
+                case Left:
+                    xPos = rectPos.x + padding.left;
                 case Center:
-                    yPos = rectPos.y + selfSize.y * 0.5 - (padding.top - padding.bottom);
-                case Bottom:
-                    yPos = rectPos.y + selfSize.y - padding.bottom;
+                    xPos = rectPos.x + selfSize.x * 0.5 - (padding.left - padding.right);
+                case Right:
+                    xPos = rectPos.x + selfSize.x - padding.right;
                 case Stretch:
-                    yPos = rectPos.y + padding.top;
-                    size.y = selfSize.y - (padding.bottom + padding.top);
+                    xPos = rectPos.y + padding.top;
+                    size.x = selfSize.x - (padding.left + padding.right);
             }
             
             if (i == 0)
@@ -52,17 +53,17 @@ class HorizontalBoxContainer extends Element{
             }
 
             c.rect.setSize(size);
-            c.rect.setPosition(new Vector2(rectPos.x + offset, yPos));
-            offset += size.x;
+            c.rect.setPosition(new Vector2(xPos, rectPos.y + offset));
+            offset += size.y;
             offset += spacing;
         }
     }  
 
     override function createLayoutParametersForChild():LayoutParameters {
-        return new HorizontalBoxLayoutParameters();
+        return new VerticalBoxLayoutParameters();
     }
     override function getChildLayoutParameterType():Class<LayoutParameters> {
-        return HorizontalBoxLayoutParameters;
+        return VerticalBoxLayoutParameters;
     }
 
     override function onRender(g2:Graphics, opacity:Float) {

@@ -8,6 +8,8 @@ import dreamengine.core.math.Vector.Vector2;
 import kha.graphics2.Graphics;
 
 @:rtti
+@:keep
+@:keepSub
 class Element {
 	public var name = "";
 
@@ -36,10 +38,9 @@ class Element {
 
 	var renderedRect:Rect = new Rect();
 
-	public function getRenderedRect(){
+	public function getRenderedRect() {
 		return renderedRect;
 	}
-
 
 	public function getEnabled() {
 		return enabled;
@@ -52,12 +53,17 @@ class Element {
 		}
 	}
 
-	public function getStyle(){
+	public function getStyle() {
 		return style;
 	}
-	public function setStyle(style:Style){
+
+	public function setStyle(style:Style) {
 		this.style = style;
-		this.parsedStyle.setForElement(this);
+		parseStyle();
+
+		for (c in getChildren()) {
+			c.setStyle(style);
+		}
 	}
 
 	public function setRenderOpacity(renderOpacity:Float) {
@@ -127,6 +133,8 @@ class Element {
 			c.render(g2, renderOpacity);
 		}
 		g2.opacity = 1;
+
+		g2.drawRect(getRect().getPosition().x, getRect().getPosition().y, getRect().getSize().x, getRect().getSize().y, 4);
 	}
 
 	function onRender(g2:Graphics, opacity:Float) {}
@@ -139,6 +147,9 @@ class Element {
 	public function addChild(c:Element) {
 		if (children.contains(c))
 			return;
+		if (c.parent != null) {
+			c.parent.removeChild(c);
+		}
 
 		children.push(c);
 		c.parent = c;
@@ -148,6 +159,14 @@ class Element {
 		}
 
 		isDirty = true;
+		c.setStyle(getStyle());
+	}
+
+	function removeChild(c:Element) {
+		if (c.parent == this) {
+			children.remove(c);
+			c.parent = null;
+		}
 	}
 
 	public function setDirty() {
@@ -191,16 +210,42 @@ class Element {
 			}
 		}
 
-		for(cl in selector.classes){
+		for (cl in selector.classes) {
 			if (!styleClasess.contains(cl))
 				return false;
 		}
-		if (selector.id != null){
-			if (selector.id != this.name){
+		if (selector.id != null) {
+			if (selector.id != this.name) {
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	public function addStyleClass(value:String, quiet:Bool = false) {
+		if (!hasStyleClass(value)) {
+			styleClasess.push(value);
+			if (!quiet) {
+				parseStyle();
+			}
+		}
+	}
+
+	public function removeStyleClass(value:String, quiet:Bool = false) {
+		styleClasess.remove(value);
+		if (!quiet) {
+			parseStyle();
+		}
+	}
+
+	public function hasStyleClass(value:String) {
+		return styleClasess.contains(value);
+	}
+
+	public function parseStyle() {
+		if (style != null) {
+			this.parsedStyle.setForElement(this);
+		}
 	}
 }

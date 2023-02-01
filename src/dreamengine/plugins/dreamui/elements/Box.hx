@@ -12,7 +12,9 @@ class Box extends Element {
 	override function onRender(g2:Graphics, opacity:Float) {
 		g2.color = color;
 		var rect = getRect();
-		g2.fillRect(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
+		var pos = rect.getPosition();
+		var size = rect.getSize();
+		g2.fillRect(pos.x, pos.y, size.x, size.y);
 		g2.color = kha.Color.White;
 	}
 }

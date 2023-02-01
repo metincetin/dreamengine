@@ -45,12 +45,4 @@ class ElementSwitcher extends Element {
 			}
 		}
 	}
-
-	override function getChildSlotType():Class<BaseSlot> {
-		return FullSlot;
-	}
-
-	override function createSlotForChild():BaseSlot {
-		return new FullSlot(this);
-	}
 }

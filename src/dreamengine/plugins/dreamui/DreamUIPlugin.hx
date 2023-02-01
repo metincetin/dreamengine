@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.plugins.dreamui.containers.ScreenContainer;
 import dreamengine.plugins.input.handlers.kha.KhaInputHandler;
 import dreamengine.plugins.input.InputPlugin;
 import dreamengine.core.math.Vector.Vector2;
@@ -9,14 +10,22 @@ import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 
 class DreamUIPlugin implements IPlugin {
+
+	var screen:Element;
+
 	var mainElement:Element;
 
 	var eventSystem:EventSystem;
 
 	public function new() {}
 
+	public function getScreenElement(){
+		return screen;
+	}
+
 	public function setMainElement(w:Element) {
 		mainElement = w;
+		screen.addChild(mainElement);
 	}
 
 	public function getMainElement() {
@@ -34,7 +43,7 @@ class DreamUIPlugin implements IPlugin {
 		engine.registerLoopEvent(onLoop);
 
 		eventSystem = new EventSystem(this, inputPlugin.getInputHandler());
-
+		screen = new ScreenContainer();
 		// set up main theme here
 		
 	}
@@ -48,7 +57,7 @@ class DreamUIPlugin implements IPlugin {
 			return;
 		fb.g2.begin(false);
 		fb.g2.font = kha.Assets.fonts.OpenSans_Regular;
-		mainElement.render(fb.g2, 1);
+		screen.render(fb.g2, 1);
 		fb.g2.end();
 	}
 

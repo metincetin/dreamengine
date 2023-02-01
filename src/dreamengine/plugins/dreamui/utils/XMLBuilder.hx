@@ -1,9 +1,10 @@
 package dreamengine.plugins.dreamui.utils;
 
+import haxe.exceptions.ArgumentException;
 import haxe.xml.Parser;
 
 class XMLBuilder {
-	public static function buildTo(xml:String, parent:Element) {
+	public static function build(xml:String, parent:Element = null){
 		var value = Parser.parse(xml);
 
 		var root = value.firstChild().firstElement().firstElement();
@@ -11,6 +12,8 @@ class XMLBuilder {
 		var rootElement = tryCreateElement(root, parent);
 
 		parseChildren(root, rootElement);
+
+		return rootElement;
 	}
 
 	static function parseChildren(node:Xml, element:Element) {
@@ -24,8 +27,12 @@ class XMLBuilder {
 	}
 
 	static function tryCreateElement(node:Xml, parent:Element = null) {
-		var inst = cast(Type.createInstance(Type.resolveClass("dreamengine.plugins.dreamui." + node.nodeName), []), Element);
+		var cl = Type.resolveClass("dreamengine.plugins.dreamui." + node.nodeName);
+		if (cl== null){
+			throw new ArgumentException("ElementType", "given type \"dreamengine.plugins.dreamui." + node.nodeName+"\" not found.");
+		}
 
+		var inst = cast(Type.createInstance(cl, []), Element);
         if (parent != null){
             parent.addChild(inst);
         }
@@ -34,11 +41,19 @@ class XMLBuilder {
 			setFieldFor(inst, node, attr);
 		}
 
+		inst.parseStyle();
 		return inst;
 	}
 
 	static function setFieldFor(element:Element, node:Xml, attribute:String) {
 		var rtti = haxe.rtti.Rtti.getRtti(Type.getClass(element));
+
+		if (attribute == "class"){
+			var classList = node.get(attribute).split(" ");
+			for (c in classList){
+				element.addStyleClass(c, false);
+			}
+		}
 
 		for (f in rtti.fields) {
 			if (f.name == attribute) {
@@ -46,6 +61,8 @@ class XMLBuilder {
 					case CClass(name, _):
 						var cl = Type.resolveClass(name);
 						Reflect.setField(element, attribute, tryParseValue(cl, node.get(attribute)));
+					case CEnum(name, _):
+						Reflect.setField(element, attribute, Std.parseInt(node.get(attribute)));
 					case _:
 				}
 			}
