@@ -20,10 +20,5 @@ class Collider2D extends Component{
         this.shape = shape;
     }
 
-    override function onAdded(entity:Entity) {
-        var rb = entity.getComponent(RigidBody2D);
-        if (rb != null){
-            rb.setShape(shape);
-        }
-    }
+
 }

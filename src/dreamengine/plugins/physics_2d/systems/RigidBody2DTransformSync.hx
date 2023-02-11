@@ -29,6 +29,8 @@ class RigidBody2DTransformSync extends System{
             var rbAngle = rb.getAngle();
             tr.setPosition(rbPosition.asVector3());
             tr.setEulerAngles(new Vector3(0,0,rbAngle));
+
+
         }
     }
 }

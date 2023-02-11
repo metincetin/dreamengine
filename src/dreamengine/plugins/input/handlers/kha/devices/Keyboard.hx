@@ -8,6 +8,8 @@ class Keyboard extends BaseKeyboard {
 	var khaKeyboardReference:kha.input.Keyboard;
 
 	var pressedKeys = new Array<Int>();
+	var keysInFrame = new Array<Int>();
+	var keysReleasedInFrame = new Array<Int>();
 
 	public function new(index:Int) {
 		super(index);
@@ -23,7 +25,10 @@ class Keyboard extends BaseKeyboard {
 				f();
 			}
 		}
-		pressedKeys.push(conv);
+		if (!keysInFrame.contains(conv))
+			keysInFrame.push(conv);
+		if (!pressedKeys.contains(conv))
+			pressedKeys.push(conv);
 		for (f in inputReceived) {
 			f(new KeyboardKeyEvent(cast key, false, false));
 		}
@@ -36,11 +41,23 @@ class Keyboard extends BaseKeyboard {
 				f();
 			}
 		}
+		keysReleasedInFrame.remove(conv);
 		pressedKeys.remove(conv);
 	}
 
 	override function isKeyPressed(key:Int):Bool {
 		return pressedKeys.contains(key);
+	}
+	override function isKeyJustPressed(key:Int):Bool {
+		return keysInFrame.contains(key); 
+	}
+	override function isKeyJustReleased(key:Int):Bool{
+		return keysReleasedInFrame.contains(key);
+	}
+
+	public function clearFrameInput(){
+		keysInFrame = [];
+		keysReleasedInFrame = [];
 	}
 
 	function convertKeyCode(key:KeyCode):KeyboardKey {

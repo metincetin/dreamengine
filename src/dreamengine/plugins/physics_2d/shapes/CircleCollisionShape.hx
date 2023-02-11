@@ -15,7 +15,7 @@ class CircleCollisionShape extends CollisionShape{
         return s;
     }
 
-    override function createB2DShape():B2Shape {
+    override function createB2Shape_internal():B2Shape {
         return new B2CircleShape(radius);
     }
 }

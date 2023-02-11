@@ -1,5 +1,6 @@
 package dreamengine.plugins.input.handlers.kha;
 
+import dreamengine.plugins.input.handlers.kha.devices.Keyboard;
 import dreamengine.plugins.input.devices.BaseKeyboard;
 import dreamengine.plugins.input.devices.BaseMouse;
 import dreamengine.core.math.Vector;
@@ -33,5 +34,12 @@ class KhaInputHandler implements IInputHandler {
 		return m;
 	}
 
-	public function tick() {}
+	public function tick() {
+	}
+	public function postTick(){
+		for(keyboard in keyboards){
+			var k = cast(keyboard, Keyboard);
+			k.clearFrameInput();
+		}
+	}
 }

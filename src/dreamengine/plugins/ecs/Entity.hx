@@ -7,6 +7,14 @@ class Entity {
 
 	public function new() {}
 
+	public function addComponents(components:Array<Component>){
+		for(component in components){
+			this.components.push(component);
+		}
+		for(component in components){
+			component.onAdded(this);
+		}
+	}
 	public function addComponent(component:Component) {
 		components.push(component);
 		component.onAdded(this);

@@ -83,13 +83,13 @@ class ParsedStyle {
 		if (state.length > 0 && hasState(state) && hasValueOfState(state, key)) {
 			var v = Std.parseFloat(getDynamicAccessOfState(state)[key]);
 
-			if (v != null) {
+			if (!Math.isNaN(v)) {
 				return v;
 			}
 		}
 		if (values.exists(key)) {
 			var v = Std.parseFloat(values[key]);
-			if (v == null) {
+			if (Math.isNaN(v)) {
 				return defaultValue;
 			}
 			return v;

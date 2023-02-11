@@ -1,5 +1,7 @@
 package dreamengine.plugins.physics_2d.components;
 
+import box2D.collision.shapes.B2MassData;
+import box2D.dynamics.B2Body;
 import dreamengine.plugins.physics_2d.shapes.CollisionShape;
 import dreamengine.plugins.renderer_base.components.Transform;
 import dreamengine.plugins.renderer_2d.components.Transform2D;
@@ -22,49 +24,80 @@ class RigidBody2D extends Component {
 	var body:B2Body;
 	var world:Physics2DWorld;
 
-    var shape:CollisionShape;
+	var shape:CollisionShape;
 
 	var transformRef:Transform;
 
 	var bodyType = DYNAMIC_BODY;
 
-	public function new() {
+	public function new(bodyType:B2BodyType) {
 		super();
 		bodyDef = new B2BodyDef();
 		fixtureDef = new B2FixtureDef();
-		fixtureDef.restitution = .7;
-		fixtureDef.friction = 0.3;
+		fixtureDef.restitution = 0;
+		fixtureDef.friction = 0;
 		fixtureDef.density = 1;
 		bodyDef.angularDamping = 0;
+		//(-image.width / (ppuScale * 0.5) * 0.5), (-image.height / (ppuScale* 0.5) * 0.5), image.width / (ppuScale * 0.5), image.height / (ppuScale * 0.5)bodyDef.gravityScale = 0;
+		this.bodyType = bodyType;
+		bodyDef.allowSleep = false;
+	}
+
+	public function getWorld() {
+		return world;
 	}
 
 	/// Sets the physics world entity currently in. Do not call it, as it will be handled by Physics2D plugin
-	public function setWorld(world:Physics2DWorld){
+	public function setWorld(world:Physics2DWorld) {
 		this.world = world;
 		body = world.getB2World().createBody(bodyDef);
 		setPosition(transformRef.getPosition().asVector2());
 		body.createFixture(fixtureDef);
-
 		body.setType(bodyType);
-
-
 	}
-	public function getIsAttachedToWorld(){
+
+	public function addCentralForce(force:Vector2) {
+		body.applyForce(B2Vec2.make(force.x, force.y),body.getPosition());
+	}
+
+	public function getIsAttachedToWorld() {
 		return world != null;
+	}
+
+	public function compareBody(value:B2Body) {
+		return value == body;
+	}
+
+	public function getB2Body() {
+		return body;
 	}
 
 	override function onAdded(entity:Entity) {
 		transformRef = entity.getComponent(Transform);
+		setShape(entity.getComponent(Collider2D).getShape());
 	}
 
 	public function getPosition():Vector2 {
-		if (!getIsAttachedToWorld()) return Vector2.zero();
+		if (!getIsAttachedToWorld())
+			return Vector2.zero();
 		var p = body.getPosition();
 		return new Vector2(p.x, p.y);
 	}
 
 	public function getLinearVelocity() {
-		return body.getLinearVelocity();
+		var v = body.getLinearVelocity();
+		return new Vector2(v.x, v.y);
+	}
+
+	public function getGravityScale() {
+		return bodyDef.gravityScale;
+	}
+
+	public function setGravityScale(value:Float) {
+		if (body == null) {
+			bodyDef.gravityScale = value;
+		} else
+			body.setGravityScale(value);
 	}
 
 	public function setLinearVelocity(value:Vector2) {
@@ -77,7 +110,8 @@ class RigidBody2D extends Component {
 
 	public function setShape(shape:CollisionShape) {
 		fixtureDef.shape = shape.createB2DShape();
-		if (getIsAttachedToWorld()){
+		this.shape = shape;
+		if (getIsAttachedToWorld()) {
 			body.createFixture(fixtureDef);
 		}
 	}
@@ -93,14 +127,14 @@ class RigidBody2D extends Component {
 
 	public function setType(value:B2BodyType) {
 		bodyType = value;
-		if (getIsAttachedToWorld()){
+		if (getIsAttachedToWorld()) {
 			body.setType(bodyType);
 		}
-		
 	}
 
 	public function getAngle() {
-		if (!getIsAttachedToWorld()) return 0.0;
+		if (!getIsAttachedToWorld())
+			return 0.0;
 		return body.getAngle();
 	}
 
@@ -113,12 +147,13 @@ class RigidBody2D extends Component {
 		body.applyImpulse(new B2Vec2(impulse.x, impulse.y), new B2Vec2(p.x, p.y));
 	}
 
-    public function addTorque(torque:Float){
-        body.applyTorque(torque);
-    }
+	public function addTorque(torque:Float) {
+		body.applyTorque(torque);
+	}
 
 	public function addImpulse(impulse:Vector2, pos:Vector2) {
 		var offset = Vector2.subtract(getPosition(), pos);
 		body.applyImpulse(new B2Vec2(impulse.x, impulse.y), new B2Vec2(offset.x, offset.y));
 	}
+
 }

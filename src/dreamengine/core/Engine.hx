@@ -20,6 +20,7 @@ class Engine {
 	var postRenderEvents:Array<Framebuffer->Void> = new Array<Framebuffer->Void>();
 
 	var loopEvents:Array<Void->Void> = new Array<Void->Void>();
+	var postLoopEvents:Array<Void->Void> = new Array<Void->Void>();
 
 	var mainWindow:kha.Window;
 
@@ -46,6 +47,10 @@ class Engine {
 
 	function initializeDevice() {}
 
+	public function createTimeTask(task:Void->Void, period:Float){
+		Scheduler.addTimeTask(task,0, period);
+	}
+
 	public function registerRenderEvent(event:Framebuffer->Void) {
 		renderEvents.push(event);
 	}
@@ -65,6 +70,12 @@ class Engine {
 	public function registerLoopEvent(event:Void->Void) {
 		loopEvents.push(event);
 	}
+	public function registerPostLoopEvent(event:Void->Void){
+		postLoopEvents.push(event);
+	}
+	public function unregisterPostLoopEvent(event:Void->Void){
+		postLoopEvents.remove(event);
+	}
 
 	public function unregisterLoopEvent(event:Void->Void) {
 		loopEvents.remove(event);
@@ -82,6 +93,9 @@ class Engine {
 			e();
 		}
 		Time.update();
+		for(e in postLoopEvents){
+			e();
+		}
 		return false;
 	}
 
@@ -92,6 +106,7 @@ class Engine {
 		for (e in renderEvents) {
 			e(mainFrameBuffer);
 		}
+		Gizmos.render(mainFrameBuffer);
 	}
 
 	function finalize() {

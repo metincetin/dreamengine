@@ -1,5 +1,6 @@
 package dreamengine.plugins.physics_2d;
 
+import box2D.common.B2Settings;
 import dreamengine.plugins.physics_2d.systems.CollisionDetectionSystem;
 import box2D.dynamics.B2World;
 import box2D.dynamics.B2BodyType;
@@ -24,7 +25,8 @@ class Physics2D implements IPlugin {
 		ecs = engine.pluginContainer.getPlugin(ECS);
 
 		world = new Physics2DWorld(new B2World(new B2Vec2(0, 9.81), true));
-		engine.registerLoopEvent(gameLoop);
+		engine.createTimeTask(physicsLoop, 0.02);
+
 
 		ecs.registerSystem(new RigidBody2DTransformSync());
 		ecs.registerSystem(new CollisionDetectionSystem());
@@ -35,11 +37,10 @@ class Physics2D implements IPlugin {
 	}
 
 	public function finalize() {
-		engine.unregisterLoopEvent(gameLoop);
 	}
 
-	function gameLoop() {
-		world.step(Time.getDeltaTime(), 3, 3);
+	function physicsLoop() {
+		world.step(Time.getDeltaTime(), 12, 12);
 	}
 
 	public function getName():String {

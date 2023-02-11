@@ -203,6 +203,11 @@ class Vector2 {
 	// normalizes this vector to unit length
 	public function normalize() {
 		var length = getLength();
+		if (length == 0){
+			x = 1;
+			y = 0;
+			return;
+		}
 		x /= length;
 		y /= length;
 	}
@@ -254,6 +259,12 @@ class Vector2 {
 	public function add(v:Vector2) {
 		x += v.x;
 		y += v.y;
+	}
+	public function added(v:Vector2){
+		var nv = copy();
+		nv.x += v.x;
+		nv.y += v.y;
+		return nv;
 	}
 
 	public function scale(scalar:Float) {
