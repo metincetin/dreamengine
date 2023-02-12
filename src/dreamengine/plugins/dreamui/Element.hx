@@ -34,8 +34,12 @@ class Element {
 	var styleClasess = new Array<String>();
 
 	var style:Style;
+
 	var parsedStyle = ParsedStyle.empty();
 
+	public function getParsedStyle() {
+		return parsedStyle;
+	}
 
 	public function getEnabled() {
 		return enabled;
@@ -109,7 +113,7 @@ class Element {
 		return localScale * parent.getScale();
 	}
 
-	public function getParent(){
+	public function getParent() {
 		return parent;
 	}
 

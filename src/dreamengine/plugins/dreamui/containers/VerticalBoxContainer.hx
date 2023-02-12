@@ -10,6 +10,10 @@ class VerticalBoxContainer extends Element{
     var spacing = 0.0;
     var padding = Dimension.allSides(12);
 
+    
+
+    var prefSize = new Vector2();
+
     public function getSpacing(){
         return spacing;
     }
@@ -34,20 +38,17 @@ class VerticalBoxContainer extends Element{
             var size = c.getPreferredSize();
             
 
+            
+            var pivotOffset = size * c.pivot; 
             var xPos = 0.0;
-
-            var pivotOffset = size.copy();
-            pivotOffset.x *= c.pivot.x;
-            pivotOffset.y *= c.pivot.y;
-
 
             switch(c.getLayoutParametersAs(VerticalBoxLayoutParameters).horizontalAlignment){
                 case Left:
-                    xPos = rectPos.x + padding.left;
+                    xPos = rectPos.x + padding.left - pivotOffset.x;
                 case Center:
-                    xPos = rectPos.x + selfSize.x * 0.5 - (padding.left - padding.right);
+                    xPos = rectPos.x + selfSize.x * 0.5 - pivotOffset.x - (padding.left - padding.right);
                 case Right:
-                    xPos = rectPos.x + selfSize.x - padding.right;
+                    xPos = rectPos.x + selfSize.x - padding.right - pivotOffset.x;
                 case Stretch:
                     xPos = rectPos.y + padding.top;
                     size.x = selfSize.x - (padding.left + padding.right);
@@ -55,15 +56,25 @@ class VerticalBoxContainer extends Element{
             
             if (i == 0)
             {
-                offset += padding.left;
+                offset += padding.top;
+                offset += pivotOffset.y;
             }
 
+
             c.rect.setSize(size);
-            c.rect.setPosition(new Vector2(xPos, rectPos.y + offset));
-            offset += size.y;
+            c.rect.setPosition(new Vector2(xPos, rectPos.y - pivotOffset.y + offset));
+            offset += size.y * pivot.y;
             offset += spacing;
         }
+
+        prefSize.y = offset;
+
+        parent.isDirty = true;
     }  
+
+    override function getPreferredSize():Vector2 {
+        return prefSize;
+    }
 
     override function createLayoutParametersForChild():LayoutParameters {
         return new VerticalBoxLayoutParameters();
