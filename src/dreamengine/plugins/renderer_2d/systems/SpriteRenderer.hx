@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d.systems;
 
+import dreamengine.core.math.Quaternion;
 import kha.Color;
 import dreamengine.core.Time;
 import kha.graphics5_.PipelineState;
@@ -28,7 +29,6 @@ class SpriteRenderer extends RenderSystem {
 			var position = transform.getPosition();
 			var rotation = Mathf.degToRad(transform.getRotation().toEuler().z);
 			var scale = transform.getScale();
-
 			var spr = c.getComponent(Sprite);
 
 			var image = spr.getImage();
@@ -53,17 +53,20 @@ class SpriteRenderer extends RenderSystem {
 			var s = 1 / (cameraSize);
 
 			graphics.transformation = FastMatrix3.identity();
-
+			
 			graphics.scale(s,s);
+			graphics.rotate(rotation, 0, 0);
 			graphics.translate(screenRes.x * 0.5, screenRes.y * 0.5);
-			graphics.rotate(-Math.atan2(cameraRight.y, cameraRight.x),0,0);
 			graphics.translate(-cameraPos.x, -cameraPos.y);
-
-			graphics.translate(position.x * (200) * s, position.y * 200 * s);	
-		
-
+			
+			graphics.translate(position.x * (200) * s, position.y * 200 * s);
+			
+			graphics.rotate(-Math.atan2(cameraRight.y, cameraRight.x),cameraPos.x + screenRes.x * 0.5,cameraPos.y + screenRes.y * 0.5);
 			
 			graphics.drawScaledImage(image, localPos.x, localPos.y, localSize.x, localSize.y);
+			#if debug
+			graphics.drawRect(localPos.x, localPos.y, localSize.x, localSize.y, cameraSize);
+			#end
 		}
 		
 	}

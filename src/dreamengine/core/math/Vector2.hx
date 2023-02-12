@@ -1,5 +1,6 @@
 package dreamengine.core.math;
 
+@:notNull
 abstract Vector2(Array<Float>) {
 	public var x(get, set):Float;
 	public var y(get, set):Float;
@@ -135,8 +136,17 @@ abstract Vector2(Array<Float>) {
 		return n;
 	}
 
+	@:to
 	public function asVector3() {
 		var n = new Vector3(x, y);
 		return n;
+	}
+	@:from
+	static function fromVector3(v:Vector3){
+		return new Vector2(v.x, v.y);
+	}
+	@:to
+	function toKhaVector2(){
+		return new kha.math.Vector2(x, y);
 	}
 }

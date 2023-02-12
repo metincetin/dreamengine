@@ -1,11 +1,14 @@
 package dreamengine;
 
+import kha.math.FastMatrix3;
 import dreamengine.device.Screen;
 import dreamengine.plugins.renderer_base.ActiveCamera;
 import dreamengine.core.math.Vector2;
 import kha.Framebuffer;
 
 class Gizmos{
+	public static var transformation:FastMatrix3;
+
 
     static var commands = new Array<Framebuffer->Void>();
     
@@ -37,5 +40,9 @@ class Gizmos{
             command(framebuffer);
         }
         commands = [];
+        transformation = FastMatrix3.identity();
+        //framebuffer.g2.transformation = transformation;
     }
+
+
 }
