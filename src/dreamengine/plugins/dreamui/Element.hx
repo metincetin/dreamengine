@@ -36,11 +36,6 @@ class Element {
 	var style:Style;
 	var parsedStyle = ParsedStyle.empty();
 
-	var renderedRect:Rect = new Rect();
-
-	public function getRenderedRect() {
-		return renderedRect;
-	}
 
 	public function getEnabled() {
 		return enabled;
@@ -114,6 +109,10 @@ class Element {
 		return Vector2.multiplyV(localScale, parent.getScale());
 	}
 
+	public function getParent(){
+		return parent;
+	}
+
 	public function new() {}
 
 	public function getIsDirty() {
@@ -121,6 +120,7 @@ class Element {
 	}
 
 	public final function render(g2:Graphics, opacity:Float) {
+		layout();
 		if (isDirty) {
 			layout();
 			isDirty = false;

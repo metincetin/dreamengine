@@ -46,13 +46,6 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		g2.color = parsedStyle.getColorValue("background-color", kha.Color.Cyan);
 		g2.fontSize = parsedStyle.getIntValue("font-size", 12);
 
-		var pivotOffset = new Vector2();
-		pivotOffset.x = -size.x * pivot.x;
-		pivotOffset.y = -size.y * pivot.y;
-
-		//pivotOffset.x += (padding.left);
-		// pivotOffset.y += (padding.top- padding.bottom) * 2;
-
 
 		var textSize = new Vector2();
 		textSize.x = g2.font.width(g2.fontSize, text) * 0.5;
@@ -61,14 +54,9 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		prefSize.x = textSize.x * 2;
 		prefSize.y = textSize.y * 2;
 
-		g2.fillRect(pos.x + pivotOffset.x, pos.y + pivotOffset.y, size.x, size.y);
+		g2.fillRect(pos.x, pos.y, size.x, size.y);
 		g2.color = parsedStyle.getColorValue("text-color");
-		g2.drawString(text, center.x - textSize.x + pivotOffset.x, center.y - textSize.y + pivotOffset.y);
-		
-		renderedRect.setPosition(new Vector2(pos.x + pivotOffset.x, pos.y + pivotOffset.y));
-		renderedRect.setSize(size);
-
-		trace(renderedRect);
+		g2.drawString(text, center.x - textSize.x, center.y - textSize.y);
 	}
 
 	public function canBeTargeted():Bool {

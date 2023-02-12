@@ -31,10 +31,16 @@ class VerticalBoxContainer extends Element{
         for (i in 0...getChildCount()){
             var c = getChild(i);
 
-            var size = new Vector2(32, 32);
+            var size = c.getPreferredSize();
             
 
             var xPos = 0.0;
+
+            var pivotOffset = size.copy();
+            pivotOffset.x *= c.pivot.x;
+            pivotOffset.y *= c.pivot.y;
+
+
             switch(c.getLayoutParametersAs(VerticalBoxLayoutParameters).horizontalAlignment){
                 case Left:
                     xPos = rectPos.x + padding.left;

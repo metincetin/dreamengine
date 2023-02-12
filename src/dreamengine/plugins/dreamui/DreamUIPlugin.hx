@@ -56,7 +56,6 @@ class DreamUIPlugin implements IPlugin {
 		if (mainElement == null)
 			return;
 		fb.g2.begin(false);
-		fb.g2.font = kha.Assets.fonts.OpenSans_Regular;
 		screen.render(fb.g2, 1);
 		fb.g2.end();
 	}

@@ -90,7 +90,7 @@ class EventSystem {
 		var i = ofElement.getChildCount() - 1;
 		while (i >= 0) {
 			var c = ofElement.getChild(i);
-			if (c.getRenderedRect().isPointInside(pointerPosition.asVector2())) {
+			if (c.getRect().isPointInside(pointerPosition.asVector2())) {
 				if (Std.isOfType(c, IPointerTarget)) {
 					var ofC = getPointerTargetInChildren(c);
 					if (ofC == null) {

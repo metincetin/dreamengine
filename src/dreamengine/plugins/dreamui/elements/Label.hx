@@ -34,11 +34,13 @@ class Label extends Element {
 	}
 
 	override function getPreferredSize():Vector2 {
+		if (font == null)
+			return Vector2.zero();
 		return new Vector2(font.width(fontSize, text), font.height(fontSize));
 	}
 
 	override function onRender(g2:Graphics, opacity:Float) {
-		this.font = g2.font;
+		g2.font = this.font;
 		var cachedFontSize = g2.fontSize;
 		g2.fontSize = fontSize;
 
@@ -46,14 +48,12 @@ class Label extends Element {
 
 		g2.drawString(text, renderPos.x, renderPos.y);
 		g2.fontSize = cachedFontSize;
-
-		renderedRect.setSize(getPreferredSize());
-		renderedRect.setPosition(renderPos);
 	}
 
 	override function parseStyle() {
 		super.parseStyle();
 		this.fontSize = parsedStyle.getIntValue("font-size", 12);
+		this.font = kha.Assets.fonts.get(parsedStyle.getStringValue("font", "OpenSans_Regular"));
 	}
 }
 
