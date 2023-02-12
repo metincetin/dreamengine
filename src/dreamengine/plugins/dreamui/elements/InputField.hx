@@ -1,6 +1,6 @@
 package dreamengine.plugins.dreamui.elements;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.dreamui.utils.TextRenderingUtils;
 import dreamengine.plugins.input.events.KeyboardKeyEvent;
 import dreamengine.plugins.input.devices.BaseKeyboard.KeyboardKey;

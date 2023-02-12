@@ -2,7 +2,7 @@ package dreamengine.plugins.renderer_2d.components;
 
 import dreamengine.plugins.renderer_base.components.Transform;
 import kha.graphics2.Graphics;
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
 import dreamengine.core.Time;
 import dreamengine.plugins.ecs.Component;
 

@@ -1,7 +1,7 @@
 package dreamengine.plugins.dreamui.utils;
 
 import dreamengine.core.math.Rect;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.dreamui.elements.Label.Alignment;
 
 class TextRenderingUtils {

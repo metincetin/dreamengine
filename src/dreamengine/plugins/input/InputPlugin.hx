@@ -21,10 +21,14 @@ class InputPlugin implements IPlugin {
 	public function initialize(engine:Engine) {
 		inputHandler.begin();
 		engine.registerLoopEvent(loop);
+		engine.registerPostLoopEvent(postLoop);
 	}
 
 	function loop() {
 		inputHandler.tick();
+	}
+	function postLoop(){
+		inputHandler.postTick();
 	}
 
 	public function finalize() {

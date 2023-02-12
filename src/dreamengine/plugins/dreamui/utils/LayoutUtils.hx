@@ -1,6 +1,6 @@
 package dreamengine.plugins.dreamui.utils;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 
 class LayoutUtils{
     public static function getPivotOffset(element:Element){

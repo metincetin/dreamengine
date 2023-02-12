@@ -1,6 +1,6 @@
 package dreamengine.plugins.renderer_3d;
 
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
 import dreamengine.plugins.renderer_3d.components.Mesh;
 
 class ProceduralMesh {

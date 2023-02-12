@@ -1,7 +1,7 @@
 package dreamengine.plugins.dreamui.containers;
 
 import kha.graphics2.Graphics;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.dreamui.layout_parameters.HorizontalBoxLayoutParameters;
 import dreamengine.plugins.dreamui.layout_parameters.LayoutParameters;
 

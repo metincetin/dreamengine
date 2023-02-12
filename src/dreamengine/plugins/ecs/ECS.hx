@@ -118,9 +118,7 @@ class ECS implements IPlugin {
 
 	public function spawn(params:Array<Component>) {
 		var entity = new Entity();
-		for (comp in params) {
-			entity.addComponent(comp);
-		}
+		entity.addComponents(params);
 		ecsContext.addEntity(entity);
 		entity.onSpawned();
 		return entity;

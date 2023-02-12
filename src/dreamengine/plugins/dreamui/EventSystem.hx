@@ -7,8 +7,7 @@ import dreamengine.plugins.dreamui.events.IClickable;
 import dreamengine.plugins.input.IInputHandler;
 import dreamengine.plugins.dreamui.events.IPointerTarget;
 import dreamengine.plugins.dreamui.events.IFocusable;
-import dreamengine.core.math.Vector.Vector2;
-import dreamengine.core.math.Vector.Vector2i;
+import dreamengine.core.math.Vector2i;
 
 class EventSystem {
 	var focused:IFocusable;

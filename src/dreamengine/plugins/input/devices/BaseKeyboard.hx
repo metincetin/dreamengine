@@ -1,5 +1,6 @@
 package dreamengine.plugins.input.devices;
 
+import kha.input.KeyCode;
 import dreamengine.plugins.input.events.KeyboardKeyEvent;
 import haxe.Constraints.Function;
 
@@ -163,4 +164,5 @@ class BaseKeyboard implements IKeyDevice {
 	var NumPad0 = 0;
 	var NumpadAdd = 107;
 	var NumpadSubtract = 109;
+	var Space = 32;
 }

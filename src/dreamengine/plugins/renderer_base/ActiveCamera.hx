@@ -4,7 +4,6 @@ import kha.graphics5_.TextureFormat;
 import dreamengine.device.Screen;
 import kha.Image;
 import dreamengine.plugins.renderer_base.components.Camera;
-import dreamengine.core.math.Vector.Vector2;
 import dreamengine.plugins.renderer_base.components.Transform;
 
 class ActiveCamera {

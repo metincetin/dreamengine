@@ -1,6 +1,6 @@
 package dreamengine.plugins.input.devices;
 
-import dreamengine.core.math.Vector.Vector2i;
+import dreamengine.core.math.Vector2i;
 
 interface IPointer{
     public function getPointerPosition():Vector2i;

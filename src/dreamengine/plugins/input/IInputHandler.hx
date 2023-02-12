@@ -9,4 +9,5 @@ interface IInputHandler {
 	public function getMouse(index:Int):BaseMouse;
 	public function getKeyboard(index:Int):BaseKeyboard;
 	public function tick():Void;
+	public function postTick():Void;
 }

@@ -1,6 +1,6 @@
 package dreamengine.device;
 import kha.*;
-import dreamengine.core.math.Vector.Vector2i;
+import dreamengine.core.math.Vector2i;
 
 class Screen{
     public static function getResolution(){

@@ -1,6 +1,6 @@
 package dreamengine.plugins.tweening;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.tweening.tweens.Vector2Tween;
 import dreamengine.plugins.tweening.Tween.BaseTween;
 import dreamengine.plugins.tweening.tweens.FloatTween;

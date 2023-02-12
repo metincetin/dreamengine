@@ -2,7 +2,7 @@ package dreamengine.plugins.renderer_3d.systems;
 
 import dreamengine.core.math.Rect;
 import dreamengine.plugins.imgui.IMGUI;
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
 import dreamengine.core.Time;
 import dreamengine.plugins.renderer_base.components.Camera;
 import dreamengine.plugins.renderer_base.components.Transform;
