@@ -1,6 +1,6 @@
 package dreamengine.core.math;
 
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
 
 class Quaternion {
 	public var x:Float;

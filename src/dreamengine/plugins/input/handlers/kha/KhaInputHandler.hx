@@ -3,7 +3,6 @@ package dreamengine.plugins.input.handlers.kha;
 import dreamengine.plugins.input.handlers.kha.devices.Keyboard;
 import dreamengine.plugins.input.devices.BaseKeyboard;
 import dreamengine.plugins.input.devices.BaseMouse;
-import dreamengine.core.math.Vector;
 import kha.input.Mouse;
 
 class KhaInputHandler implements IInputHandler {

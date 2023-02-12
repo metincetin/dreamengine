@@ -3,7 +3,7 @@ package dreamengine.plugins.dreamui;
 import dreamengine.plugins.dreamui.containers.ScreenContainer;
 import dreamengine.plugins.input.handlers.kha.KhaInputHandler;
 import dreamengine.plugins.input.InputPlugin;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.core.Time;
 import kha.Framebuffer;
 import dreamengine.core.Engine;

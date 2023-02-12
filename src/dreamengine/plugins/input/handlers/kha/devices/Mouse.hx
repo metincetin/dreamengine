@@ -1,5 +1,6 @@
 package dreamengine.plugins.input.handlers.kha.devices;
 
+import dreamengine.core.math.Vector2i;
 import dreamengine.plugins.input.devices.BaseMouse;
 
 class Mouse extends BaseMouse {
@@ -37,7 +38,7 @@ class Mouse extends BaseMouse {
 		pointerDelta.x = newX;
 		pointerDelta.y = newY;
 		for (f in deltaChanged) {
-			f(new dreamengine.core.math.Vector.Vector2i(newX, newY));
+			f(new Vector2i(newX, newY));
 		}
 	}
 }

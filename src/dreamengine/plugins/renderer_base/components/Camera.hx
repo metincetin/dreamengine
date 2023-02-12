@@ -3,10 +3,10 @@ package dreamengine.plugins.renderer_base.components;
 import kha.graphics4.TextureFormat;
 import dreamengine.device.Screen;
 import kha.Image;
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
+import dreamengine.core.math.Vector2;
 import kha.math.FastVector3;
 import kha.math.FastMatrix4;
-import dreamengine.core.math.Vector.Vector2;
 import dreamengine.plugins.ecs.Entity;
 import dreamengine.plugins.ecs.Component.Component;
 

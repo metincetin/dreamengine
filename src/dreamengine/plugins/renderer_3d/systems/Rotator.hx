@@ -4,7 +4,7 @@ import dreamengine.plugins.renderer_3d.components.Mesh;
 import dreamengine.core.math.Rect;
 import dreamengine.plugins.imgui.IMGUI;
 import dreamengine.plugins.renderer_3d.components.Light;
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
 import dreamengine.plugins.ecs.Component;
 import dreamengine.core.Time;
 import dreamengine.plugins.renderer_base.components.Transform;

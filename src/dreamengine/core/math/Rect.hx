@@ -1,6 +1,6 @@
 package dreamengine.core.math;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 
 class Rect{
 	var position:Vector2;

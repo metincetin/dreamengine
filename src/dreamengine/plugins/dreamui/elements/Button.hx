@@ -5,7 +5,7 @@ import dreamengine.plugins.dreamui.utils.LayoutUtils;
 import dreamengine.plugins.dreamui.events.IClickable;
 import dreamengine.plugins.dreamui.events.IFocusable;
 import dreamengine.plugins.dreamui.events.IPointerTarget;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import kha.graphics2.Graphics;
 
 class Button extends Element implements IPointerTarget implements IClickable implements IFocusable {

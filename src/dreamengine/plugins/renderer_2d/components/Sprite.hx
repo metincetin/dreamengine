@@ -2,8 +2,8 @@ package dreamengine.plugins.renderer_2d.components;
 
 import dreamengine.plugins.renderer_base.components.Material;
 import dreamengine.plugins.renderer_base.components.Transform;
-import dreamengine.core.math.Vector.Vector3;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector3;
+import dreamengine.core.math.Vector2;
 import dreamengine.core.math.Rect;
 import kha.Image;
 import dreamengine.plugins.ecs.Component;

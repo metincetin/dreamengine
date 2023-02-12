@@ -1,7 +1,7 @@
 package dreamengine.plugins.dreamui.containers;
 
 import dreamengine.device.Screen;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.dreamui.layout_parameters.*;
 
 class FillContainer extends Element {

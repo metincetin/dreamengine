@@ -1,6 +1,6 @@
 package dreamengine.plugins.renderer_2d.components;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.ecs.Component;
 
 class Transform2D extends Component {   

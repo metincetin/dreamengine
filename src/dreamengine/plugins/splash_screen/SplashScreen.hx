@@ -1,6 +1,6 @@
 package dreamengine.plugins.splash_screen;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.core.math.Mathf;
 import dreamengine.device.Screen;
 import kha.Assets;

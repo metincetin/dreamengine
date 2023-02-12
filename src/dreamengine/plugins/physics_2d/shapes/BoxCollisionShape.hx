@@ -2,7 +2,7 @@ package dreamengine.plugins.physics_2d.shapes;
 
 import box2D.common.math.B2Vec2;
 import box2D.collision.shapes.B2PolygonShape;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import box2D.collision.shapes.B2CircleShape;
 import box2D.collision.shapes.B2Shape;
 

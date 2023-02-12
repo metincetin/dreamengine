@@ -1,12 +1,12 @@
 package dreamengine.plugins.physics_2d.systems;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.core.Engine;
 import dreamengine.plugins.physics_2d.components.RigidBody2D;
 import dreamengine.plugins.renderer_base.components.Transform;
 import dreamengine.plugins.ecs.ECSContext;
 import dreamengine.plugins.ecs.System;
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
 
 class RigidBody2DTransformSync extends System{
     

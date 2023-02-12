@@ -1,7 +1,7 @@
 package dreamengine.plugins.dreamui.elements;
 
 import dreamengine.plugins.dreamui.utils.TextRenderingUtils;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import kha.Font;
 import kha.graphics2.Graphics;
 

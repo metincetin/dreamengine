@@ -2,7 +2,7 @@ package dreamengine;
 
 import dreamengine.device.Screen;
 import dreamengine.plugins.renderer_base.ActiveCamera;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import kha.Framebuffer;
 
 class Gizmos{

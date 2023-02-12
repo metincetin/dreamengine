@@ -10,7 +10,7 @@ import box2D.dynamics.B2ContactListener;
 import box2D.dynamics.contacts.B2Contact;
 import box2D.collision.B2RayCastOutput;
 import box2D.common.math.B2Vec2;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import box2D.collision.B2RayCastInput;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2World;

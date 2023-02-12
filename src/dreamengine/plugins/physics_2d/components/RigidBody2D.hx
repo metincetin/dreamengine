@@ -14,7 +14,7 @@ import box2D.dynamics.B2FixtureDef;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2World;
 import box2D.dynamics.B2BodyType;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.ecs.Component;
 
 class RigidBody2D extends Component {
@@ -152,7 +152,7 @@ class RigidBody2D extends Component {
 	}
 
 	public function addImpulse(impulse:Vector2, pos:Vector2) {
-		var offset = Vector2.subtract(getPosition(), pos);
+		var offset = getPosition() - pos;
 		body.applyImpulse(new B2Vec2(impulse.x, impulse.y), new B2Vec2(offset.x, offset.y));
 	}
 

@@ -2,7 +2,7 @@ package dreamengine.plugins.input.devices;
 
 import haxe.io.Bytes;
 import haxe.Constraints;
-import dreamengine.core.math.Vector.Vector2i;
+import dreamengine.core.math.Vector2i;
 
 class BaseMouse implements IPointer implements IKeyDevice {
 	public var index:Int;

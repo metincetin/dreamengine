@@ -7,8 +7,7 @@ import kha.math.FastVector3;
 import kha.math.FastVector4;
 import kha.math.FastMatrix4;
 import dreamengine.core.math.Mathf;
-import dreamengine.core.math.Vector.Vector3;
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector3;
 import dreamengine.plugins.ecs.Component;
 
 class Transform extends Component {

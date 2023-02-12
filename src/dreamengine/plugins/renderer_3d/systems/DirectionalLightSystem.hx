@@ -1,7 +1,7 @@
 package dreamengine.plugins.renderer_3d.systems;
 
 import dreamengine.core.Time;
-import dreamengine.core.math.Vector.Vector3;
+import dreamengine.core.math.Vector3;
 import dreamengine.plugins.renderer_base.ShaderGlobals;
 import dreamengine.plugins.ecs.Component;
 import dreamengine.plugins.renderer_3d.components.Light;

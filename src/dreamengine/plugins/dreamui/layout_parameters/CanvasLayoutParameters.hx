@@ -1,6 +1,6 @@
 package dreamengine.plugins.dreamui.layout_parameters;
 
-import dreamengine.core.math.Vector.Vector2;
+import dreamengine.core.math.Vector2;
 import dreamengine.plugins.dreamui.layout_parameters.LayoutParameters;
 
 class CanvasLayoutParameters extends LayoutParameters{

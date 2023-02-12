@@ -4,8 +4,8 @@ import dreamengine.plugins.dreamui.styling.*;
 import dreamengine.plugins.dreamui.styling.Selector;
 import dreamengine.plugins.dreamui.layout_parameters.LayoutParameters;
 import dreamengine.core.math.Rect;
-import dreamengine.core.math.Vector.Vector2;
 import kha.graphics2.Graphics;
+import dreamengine.core.math.Vector2;
 
 @:rtti
 @:keep
@@ -21,7 +21,7 @@ class Element {
 
 	var layoutParameters = new LayoutParameters();
 
-	var localScale:Vector2 = Vector2.one();
+	var localScale = Vector2.one();
 
 	var enabled:Bool = true;
 
@@ -111,7 +111,7 @@ class Element {
 		if (parent == null) {
 			return localScale;
 		}
-		return Vector2.multiplyV(localScale, parent.getScale());
+		return localScale * parent.getScale();
 	}
 
 	public function new() {}
