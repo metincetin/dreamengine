@@ -283,8 +283,8 @@ class Element {
 		}
 		return ret;
 	}
-	public function query<T:Class<Element>>(query:Selector, type:T): T{
-		return cast queryInternal(query, type);
+	public function query<T:Element>(query:Selector, type:Class<T>): T{
+		return cast queryInternal(query, cast type);
 	}
 	public function queryAll<T:Class<Element>>(query:Selector, type:T): Array<T>{
 		return cast queryAllInternal(query, type);
