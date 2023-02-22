@@ -252,4 +252,42 @@ class Element {
 			this.parsedStyle.setForElement(this);
 		}
 	}
+
+	
+	function queryInternal(query:Selector, ofType:Class<Element>): Element{
+		for(c in getChildren()){
+			if (c.matchesQuerySelector(query) && Std.isOfType(c, ofType)){
+				return c;
+			}else{
+				var v = c.queryInternal(query, ofType);
+				if (v != null){
+					return v;
+				}
+			}
+		}
+		return null;
+	}
+	function queryAllInternal(query:Selector, ofType:Class<Element>): Array<Element>{
+		var ret = new Array<Element>();
+		for(c in getChildren()){
+			if (c.matchesQuerySelector(query) && Std.isOfType(c, ofType)){
+				ret.push(c);
+			}
+
+			var v = c.queryAllInternal(query, ofType);
+			if (v != null){
+				for(i in v){
+					ret.push(i);
+				}
+			}
+		}
+		return ret;
+	}
+	public function query<T:Class<Element>>(query:Selector, type:T): T{
+		return cast queryInternal(query, type);
+	}
+	public function queryAll<T:Class<Element>>(query:Selector, type:T): Array<T>{
+		return cast queryAllInternal(query, type);
+	}
+
 }

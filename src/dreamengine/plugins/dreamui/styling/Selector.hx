@@ -7,7 +7,7 @@ class Selector {
 	public var descendingSelectors = new Array<Selector>();
     public var directChildSelectors = new Array<Selector>();
 
-	public function new(string:String) {
+	public function new(string:String = "") {
 
         var descending = StringTools.trim(string).split(" ");
 
