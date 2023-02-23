@@ -1,5 +1,7 @@
 package dreamengine.plugins.dreamui.layout_parameters;
 
+import dreamengine.plugins.dreamui.styling.ParsedStyle;
+
 class Constraints{
     var maxHeight:Float = 0;
     var minHeight:Float = 0;
@@ -13,4 +15,7 @@ class LayoutParameters{
     public var constraints = new Constraints();
 
     public function new(){}
+    public function setValuesFromStyle(parsedStyle:ParsedStyle){
+        
+    }
 }

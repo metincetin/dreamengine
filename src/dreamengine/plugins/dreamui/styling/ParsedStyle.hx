@@ -1,6 +1,5 @@
 package dreamengine.plugins.dreamui.styling;
 
-import js.html.idb.Cursor;
 import dreamengine.core.math.Mathf;
 import kha.Color;
 import dreamengine.core.Time;

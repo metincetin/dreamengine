@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui.elements;
 
+import kha.Assets;
 import dreamengine.core.math.Mathf;
 import dreamengine.plugins.dreamui.utils.LayoutUtils;
 import dreamengine.plugins.dreamui.events.IClickable;
@@ -24,6 +25,23 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		return prefSize;
 	}
 
+	override function parseStyle() {
+		super.parseStyle();
+		var padding = new Dimension(
+			parsedStyle.getFloatValue("padding-left", 0),
+			parsedStyle.getFloatValue("padding-top", 0),
+			parsedStyle.getFloatValue("padding-right", 0),
+			parsedStyle.getFloatValue("padding-bottom", 0));
+		
+		var textSize = new Vector2();
+		var font = Assets.fonts.get(parsedStyle.getStringValue("font", "OpenSans_Regular"));
+		var fontSize = parsedStyle.getIntValue("font-size", 12);
+		textSize.x = font.width(fontSize, text) * 0.5;
+		textSize.y = font.height(fontSize) * 0.5;
+		prefSize.x = textSize.x * 2 + (padding.left + padding.right);
+		prefSize.y = textSize.y * 2 + (padding.top + padding.bottom);
+	}
+
 	override function onRender(g2:Graphics, opacity:Float) {
 		var pos = rect.getPosition();
 		var size = rect.getSize();
@@ -35,9 +53,8 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 			parsedStyle.getFloatValue("padding-bottom", 0));
 
 
-		size.x = Math.max(size.x, prefSize.x) + (padding.left + padding.right);
-		size.y = Math.max(size.y, prefSize.y) + (padding.top + padding.bottom);
-
+		size.x = Math.max(size.x, prefSize.x);
+		size.y = Math.max(size.y, prefSize.y);
 
 		var center = pos.copy();
 		center.x += size.x * pivot.x + (padding.left - padding.right) * 0.5;
@@ -51,8 +68,6 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		textSize.x = g2.font.width(g2.fontSize, text) * 0.5;
 		textSize.y = g2.font.height(g2.fontSize) * 0.5;
 
-		prefSize.x = textSize.x * 2;
-		prefSize.y = textSize.y * 2;
 
 		g2.fillRect(pos.x, pos.y, size.x, size.y);
 		g2.color = parsedStyle.getColorValue("text-color");

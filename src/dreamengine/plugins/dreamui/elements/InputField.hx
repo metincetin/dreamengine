@@ -72,7 +72,8 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 			g2.font.width(g2.fontSize, text),
 			g2.font.height(g2.fontSize)
 		);
-		var textPos = TextRenderingUtils.getAlignedPosition(rect, prefSize, MiddleLeft);
+
+		var textPos = rect.getPosition();
 
 		if (text.length == 0 && !isFocused()) {
 			g2.drawString(placeholder, textPos.x, textPos.y);

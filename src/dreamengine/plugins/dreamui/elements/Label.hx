@@ -12,9 +12,6 @@ class Label extends Element {
 
 	var alignment:Alignment = TopLeft;
 
-	public function getAlignment() {
-		return alignment;
-	}
 
 	public function setAlignment(value:Alignment) {
 		this.alignment = value;
@@ -44,9 +41,43 @@ class Label extends Element {
 		var cachedFontSize = g2.fontSize;
 		g2.fontSize = fontSize;
 
-		var renderPos = TextRenderingUtils.getAlignedPosition(getRect(), getPreferredSize(), alignment);
+		var pos = rect.getPosition();
 
-		g2.drawString(text, renderPos.x, renderPos.y);
+		var size = rect.getSize();
+		var offset = new Vector2();
+		var prefSize = getPreferredSize();
+
+		switch (alignment) {
+			case TopLeft:
+				offset.x = 0;
+				offset.y = 0;
+			case TopCenter:
+				offset.x = size.x * 0.5 - prefSize.x * 0.5;
+				offset.y = -(size.y - prefSize.y);
+			case TopRight:
+				offset.x = size.x - prefSize.x;
+				offset.y = 0;
+			case MiddleLeft:
+				offset.x = 0;
+				offset.y = size.y * 0.5 - prefSize.y * 0.5;
+			case MiddleCenter:
+				offset.x = size.x * 0.5 - prefSize.x * 0.5;
+				offset.y = size.y * 0.5 - prefSize.y * 0.5;
+			case MiddleRight:
+				offset.x = size.x - prefSize.x;
+				offset.y = size.y * 0.5 - prefSize.y * 0.5;
+			case BottomLeft:
+				offset.x = 0;
+				offset.y = size.y - prefSize.y;
+			case BottomCenter:
+				offset.x = size.x * 0.5 - prefSize.x * 0.5;
+				offset.y = size.y - prefSize.y;
+			case BottomRight:
+				offset.x = size.x - prefSize.x;
+				offset.y = size.y - prefSize.y;
+		}
+
+		g2.drawString(text, pos.x + offset.x, pos.y - offset.y);
 		g2.fontSize = cachedFontSize;
 	}
 
@@ -54,6 +85,7 @@ class Label extends Element {
 		super.parseStyle();
 		this.fontSize = parsedStyle.getIntValue("font-size", 12);
 		this.font = kha.Assets.fonts.get(parsedStyle.getStringValue("font", "OpenSans_Regular"));
+		this.alignment = parsedStyle.getStringValue("alignment", "TopLeft");
 	}
 }
 
@@ -75,6 +107,31 @@ class Label extends Element {
 	@:from
 	static public function from(i:Int){
 		return new Alignment(i);
+	}
+	@:from
+	static public function fromString(i:String){
+		return switch(i){
+			case "top-left":
+				TopLeft;
+			case "top-center":
+				TopCenter;
+			case "top-right":
+				TopRight;
+			case "middle-left":
+				MiddleLeft;
+			case "middle-center":
+				MiddleCenter;
+			case "middle_right":
+				MiddleRight;
+			case "bottom-left":
+				BottomLeft;
+			case "bottom-center":
+				BottomCenter;
+			case "bottom-right":
+				BottomRight;
+			case _:
+				TopLeft;
+		}
 	}
 
 }

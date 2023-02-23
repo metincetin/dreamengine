@@ -1,5 +1,7 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.core.Time;
+import dreamengine.core.math.Mathf;
 import dreamengine.plugins.dreamui.styling.*;
 import dreamengine.plugins.dreamui.styling.Selector;
 import dreamengine.plugins.dreamui.layout_parameters.LayoutParameters;
@@ -124,21 +126,23 @@ class Element {
 	}
 
 	public final function render(g2:Graphics, opacity:Float) {
-		layout();
 		if (isDirty) {
 			layout();
 			isDirty = false;
+			if (parent != null) {
+				parent.isDirty = true;
+			}
 		}
 		if (!getEnabled())
 			return;
+		
+		g2.drawRect(getRect().getPosition().x, getRect().getPosition().y, getRect().getSize().x, getRect().getSize().y, 1);
 		g2.opacity = opacity * renderOpacity;
 		onRender(g2, opacity);
 		for (c in children) {
 			c.render(g2, renderOpacity);
 		}
 		g2.opacity = 1;
-
-		g2.drawRect(getRect().getPosition().x, getRect().getPosition().y, getRect().getSize().x, getRect().getSize().y, 4);
 	}
 
 	function onRender(g2:Graphics, opacity:Float) {}
@@ -151,18 +155,22 @@ class Element {
 	public function addChild(c:Element) {
 		if (children.contains(c))
 			return;
+		if (c == this){
+			throw "Can't add self as child.";
+		}
 		if (c.parent != null) {
 			c.parent.removeChild(c);
 		}
 
 		children.push(c);
-		c.parent = c;
+		c.parent = this;
 
 		if (!Std.isOfType(c.getLayoutParameters(), getChildLayoutParameterType())) {
 			c.layoutParameters = createLayoutParametersForChild();
 		}
 
 		isDirty = true;
+
 		c.setStyle(getStyle());
 	}
 
@@ -250,44 +258,49 @@ class Element {
 	public function parseStyle() {
 		if (style != null) {
 			this.parsedStyle.setForElement(this);
+			if (this.layoutParameters != null){
+				this.layoutParameters.setValuesFromStyle(parsedStyle);
+			}
+			isDirty = true;
 		}
 	}
 
-	
-	function queryInternal(query:Selector, ofType:Class<Element>): Element{
-		for(c in getChildren()){
-			if (c.matchesQuerySelector(query) && Std.isOfType(c, ofType)){
+	function queryInternal(query:Selector, ofType:Class<Element>):Element {
+		for (c in getChildren()) {
+			if (c.matchesQuerySelector(query) && Std.isOfType(c, ofType)) {
 				return c;
-			}else{
+			} else {
 				var v = c.queryInternal(query, ofType);
-				if (v != null){
+				if (v != null) {
 					return v;
 				}
 			}
 		}
 		return null;
 	}
-	function queryAllInternal(query:Selector, ofType:Class<Element>): Array<Element>{
+
+	function queryAllInternal(query:Selector, ofType:Class<Element>):Array<Element> {
 		var ret = new Array<Element>();
-		for(c in getChildren()){
-			if (c.matchesQuerySelector(query) && Std.isOfType(c, ofType)){
+		for (c in getChildren()) {
+			if (c.matchesQuerySelector(query) && Std.isOfType(c, ofType)) {
 				ret.push(c);
 			}
 
 			var v = c.queryAllInternal(query, ofType);
-			if (v != null){
-				for(i in v){
+			if (v != null) {
+				for (i in v) {
 					ret.push(i);
 				}
 			}
 		}
 		return ret;
 	}
-	public function query<T:Element>(query:Selector, type:Class<T>): T{
+
+	public function query<T:Element>(query:Selector, type:Class<T>):T {
 		return cast queryInternal(query, cast type);
 	}
-	public function queryAll<T:Class<Element>>(query:Selector, type:T): Array<T>{
-		return cast queryAllInternal(query, type);
-	}
 
+	public function queryAll<T:Class<Element>>(query:Selector, type:Class<T>):Array<T> {
+		return cast queryAllInternal(query, cast type);
+	}
 }
