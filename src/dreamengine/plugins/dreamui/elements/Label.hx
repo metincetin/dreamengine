@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui.elements;
 
+import dreamengine.plugins.dreamui.styling.Selector;
 import dreamengine.plugins.dreamui.utils.TextRenderingUtils;
 import dreamengine.core.math.Vector2;
 import kha.Font;

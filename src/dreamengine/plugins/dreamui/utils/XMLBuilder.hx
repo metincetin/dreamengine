@@ -54,6 +54,9 @@ class XMLBuilder {
 				element.addStyleClass(c, false);
 			}
 		}
+		if (attribute == "id"){
+			element.name = node.get(attribute);
+		}
 
 		for (f in rtti.fields) {
 			if (f.name == attribute) {
