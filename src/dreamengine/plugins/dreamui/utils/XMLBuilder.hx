@@ -27,12 +27,12 @@ class XMLBuilder {
 	}
 
 	static function tryCreateElement(node:Xml, parent:Element = null) {
-		var cl = Type.resolveClass("dreamengine.plugins.dreamui." + node.nodeName);
-		if (cl== null){
-			throw new ArgumentException("ElementType", "given type \"dreamengine.plugins.dreamui." + node.nodeName+"\" not found.");
+		var type = UIXMLElementTypes.getType(node.nodeName);
+		if (type == null){
+			throw new ArgumentException("Incorrect ElementType", 'given type ${node.nodeName} not found. Register it with UIXMLElementTypes.registerType');
 		}
 
-		var inst = cast(Type.createInstance(cl, []), Element);
+		var inst = cast(Type.createInstance(type, []), Element);
         if (parent != null){
             parent.addChild(inst);
         }

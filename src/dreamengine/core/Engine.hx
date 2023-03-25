@@ -26,16 +26,21 @@ class Engine {
 
 	var mainFrameBuffer:kha.Framebuffer;
 
-	public function new() {
-		pluginContainer = new PluginContainer(this);
+	function new(){
+
+	}
+
+	public static function start(onStarted: Engine->Void) {
+		var engine = new Engine();
+		engine.pluginContainer = new PluginContainer(engine);
 
 		trace("Initializing Engine");
 
 		trace("Setting up Kha");
-		kha.System.start(new SystemOptions("Dream Game", 800, 400), onSystemStarted);
+		kha.System.start(new SystemOptions("Dream Game", 800, 400), function(w){ engine.onSystemStarted(w, onStarted);});
 	}
 
-	function onSystemStarted(window:Window) {
+	function onSystemStarted(window:Window, onStarted: Engine->Void) {
 		mainWindow = window;
 		kha.System.notifyOnFrames(onFrame);
 		trace("Setting up game loop");
@@ -43,6 +48,8 @@ class Engine {
 		Scheduler.addFrameTask(onRender, 0);
 
 		initializeDevice();
+
+		onStarted(this);
 	}
 
 	function initializeDevice() {}

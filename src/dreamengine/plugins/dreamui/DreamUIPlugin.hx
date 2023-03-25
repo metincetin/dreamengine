@@ -1,5 +1,16 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.plugins.dreamui.containers.FillContainer;
+import dreamengine.plugins.dreamui.containers.ElementSwitcher;
+import dreamengine.plugins.dreamui.containers.HorizontalBoxContainer;
+import dreamengine.plugins.dreamui.layout_parameters.VerticalBoxLayoutParameters.HorizontalAlignment;
+import dreamengine.plugins.dreamui.containers.VerticalBoxContainer;
+import dreamengine.plugins.dreamui.elements.ToggleBox;
+import dreamengine.plugins.dreamui.elements.Image;
+import dreamengine.plugins.dreamui.containers.CanvasContainer;
+import dreamengine.plugins.dreamui.elements.Label;
+import dreamengine.plugins.dreamui.elements.Button;
+import dreamengine.plugins.dreamui.utils.UIXMLElementTypes;
 import dreamengine.plugins.dreamui.containers.ScreenContainer;
 import dreamengine.plugins.input.handlers.kha.KhaInputHandler;
 import dreamengine.plugins.input.InputPlugin;
@@ -10,16 +21,36 @@ import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 
 class DreamUIPlugin implements IPlugin {
-
 	var screen:Element;
 
 	var mainElement:Element;
 
 	var eventSystem:EventSystem;
 
-	public function new() {}
+	public function new() {
+		registerTypes();
+	}
 
-	public function getScreenElement(){
+	function registerTypes() {
+		// elements
+
+		UIXMLElementTypes.registerType("Element", Element);
+		UIXMLElementTypes.registerType("Button", Button);
+		UIXMLElementTypes.registerType("Label", Label);
+		UIXMLElementTypes.registerType("Image", Image);
+		UIXMLElementTypes.registerType("ToggleBox", ToggleBox);
+
+		// containers
+
+		UIXMLElementTypes.registerType("ScreenContainer", ScreenContainer);
+		UIXMLElementTypes.registerType("CanvasContainer", CanvasContainer);
+		UIXMLElementTypes.registerType("HorizontalBoxContainer", HorizontalBoxContainer);
+		UIXMLElementTypes.registerType("VerticalBoxContainer", VerticalBoxContainer);
+		UIXMLElementTypes.registerType("ElementSwitcher", ElementSwitcher);
+		UIXMLElementTypes.registerType("FillContainer", FillContainer);
+	}
+
+	public function getScreenElement() {
 		return screen;
 	}
 
@@ -45,7 +76,6 @@ class DreamUIPlugin implements IPlugin {
 		eventSystem = new EventSystem(this, inputPlugin.getInputHandler());
 		screen = new ScreenContainer();
 		// set up main theme here
-		
 	}
 
 	function onLoop() {
