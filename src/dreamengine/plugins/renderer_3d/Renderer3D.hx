@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d;
 
+import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_3d.systems.PointLightSystem;
 import dreamengine.core.math.Quaternion;
 import dreamengine.plugins.renderer_base.components.Camera;
@@ -8,12 +9,7 @@ import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import kha.Color;
 import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import dreamengine.plugins.renderer_3d.systems.DirectionalLightSystem;
-import dreamengine.plugins.renderer_3d.systems.CameraRotator;
-import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_base.ActiveCamera;
-import dreamengine.plugins.renderer_3d.systems.Rotator;
-import dreamengine.core.math.Vector3;
-import dreamengine.core.math.Vector2;
 import dreamengine.plugins.renderer_base.components.Transform;
 import dreamengine.plugins.ecs.Component;
 import dreamengine.plugins.renderer_base.IRenderContextProvider;
@@ -58,18 +54,8 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 		ecs.registerRenderSystem(meshRenderer);
 		ecs.registerSystem(new DirectionalLightSystem());
 		ecs.registerSystem(new PointLightSystem());
-		ecs.registerSystem(new Rotator());
 		ecs.registerSystem(new CameraSystem());
-		ecs.registerSystem(new CameraRotator());
 		ecs.registerRenderContextProvider(this);
-		ecs.spawn([
-			Transform.prs(Vector3.zero(), Quaternion.fromEuler(0, -90, 25), Vector3.one()),
-			new DirectionalLight(Color.White, 1)
-		]);
-		ecs.spawn([
-			Transform.prs(new Vector3(0, 0, -5), Quaternion.identity(), Vector3.one()),
-			dreamengine.plugins.renderer_base.components.Camera.perspective(45, 4.0 / 3.0, new Vector2(0.01, 100))
-		]);
 	}
 
 	function initializeRenderer() {
@@ -94,11 +80,12 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 		return null;
 	}
 
-	public function getRenderContext(components:Array<Component>, framebuffer:Framebuffer, camera:Camera):RenderContext {
-		return new RenderContext(components, engine, framebuffer, pipelineState, camera);
-	}
 
 	public function getRenderingBackend():RenderingBackend {
 		return RenderingBackend.G4;
+	}
+
+	public function getRenderContext(camera:Camera):RenderContext {
+		return new RenderContext(this.engine, this.pipelineState, camera);
 	}
 }

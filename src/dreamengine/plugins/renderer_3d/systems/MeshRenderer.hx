@@ -1,6 +1,6 @@
 package dreamengine.plugins.renderer_3d.systems;
 
-import dreamengine.plugins.renderer_3d.loaders.GLTFLoader;
+import dreamengine.plugins.ecs.ECSContext;
 import kha.Assets;
 import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import dreamengine.plugins.renderer_base.ShaderGlobals;
@@ -27,86 +27,85 @@ class MeshRenderer extends RenderSystem {
 		super();
 	}
 
-	override function execute(ctx:RenderContext) {
-		var fb = ctx.getFramebuffer();
+	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
+		var g4 = renderContext.getRenderTarget().g4;
 
-		var g4 = ctx.getCamera().renderTexture.g4;
-		var mesh:Mesh = cast ctx.getComponent(Mesh);
-		var transform:Transform = cast ctx.getComponent(Transform);
+		var f = ecsContext.filter([Mesh, Transform]);
 
-		var pipelineState:PipelineState = ctx.getPipelineState();
+		for (c in f) {
+			var mesh:Mesh = c.getComponent(Mesh);
+			var transform:Transform = c.getComponent(Transform);
 
-		var positions = mesh.getVertices();
-		var uvs = mesh.getUVs();
-		var normals = mesh.getNormals();
+			var pipelineState:PipelineState = renderContext.getPipelineState();
 
-		var struct = new VertexStructure();
-		struct.add("vertexPosition", Float3);
-		struct.add("uv", Float2);
-		struct.add("vertexNormal", Float3);
-		var structLength = Std.int(struct.byteSize() / 4);
+			var positions = mesh.getVertices();
+			var uvs = mesh.getUVs();
+			var normals = mesh.getNormals();
 
-		pipelineState.inputLayout = [struct];
-		pipelineState.cullMode = Clockwise;
+			var struct = new VertexStructure();
+			struct.add("vertexPosition", Float3);
+			struct.add("uv", Float2);
+			struct.add("vertexNormal", Float3);
+			var structLength = Std.int(struct.byteSize() / 4);
 
-		pipelineState.vertexShader = Shaders.simple_vert;
-		pipelineState.fragmentShader = Shaders.simple_frag;
+			pipelineState.inputLayout = [struct];
+			pipelineState.cullMode = Clockwise;
 
-		pipelineState.depthWrite = true;
-		pipelineState.depthMode = CompareMode.Less;
-		pipelineState.compile();
+			pipelineState.vertexShader = Shaders.simple_vert;
+			pipelineState.fragmentShader = Shaders.simple_frag;
 
-		var vertsNum = Std.int(positions.length / 3);
-		// Create vertex buffer
-		var vertexBuffer = new VertexBuffer(vertsNum, // Vertex count - 3 floats per vertex
-			struct, // Vertex structure
-			Usage.StaticUsage // Vertex data will stay the same
-		);
+			pipelineState.depthWrite = true;
+			pipelineState.depthMode = CompareMode.Less;
+			pipelineState.compile();
 
-		// Copy vertices and colors to vertex buffer
-		var vbData = vertexBuffer.lock();
+			var vertsNum = Std.int(positions.length / 3);
+			// Create vertex buffer
+			var vertexBuffer = new VertexBuffer(vertsNum, // Vertex count - 3 floats per vertex
+				struct, // Vertex structure
+				Usage.StaticUsage // Vertex data will stay the same
+			);
 
-		for (i in 0...vertsNum) {
-			vbData.set((i * structLength) + 0, positions[(i * 3) + 0]);
-			vbData.set((i * structLength) + 1, positions[(i * 3) + 1]);
-			vbData.set((i * structLength) + 2, positions[(i * 3) + 2]);
-			vbData.set((i * structLength) + 3, uvs[(i * 2) + 0]);
-			vbData.set((i * structLength) + 4, uvs[(i * 2) + 1]);
-			vbData.set((i * structLength) + 5, normals[(i * 3) + 0]);
-			vbData.set((i * structLength) + 6, normals[(i * 3) + 1]);
-			vbData.set((i * structLength) + 7, normals[(i * 3) + 2]);
+			// Copy vertices and colors to vertex buffer
+			var vbData = vertexBuffer.lock();
+
+			for (i in 0...vertsNum) {
+				vbData.set((i * structLength) + 0, positions[(i * 3) + 0]);
+				vbData.set((i * structLength) + 1, positions[(i * 3) + 1]);
+				vbData.set((i * structLength) + 2, positions[(i * 3) + 2]);
+				vbData.set((i * structLength) + 3, uvs[(i * 2) + 0]);
+				vbData.set((i * structLength) + 4, uvs[(i * 2) + 1]);
+				vbData.set((i * structLength) + 5, normals[(i * 3) + 0]);
+				vbData.set((i * structLength) + 6, normals[(i * 3) + 1]);
+				vbData.set((i * structLength) + 7, normals[(i * 3) + 2]);
+			}
+
+			vertexBuffer.unlock();
+
+			var indexBuffer = new IndexBuffer(mesh.getIndices().length, Usage.StaticUsage);
+
+			var iData = indexBuffer.lock();
+
+			for (i in 0...iData.length) {
+				iData[i] = mesh.getIndices()[i];
+			}
+
+			indexBuffer.unlock();
+
+			var model = transform.localMatrix;
+			var mvp = renderContext.getCamera().getViewProjectionMatrix().multmat(model);
+
+			g4.setVertexBuffer(vertexBuffer);
+			g4.setIndexBuffer(indexBuffer);
+
+			g4.setPipeline(pipelineState);
+			g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
+			g4.setMatrix(pipelineState.getConstantLocation("M"), model);
+			g4.setMatrix(pipelineState.getConstantLocation("V"), renderContext.getCamera().getViewMatrix());
+
+			ShaderGlobals.apply(pipelineState, g4);
+
+			// g4.drawIndexedVerticesInstanced(100);
+			g4.drawIndexedVertices();
 		}
-
-		vertexBuffer.unlock();
-
-		var indexBuffer = new IndexBuffer(mesh.getIndices().length, Usage.StaticUsage);
-
-		var iData = indexBuffer.lock();
-
-		for (i in 0...iData.length) {
-			iData[i] = mesh.getIndices()[i];
-		}
-
-		indexBuffer.unlock();
-
-		var model = transform.localMatrix;
-		var mvp = ctx.getCamera().getViewProjectionMatrix().multmat(model);
-
-		g4.setVertexBuffer(vertexBuffer);
-		g4.setIndexBuffer(indexBuffer);
-
-		g4.setPipeline(pipelineState);
-		g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
-		g4.setMatrix(pipelineState.getConstantLocation("M"), model);
-		g4.setMatrix(pipelineState.getConstantLocation("V"), ctx.getCamera().getViewMatrix());
-
-		ShaderGlobals.apply(pipelineState, g4);
-
-		// g4.drawIndexedVerticesInstanced(100);
-		g4.drawIndexedVertices();
-	}
-
-	override function getTargetComponents():Array<Class<Component>> {
-		return [Mesh, Transform];
 	}
 }

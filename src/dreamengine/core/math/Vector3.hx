@@ -1,6 +1,6 @@
 package dreamengine.core.math;
 
-abstract Vector3(Array<Float>) {
+abstract Vector3(Array<Float>) from Array<Float>{
 	public var x(get, set):Float;
 	public var y(get, set):Float;
 	public var z(get, set):Float;
@@ -8,6 +8,7 @@ abstract Vector3(Array<Float>) {
 
 		this = [x, y, z];
 	}
+
 	function get_x() {
 		return this[0];
 	}

@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d.systems;
 
+import dreamengine.plugins.ecs.ECSContext;
 import dreamengine.plugins.renderer_3d.components.PointLight;
 import dreamengine.core.Time;
 import dreamengine.core.math.Vector3;
@@ -11,19 +12,19 @@ import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import dreamengine.plugins.ecs.System;
 
 class PointLightSystem extends System {
-	override function execute(ctx:SystemContext) {
-		var tr:Transform = cast ctx.getComponent(Transform);
-		var light:PointLight = cast ctx.getComponent(PointLight);
+	override function execute(ctx:ECSContext) {
+		var filter = ctx.filter([PointLight, Transform]);
 
-		var fw = tr.getForward();
-		var col = light.color;
+		for (c in filter) {
+			var tr:Transform = c.getComponent(Transform);
+			var light:PointLight = c.getComponent(PointLight);
 
-		ShaderGlobals.setFloat3("additionalLight0_color", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
-		ShaderGlobals.setFloat("additionalLight0_attenuation", light.radius);
-		ShaderGlobals.setFloat3("additionalLight0_position", tr.getPosition());
-	}
+			var fw = tr.getForward();
+			var col = light.color;
 
-	override function getTargetComponents():Array<Class<Component>> {
-		return [Transform, PointLight];
+			ShaderGlobals.setFloat3("additionalLight0_color", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
+			ShaderGlobals.setFloat("additionalLight0_attenuation", light.radius);
+			ShaderGlobals.setFloat3("additionalLight0_position", tr.getPosition());
+		}
 	}
 }
