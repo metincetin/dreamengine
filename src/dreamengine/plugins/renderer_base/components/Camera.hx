@@ -29,9 +29,12 @@ class Camera extends Component {
 		super();
 	}
 
-	public static function perspective(fov:Float, aspect:Float, clippingPlanes:Vector2):Camera {
+	public static function perspective(fov:Float, clippingPlanes:Vector2):Camera {
 		var cam = new Camera();
-		cam.aspect = aspect;
+		
+		var res = Screen.getResolution();
+		var aspect = res.x / res.y;
+		cam.aspect = aspect; 
 		cam.fov = fov;
 		cam.projection = Perspective;
 		cam.clippingPlanes = clippingPlanes;

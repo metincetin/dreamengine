@@ -84,7 +84,6 @@ class ECS implements IPlugin {
 					case G4:
 						cam.renderTexture.g4.begin();
 						cam.renderTexture.g4.clear(Transparent, 8);
-						break;
 					case G2:
 						cam.renderTexture.g2.begin();
 					case G1:

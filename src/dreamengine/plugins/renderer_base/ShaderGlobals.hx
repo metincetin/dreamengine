@@ -21,6 +21,7 @@ class ShaderGlobals {
 			var entry = float3Entries[entryKey];
 			if (entry == null)
 				continue;
+			
 			g.setFloat3(pipelineState.getConstantLocation(entryKey), entry.x, entry.y, entry.z);
 		}
 		for (entryKey in floatEntries.keys()) {

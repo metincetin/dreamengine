@@ -1,33 +1,58 @@
 package dreamengine.plugins.scene_management;
 
 import dreamengine.core.Engine;
-import dreamengine.plugins.ecs.ECS;
 import dreamengine.core.Plugin.IPlugin;
 
 class SceneManagementPlugin implements IPlugin{
+	private var activeScenes:Array<Scene> = [];
 
-    public function new(){
+    private var engine:Engine;
+    public function new(){}
+
+    function getActiveSceneCount(){
+        return activeScenes.length;
+    }
+	function getActiveScene(index:Int) {
+		return activeScenes[index];
+	}
+
+    public function initialize(engine:Engine){
+        this.engine = engine;
+    }
+
+    public function addScene(scene:Scene){
+        activeScenes.push(scene);
+        scene.load(engine);
+    }
+    public function removeScene(scene:Scene){
+        if (activeScenes.remove(scene)){
+            scene.unload(engine);
+        }
+    }
+    public function replaceScenes(scene:Scene){
+        removeAllScenes();
+        addScene(scene);
+    }
+    public function removeAllScenes(){
+        for(scene in activeScenes){
+            scene.unload(engine);
+        }
+
+        activeScenes = [];
     }
 
 
-    public function initialize(engine:Engine) {
-    }
-
-	public function finalize() {
-    }
+	public function finalize() {}
 
 	public function getName():String {
-        return "scene_management";
+        return "SceneManagement";
 	}
 
 	public function getDependentPlugins():Array<Class<IPlugin>> {
-		return [ECS];
-	}
-    public function handleDependency(ofType:Class<IPlugin>){
-        if (ofType == ECS){
-            return new ECS();
-        }
+        return [];
+    }
 
+	public function handleDependency(ofType:Class<IPlugin>):IPlugin {
         return null;
     }
 }

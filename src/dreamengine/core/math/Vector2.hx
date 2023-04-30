@@ -1,7 +1,7 @@
 package dreamengine.core.math;
 
 @:notNull
-abstract Vector2(Array<Float>) {
+abstract Vector2(Array<Float>) from Array<Float>{
 	public var x(get, set):Float;
 	public var y(get, set):Float;
 
@@ -30,6 +30,7 @@ abstract Vector2(Array<Float>) {
 		this[1] = value;
 		return value;
 	}
+	
 
 	@:op(A * B) @:commutative
 	public function multiplied(rhs:Vector2) {

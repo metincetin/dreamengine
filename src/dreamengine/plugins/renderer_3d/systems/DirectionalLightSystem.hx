@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d.systems;
 
+import dreamengine.plugins.ecs.ECSContext;
 import dreamengine.core.Time;
 import dreamengine.core.math.Vector3;
 import dreamengine.plugins.renderer_base.ShaderGlobals;
@@ -10,18 +11,19 @@ import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import dreamengine.plugins.ecs.System;
 
 class DirectionalLightSystem extends System {
-	override function execute(ctx:SystemContext) {
-		var tr:Transform = cast ctx.getComponent(Transform);
-		var light:Light = cast ctx.getComponent(DirectionalLight);
+	override function execute(ctx:ECSContext) {
+		var filter = ctx.filter([Transform, DirectionalLight]);
 
-		var fw = tr.getForward();
-		var col = light.color;
+		for (c in filter) {
+			var tr:Transform = c.getComponent(Transform);
+			var light:Light = c.getComponent(DirectionalLight);
 
-		ShaderGlobals.setFloat3("directionalLightColor", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
-		ShaderGlobals.setFloat3("directionalLightDirection", fw);
+			var fw = tr.getForward();
+			var col = light.color;
+
+			ShaderGlobals.setFloat3("directionalLightColor", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
+			ShaderGlobals.setFloat3("directionalLightDirection", fw);
+		}
 	}
 
-	override function getTargetComponents():Array<Class<Component>> {
-		return [Transform, DirectionalLight];
-	}
 }
