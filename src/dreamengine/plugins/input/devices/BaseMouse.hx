@@ -1,5 +1,6 @@
 package dreamengine.plugins.input.devices;
 
+import dreamengine.plugins.input.devices.BaseKeyboard.KeyboardKey;
 import haxe.io.Bytes;
 import haxe.Constraints;
 import dreamengine.core.math.Vector2i;
@@ -13,6 +14,8 @@ class BaseMouse implements IPointer implements IKeyDevice {
 	var keyPressed:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var keyReleased:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var deltaChanged:Array<Vector2i->Void> = new Array<Vector2i->Void>();
+	var pressed = new Array<(Int)->Void>();
+	var released = new Array<(Int)->Void>();
 
 	public function new(index:Int) {
 		this.index = index;
@@ -76,5 +79,21 @@ class BaseMouse implements IPointer implements IKeyDevice {
 
 	public function isKeyPressed(key:Int):Bool {
 		return false;
+	}
+
+	public function addPressedListener(f:KeyboardKey -> Void) {
+		pressed.push(f);
+	}
+
+	public function removePressedListener(f:KeyboardKey -> Void) {
+		pressed.remove(f);
+	}
+
+	public function addReleasedListener(f:KeyboardKey -> Void) {
+		released.push(f);
+	}
+
+	public function removeReleasedListener(f:KeyboardKey -> Void) {
+		released.remove(f);
 	}
 }

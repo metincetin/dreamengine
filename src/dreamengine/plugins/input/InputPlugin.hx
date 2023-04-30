@@ -6,6 +6,7 @@ import dreamengine.core.Plugin.IPlugin;
 /// handles basic input
 class InputPlugin implements IPlugin {
 	var inputHandler:IInputHandler;
+	public var inputMap:InputMap;
 
 	public function new(inputHandler:IInputHandler) {
 		this.inputHandler = inputHandler;

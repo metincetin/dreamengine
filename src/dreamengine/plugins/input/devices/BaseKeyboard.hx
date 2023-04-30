@@ -11,6 +11,9 @@ class BaseKeyboard implements IKeyDevice {
 	var keyReleased:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var inputReceived:Array<KeyboardKeyEvent->Void> = new Array<KeyboardKeyEvent->Void>();
 
+	var pressed:Array<(KeyboardKey)->Void> = [];
+	var released:Array<(KeyboardKey)->Void> = [];
+
 	public function new(index:Int) {
 		this.index = index;
 	}
@@ -74,9 +77,25 @@ class BaseKeyboard implements IKeyDevice {
 	public function isKeyJustReleased(key:Int):Bool {
 		return false;
 	}
+
+	public function addPressedListener(f:(KeyboardKey)->Void) {
+		pressed.push(f);
+	}
+
+	public function removePressedListener(f:(KeyboardKey)->Void) {
+		pressed.remove(f);
+	}
+
+	public function addReleasedListener(f:(KeyboardKey)->Void) {
+		released.push(f);
+	}
+
+	public function removeReleasedListener(f:(KeyboardKey)->Void) {
+		released.remove(f);
+	}
 }
 
-@:enum abstract KeyboardKey(Int) to Int {
+@:enum abstract KeyboardKey(Int) to Int from Int{
 	var F = 70;
 	var G = 71;
 	var I = 73;

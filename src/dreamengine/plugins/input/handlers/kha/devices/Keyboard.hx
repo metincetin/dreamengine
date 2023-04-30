@@ -16,9 +16,11 @@ class Keyboard extends BaseKeyboard {
 
 		khaKeyboardReference = kha.input.Keyboard.get(index);
 		khaKeyboardReference.notify(onKhaKeyDown, onKhaKeyUp);
+		trace(khaKeyboardReference);
 	}
 
 	function onKhaKeyDown(key:KeyCode) {
+		trace(key);
 		var conv = convertKeyCode(key);
 		if (keyPressed.exists(conv)) {
 			for (f in keyPressed.get(conv)) {
@@ -31,6 +33,9 @@ class Keyboard extends BaseKeyboard {
 			pressedKeys.push(conv);
 		for (f in inputReceived) {
 			f(new KeyboardKeyEvent(cast key, false, false));
+		}
+		for(f in pressed){
+			f(conv);
 		}
 	}
 
