@@ -3,7 +3,6 @@ package dreamengine.plugins.renderer_base.components;
 import dreamengine.plugins.ecs.Component;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.VertexShader;
-import kha.graphics4.hxsl.Shader;
 
 class Material extends Component {
 	var fragmentShader:FragmentShader;

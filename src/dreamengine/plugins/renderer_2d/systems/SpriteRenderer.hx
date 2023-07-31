@@ -3,7 +3,6 @@ package dreamengine.plugins.renderer_2d.systems;
 import dreamengine.core.math.Quaternion;
 import kha.Color;
 import dreamengine.core.Time;
-import kha.graphics5_.PipelineState;
 import kha.math.FastMatrix2;
 import kha.math.FastVector2;
 import dreamengine.plugins.dreamui.containers.ScreenContainer;
