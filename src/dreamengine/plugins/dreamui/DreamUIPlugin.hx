@@ -85,7 +85,7 @@ class DreamUIPlugin implements IPlugin {
 	function onRender(fb:Framebuffer) {
 		if (mainElement == null)
 			return;
-		fb.g2.begin(false);
+		fb.g2.begin(true);
 		screen.render(fb.g2, 1);
 		fb.g2.end();
 	}

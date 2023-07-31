@@ -1,5 +1,7 @@
 package dreamengine.core;
 
+import kha.FramebufferOptions;
+import kha.WindowOptions;
 import kha.Window;
 import kha.System;
 import kha.Color;
@@ -42,10 +44,9 @@ class Engine {
 
 	function onSystemStarted(window:Window, onStarted: Engine->Void) {
 		mainWindow = window;
-		kha.System.notifyOnFrames(onFrame);
 		trace("Setting up game loop");
 		Scheduler.addTimeTask(onTick, 0, 1 / 60);
-		Scheduler.addFrameTask(onRender, 0);
+		kha.System.notifyOnFrames(onFrame);
 
 		initializeDevice();
 
@@ -92,6 +93,7 @@ class Engine {
 		if (framebuffers.length == 0)
 			return;
 		mainFrameBuffer = framebuffers[0];
+		onRender();
 	}
 
 	// executes main update loop. Returns true if game should exit
