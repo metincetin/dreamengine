@@ -1,12 +1,22 @@
 package dreamengine.plugins.ecs;
 
+import haxe.ds.Option;
+
 class ECSContext {
 	var entities = new Array<Entity>();
+	var spawnQueue = new Array<Array<Component>>();
 
 	public function new() {}
 
 	public function getEntities() {
 		return entities;
+	}
+
+	public function getSpawnQueue(){
+		return spawnQueue;
+	}
+	public function queueSpawn(components: Array<Component>){
+		spawnQueue.push(components);
 	}
 
 	public function query(params:Array<IQueryParam>) {
@@ -29,6 +39,25 @@ class ECSContext {
 		return ret;
 	}
 
+	public function find(t:Array<Class<Component>>): Option<FilterResult>{
+		for (entity in entities) {
+			var targets = t;
+			var valid = true;
+			var components = new Array<Component>();
+			for (target in targets) {
+				if (!entity.hasComponent(target)) {
+					valid = false;
+					break;
+				}
+				components.push(entity.getComponent(target));
+			}
+			if (valid) {
+				return Some(new FilterResult(components, entity));
+			}
+		}
+		return None;
+	}
+
 	public function filter(t:Array<Class<Component>>):Array<FilterResult> {
 		var ret = new Array<FilterResult>();
 		for (entity in entities) {
@@ -47,6 +76,10 @@ class ECSContext {
 			}
 		}
 		return ret;
+	}
+
+	public function clearSpawnQueue() {
+		spawnQueue.resize(0);
 	}
 
 	public function addEntity(entity:Entity) {

@@ -54,7 +54,7 @@ class Label extends Element {
 				offset.y = 0;
 			case TopCenter:
 				offset.x = size.x * 0.5 - prefSize.x * 0.5;
-				offset.y = -(size.y - prefSize.y);
+				offset.y = (size.y - prefSize.y);
 			case TopRight:
 				offset.x = size.x - prefSize.x;
 				offset.y = 0;
@@ -72,13 +72,13 @@ class Label extends Element {
 				offset.y = size.y - prefSize.y;
 			case BottomCenter:
 				offset.x = size.x * 0.5 - prefSize.x * 0.5;
-				offset.y = size.y - prefSize.y;
+				offset.y = size.y + prefSize.y;
 			case BottomRight:
 				offset.x = size.x - prefSize.x;
 				offset.y = size.y - prefSize.y;
 		}
 
-		g2.drawString(text, pos.x + offset.x, pos.y - offset.y);
+		g2.drawString(text, pos.x + offset.x, pos.y + offset.y);
 		g2.fontSize = cachedFontSize;
 	}
 

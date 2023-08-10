@@ -34,6 +34,7 @@ class Renderer2D implements IPlugin implements IRenderContextProvider {
 		}
 
 		ecs.registerRenderSystem(spriteRenderer);
+		ecs.registerRenderSystem(new LineRenderer2D());
 		ecs.registerRenderSystem(new ParticleRenderer());
 		ecs.registerSystem(new CameraSystem());
 		ecs.registerSystem(new SpriteAnimationPlayer());

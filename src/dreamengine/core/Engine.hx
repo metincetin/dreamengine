@@ -1,5 +1,6 @@
 package dreamengine.core;
 
+import dreamengine.device.Screen;
 import kha.FramebufferOptions;
 import kha.WindowOptions;
 import kha.Window;
@@ -53,7 +54,9 @@ class Engine {
 		onStarted(this);
 	}
 
-	function initializeDevice() {}
+	function initializeDevice() {
+		Screen.initialize();
+	}
 
 	public function createTimeTask(task:Void->Void, period:Float){
 		Scheduler.addTimeTask(task,0, period);

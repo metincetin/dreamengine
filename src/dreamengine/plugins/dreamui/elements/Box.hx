@@ -17,4 +17,9 @@ class Box extends Element {
 		g2.fillRect(pos.x, pos.y, size.x, size.y);
 		g2.color = kha.Color.White;
 	}
+
+	override function parseStyle() {
+		super.parseStyle();
+		color = parsedStyle.getColorValue("background-color", kha.Color.White);
+	}
 }

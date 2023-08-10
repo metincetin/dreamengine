@@ -136,8 +136,7 @@ class Element {
 		if (!getEnabled())
 			return;
 		
-		g2.drawRect(getRect().getPosition().x, getRect().getPosition().y, getRect().getSize().x, getRect().getSize().y, 1);
-		g2.opacity = opacity * renderOpacity;
+		g2.opacity *= renderOpacity;
 		onRender(g2, opacity);
 		for (c in children) {
 			c.render(g2, renderOpacity);
@@ -261,6 +260,8 @@ class Element {
 			if (this.layoutParameters != null){
 				this.layoutParameters.setValuesFromStyle(parsedStyle);
 			}
+
+			this.renderOpacity = this.parsedStyle.getFloatValue("opacity", 1);
 			isDirty = true;
 		}
 	}

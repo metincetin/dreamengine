@@ -21,7 +21,6 @@ import dreamengine.plugins.ecs.System.RenderSystem;
 
 class SpriteRenderer extends RenderSystem {
 	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
-
 		for (c in ecsContext.filter([Sprite, Transform])) {
 			var graphics = renderContext.getRenderTarget().g2;
 			var transform = c.getComponent(Transform);
@@ -29,6 +28,7 @@ class SpriteRenderer extends RenderSystem {
 			var rotation = Mathf.degToRad(transform.getRotation().toEuler().z);
 			var scale = transform.getScale();
 			var spr = c.getComponent(Sprite);
+			var pivot = spr.pivot;
 
 			var image = spr.getImage();
 
@@ -36,10 +36,9 @@ class SpriteRenderer extends RenderSystem {
 				return;
 
 			var localRect = spr.getLocalRect();
-			var localPos = localRect.getPosition();
-			var localSize = localRect.getSize();
+			var localPos = localRect.getPosition() * scale.asVector2();
+			var localSize = localRect.getSize() * scale;
 			var ppuScale = spr.getPPU() / 100;
-
 
 			var camera = renderContext.getCamera();
 			var viewMatrix = camera.getViewMatrix();
@@ -48,25 +47,23 @@ class SpriteRenderer extends RenderSystem {
 			var screenRes = Screen.getResolution();
 			var cameraSize = renderContext.getCamera().size;
 
-
 			var s = 1 / (cameraSize);
 
 			graphics.transformation = FastMatrix3.identity();
-			
-			graphics.scale(s,s);
+
+			graphics.scale(s, s);
 			graphics.rotate(rotation, 0, 0);
 			graphics.translate(screenRes.x * 0.5, screenRes.y * 0.5);
 			graphics.translate(-cameraPos.x, -cameraPos.y);
-			
+
 			graphics.translate(position.x * (200) * s, position.y * 200 * s);
-			
-			graphics.rotate(-Math.atan2(cameraRight.y, cameraRight.x),cameraPos.x + screenRes.x * 0.5,cameraPos.y + screenRes.y * 0.5);
-			
+
+			graphics.rotate(-Math.atan2(cameraRight.y, cameraRight.x), cameraPos.x + screenRes.x * 0.5, cameraPos.y + screenRes.y * 0.5);
+
 			graphics.drawScaledImage(image, localPos.x, localPos.y, localSize.x, localSize.y);
 			#if debug
 			graphics.drawRect(localPos.x, localPos.y, localSize.x, localSize.y, cameraSize);
 			#end
 		}
-		
 	}
 }

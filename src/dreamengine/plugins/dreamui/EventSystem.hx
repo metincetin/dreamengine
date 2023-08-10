@@ -61,7 +61,7 @@ class EventSystem {
 		pointerPosition = inputHandler.getMouse(0).getPointerPosition();
 
 		// look up the element that is on top
-		var target = uiPlugin.getMainElement();
+		var target = uiPlugin.getScreenElement();
 		if (target == null)
 			return;
 
@@ -80,6 +80,8 @@ class EventSystem {
 				currentPointerTarget.onPointerExited();
 			currentPointerTarget = null;
 		}
+		if (currentPointerTarget!=null)
+			trace(Type.getClassName(Type.getClass(currentPointerTarget)));
 	}
 
 	function getPointerTargetInChildren(ofElement:Element):IPointerTarget {

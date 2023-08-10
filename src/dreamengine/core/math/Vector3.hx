@@ -68,6 +68,13 @@ abstract Vector3(Array<Float>) from Array<Float>{
 		z /= length;
 	}
 
+	public function distanceTo(to:Vector3){
+		var dx = x - to.x;
+		var dy = y - to.y;
+		var dz = z - to.z;
+		return Math.sqrt(dx*dx + dy*dy + dz*dz);
+	}
+
 
 	@:op(A + B) @:commutative
 	public function added(b:Vector3){
@@ -187,4 +194,11 @@ abstract Vector3(Array<Float>) from Array<Float>{
 	public function asVector2():Vector2 {
 		return new Vector2(x, y);
 	}
+
+	@:from
+	static function fromIntArray(array:Array<Int>){
+		var n = new Vector3(cast array[0], cast array[1], cast array[2]);
+		return n;
+	}
+
 }

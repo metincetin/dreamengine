@@ -57,6 +57,14 @@ class ECS implements IPlugin {
 			system.execute(ecsContext);
 		}
 		killPendingEntities();
+		spawnQueued();
+	}
+
+	function spawnQueued(){
+		for(components in ecsContext.getSpawnQueue()){
+			spawn(components);
+		}
+		ecsContext.clearSpawnQueue();
 	}
 
 	function killPendingEntities() {

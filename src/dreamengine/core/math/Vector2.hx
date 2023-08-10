@@ -30,11 +30,23 @@ abstract Vector2(Array<Float>) from Array<Float>{
 		this[1] = value;
 		return value;
 	}
+
+	public function distanceTo(to:Vector2){
+		var dx = x - to.x;
+		var dy = y - to.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+
 	
 
 	@:op(A * B) @:commutative
 	public function multiplied(rhs:Vector2) {
 		return new Vector2(this[0] * rhs.x, this[1] * rhs.y);
+	}
+
+	@:op(A / B) @:commutative
+	public function divided(rhs:Vector2) {
+		return new Vector2(this[0] / rhs.x, this[1] / rhs.y);
 	}
 
 	@:op(A * B) @:commutative
@@ -137,6 +149,12 @@ abstract Vector2(Array<Float>) from Array<Float>{
 		return n;
 	}
 
+	@:from
+	static function fromIntArray(array:Array<Int>){
+		var n = new Vector2(cast array[0], cast array[1]);
+		return n;
+	}
+
 	@:to
 	public function asVector3() {
 		var n = new Vector3(x, y);
@@ -146,6 +164,13 @@ abstract Vector2(Array<Float>) from Array<Float>{
 	static function fromVector3(v:Vector3){
 		return new Vector2(v.x, v.y);
 	}
+	
+	@:from
+	static function fromKhaVector2(v:kha.math.Vector2){
+		var n = new Vector2(v.x, v.y);
+		return n;
+	}
+
 	@:to
 	function toKhaVector2(){
 		return new kha.math.Vector2(x, y);

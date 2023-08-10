@@ -43,8 +43,8 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 	}
 
 	override function onRender(g2:Graphics, opacity:Float) {
-		var pos = rect.getPosition();
 		var size = rect.getSize();
+		var pos = rect.getPosition();
 		
 		var padding = new Dimension(
 			parsedStyle.getFloatValue("padding-left", 0),
@@ -56,9 +56,11 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		size.x = Math.max(size.x, prefSize.x);
 		size.y = Math.max(size.y, prefSize.y);
 
+		//pos-=size * pivot;
+
 		var center = pos.copy();
-		center.x += size.x * pivot.x + (padding.left - padding.right) * 0.5;
-		center.y += size.y * pivot.y + (padding.top - padding.bottom) * 0.5;
+		center.x += size.x * 0.5 + (padding.left - padding.right);
+		center.y += size.y * 0.5 + (padding.top - padding.bottom);
 
 		g2.color = parsedStyle.getColorValue("background-color", kha.Color.Cyan);
 		g2.fontSize = parsedStyle.getIntValue("font-size", 12);
