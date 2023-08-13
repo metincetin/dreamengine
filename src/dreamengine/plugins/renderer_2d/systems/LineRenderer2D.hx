@@ -35,10 +35,8 @@ class LineRenderer2D extends RenderSystem {
 				g2.translate(-cameraPos.x, -cameraPos.y);
 
 				// g2.translate(position.x * (200) * s, position.y * 200 * s);
-                p1 *= s * 200;
-                p2 *= s * 200;
 			    g2.rotate(-Math.atan2(cameraRight.y, cameraRight.x),cameraPos.x + screenRes.x * 0.5,cameraPos.y + screenRes.y * 0.5);
-				g2.drawLine(p1.x, p1.y, p2.x, p2.y, 10);
+				g2.drawLine(p1.x * 200, -p1.y * 200, p2.x * 200, -p2.y * 200, cameraSize * line.width);
 			}
 		}
 	}

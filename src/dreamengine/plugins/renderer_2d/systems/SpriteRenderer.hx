@@ -56,7 +56,7 @@ class SpriteRenderer extends RenderSystem {
 			graphics.translate(screenRes.x * 0.5, screenRes.y * 0.5);
 			graphics.translate(-cameraPos.x, -cameraPos.y);
 
-			graphics.translate(position.x * (200) * s, position.y * 200 * s);
+			graphics.translate(position.x * (200) * s, -position.y * 200 * s);
 
 			graphics.rotate(-Math.atan2(cameraRight.y, cameraRight.x), cameraPos.x + screenRes.x * 0.5, cameraPos.y + screenRes.y * 0.5);
 

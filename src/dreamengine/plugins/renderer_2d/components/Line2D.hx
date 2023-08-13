@@ -5,10 +5,12 @@ import dreamengine.plugins.ecs.Component;
 
 class Line2D extends Component {
 	public var points:Array<Vector2> = [];
+	public var width: Float = 1;
 
-    public static function withPoints(points:Array<Vector2>){
+    public static function withPoints(points:Array<Vector2>, width:Float = 1){
         var x = new Line2D();
         x.points = points;
+		x.width = width;
         return x;
     }
 
