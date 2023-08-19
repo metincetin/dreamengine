@@ -7,7 +7,6 @@ import kha.graphics4.FragmentShader;
 import kha.graphics4.PipelineState;
 
 class PostProcessEffect {
-
 	public var enabled = true;
 
 	var passes:Array<PostProcessEffectPass>;
@@ -16,30 +15,38 @@ class PostProcessEffect {
 		passes = createPasses();
 	}
 
-	function createPasses() :Array<PostProcessEffectPass>{
+	function createPasses():Array<PostProcessEffectPass> {
 		return [new SimplePostProcessPass()];
 	}
 
 	function sendValues(destination:Image) {}
 
 	public function execute(source:Image, destination:Image) {
-		var last = destination;
-		for (p in passes){
+		var last:Image = source;
+		for (i in 0...passes.length) {
+			var p = passes[i];
+			var current = p.createRenderTarget(last);
+
 
 			var pipeline = p.getPipeline();
-			last.g2.begin();
-			last.g4.setPipeline(pipeline);
-			last.g2.pipeline = pipeline;
-			sendValues(last);
-			kha.Scaler.scale(source, last, kha.System.screenRotation);
-			last.g2.end();
-			if (passes.length > 1){
-				var r = last;
-				last = p.createRenderTarget(last);
-				last.unload();
-			}
-		}
-		return last;
-	}
+			current.g2.begin();
+			current.g4.setPipeline(pipeline);
+			current.g2.pipeline = pipeline;
+			sendValues(current);
+			current.g4.setTexture(pipeline.getTextureUnit("base"), source);
+			kha.Scaler.scale(last, current, kha.System.screenRotation);
+			current.g2.end();
 
+			if (last != null && last != source)
+				last.unload();
+
+			last = current;
+		}
+
+		destination.g2.begin();
+		kha.Scaler.scale(last, destination, kha.System.screenRotation);
+		destination.g2.end();
+
+		last.unload();
+	}
 }
