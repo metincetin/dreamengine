@@ -1,5 +1,6 @@
 package dreamengine.plugins.ecs;
 
+import kha.Scaler;
 import kha.Color;
 import dreamengine.plugins.renderer_base.ActiveCamera;
 import kha.Framebuffer;
@@ -117,8 +118,9 @@ class ECS implements IPlugin {
 		for (i in 0...ActiveCamera.getCameraCount()) {
 			var cam = ActiveCamera.getCamera(i);
 			framebuffer.g2.clear(Color.Blue);
-			var res = Screen.getResolution();
-			framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
+			//var res = Screen.getResolution();
+			Scaler.scale(cam.renderTexture, framebuffer, kha.System.screenRotation);
+			//framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
 		}
 		framebuffer.g2.end();
 	}

@@ -1,40 +1,45 @@
 package dreamengine.plugins.post_processing;
 
+import dreamengine.plugins.renderer_base.ActiveCamera;
 import kha.Framebuffer;
 import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 
-class PostProcessPlugin implements IPlugin{
+class PostProcessPlugin implements IPlugin {
+    public function new(){}
+	private var stack:PostProcessStack;
 
-    private var stack:PostProcessStack;
+	public function getStack() {
+		return stack;
+	}
 
-    public function getStack(){
-        return stack;
-    }
-
-    public function setStack(stack:PostProcessStack){
-        this.stack = stack;
-    }
+	public function setStack(stack:PostProcessStack) {
+		this.stack = stack;
+	}
 
 	public function initialize(engine:Engine) {
-        engine.registerRenderEvent(onRender);
-    }
+		engine.registerRenderEvent(onRender);
+	}
 
 	public function finalize() {}
 
 	public function getName():String {
-        return "PostProcessing";
+		return "PostProcessing";
 	}
 
 	public function getDependentPlugins():Array<Class<IPlugin>> {
-        return [];
+		return [];
 	}
 
 	public function handleDependency(ofType:Class<IPlugin>):IPlugin {
-        return null;
+		return null;
 	}
 
-    function onRender(framebuffer:Framebuffer){
-        
-    }
+	function onRender(framebuffer:Framebuffer) {
+        if (stack == null) return;
+		for (i in 0...ActiveCamera.getCameraCount()) {
+            var cam = ActiveCamera.getCamera(i);
+            stack.render(cam.renderTexture, framebuffer);
+        }
+	}
 }
