@@ -83,7 +83,7 @@ class Transform extends Component {
 	}
 
 	public function setEulerAngles(value:Vector3) {
-		this.rotation = Quaternion.fromEuler(value.x, value.y, value.z);
+		this.rotation = Quaternion.fromEuler(value);
 		updateMatrix();
 	}
 
@@ -103,13 +103,14 @@ class Transform extends Component {
 	}
 
 	function updateMatrix() {
-		var fw = getForward();
-		var up = getUp();
+
+		var rot = rotation.toEuler();
 
 		var m = FastMatrix4.identity();
 		// m = m.multmat(FastMatrix4.rotation(rotation.x, rotation.y, rotation.z));
 		m = m.multmat(FastMatrix4.scale(scale.x, scale.y, scale.z));
-		m = m.multmat(FastMatrix4.translation(position.x, position.y, position.z));
+		m = m.multmat(FastMatrix4.rotation(Mathf.degToRad(rot.x), Mathf.degToRad(rot.y), Mathf.degToRad(rot.z)));
+		m = m.multmat(FastMatrix4.translation(position.x, -position.y, position.z));
 		// var m = FastMatrix4.rotation(Mathf.degToRad(rotation.x), Mathf.degToRad(rotation.y), Mathf.degToRad(rotation.z));
 		// // m = m.multmat(FastMatrix4.scale(scale.x, scale.y, scale.z));
 

@@ -5,10 +5,9 @@ in vec3 vertexPosition;
 in vec3 vertexColor;
 in vec3 vertexNormal;
 
-// Output data - will be interpolated for each fragment.
-out vec3 fragmentColor;
 out vec3 normal;
 out vec3 worldPos;
+out vec3 color;
 
 // Values that stay constant for the whole mesh
 uniform mat4 MVP;
@@ -23,10 +22,10 @@ void main() {
 	// Output position of the vertex, in clip space: MVP * position
 	gl_Position = MVP * vec4(vertexPosition, 1.0);
 	
+	color = vertexColor;
 
 	// The color of each vertex will be interpolated
 	// to produce the color of each fragment
-	fragmentColor = vertexColor;
 
 	worldPos = (M * vec4(vertexPosition, 1.0)).xyz;
 

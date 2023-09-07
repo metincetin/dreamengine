@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_3d.systems;
 
+import kha.math.FastVector4;
+import js.html.BaseElement;
 import dreamengine.plugins.renderer_base.components.Material;
 import dreamengine.plugins.ecs.ECSContext;
 import kha.Assets;
@@ -62,9 +64,11 @@ class MeshRenderer extends RenderSystem {
 				pipelineState.cullMode = Clockwise;
 			}
 
+
 			pipelineState.depthWrite = true;
 			pipelineState.depthMode = CompareMode.Less;
 			pipelineState.compile();
+
 
 			var vertsNum = Std.int(positions.length / 3);
 			// Create vertex buffer
@@ -109,6 +113,9 @@ class MeshRenderer extends RenderSystem {
 			g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
 			g4.setMatrix(pipelineState.getConstantLocation("M"), model);
 			g4.setMatrix(pipelineState.getConstantLocation("V"), renderContext.getCamera().getViewMatrix());
+
+			// do setting material properties
+			g4.setVector4(pipelineState.getConstantLocation("baseColor"), new FastVector4(1,0,0,1));
 
 			ShaderGlobals.apply(pipelineState, g4);
 

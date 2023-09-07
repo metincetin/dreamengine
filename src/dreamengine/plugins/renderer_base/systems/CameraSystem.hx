@@ -27,6 +27,7 @@ class CameraSystem extends System {
 			);
 
 			camera.setViewMatrix(view);
+			ShaderGlobals.setFloat3("cameraPosition", pos);
 		}
 	}
 }

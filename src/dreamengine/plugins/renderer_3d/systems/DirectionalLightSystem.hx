@@ -16,13 +16,14 @@ class DirectionalLightSystem extends System {
 
 		for (c in filter) {
 			var tr:Transform = c.getComponent(Transform);
-			var light:Light = c.getComponent(DirectionalLight);
+			var light:DirectionalLight = c.getComponent(DirectionalLight);
 
 			var fw = tr.getForward();
 			var col = light.color;
 
 			ShaderGlobals.setFloat3("directionalLightColor", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
 			ShaderGlobals.setFloat3("directionalLightDirection", fw);
+			ShaderGlobals.setTexture("shadowMap", light.shadowMap);
 		}
 	}
 

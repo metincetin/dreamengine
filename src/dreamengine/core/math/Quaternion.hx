@@ -15,7 +15,11 @@ class Quaternion {
 		this.w = w;
 	}
 
-	public static function fromEuler(x:Float, y:Float, z:Float) {
+	public static function fromEuler(euler:Vector3) {
+		var x = euler.x;
+		var y = euler.y;
+		var z = euler.z;
+
 		var roll:Float = Mathf.degToRad(x);
 		var pitch:Float = Mathf.degToRad(y);
 		var yaw:Float = Mathf.degToRad(z);
@@ -87,7 +91,7 @@ class Quaternion {
 		return n;
 	}
 	public function multiplyV(euler:Vector3){
-		var q = Quaternion.fromEuler(euler.x, euler.y, euler.z);
+		var q = Quaternion.fromEuler(euler);
 		multiply(q);
 	}
 	public function multipliedV(euler:Vector3){
