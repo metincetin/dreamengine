@@ -29,6 +29,7 @@ class HorizontalBoxContainer extends Element{
 
         for (i in 0...getChildCount()){
             var c = getChild(i);
+            if (c.visibility == Collapsed) continue;
 
             var size = new Vector2(32, 32);
             

@@ -80,8 +80,6 @@ class EventSystem {
 				currentPointerTarget.onPointerExited();
 			currentPointerTarget = null;
 		}
-		if (currentPointerTarget!=null)
-			trace(Type.getClassName(Type.getClass(currentPointerTarget)));
 	}
 
 	function getPointerTargetInChildren(ofElement:Element):IPointerTarget {
