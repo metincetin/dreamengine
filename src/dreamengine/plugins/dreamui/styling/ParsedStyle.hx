@@ -47,6 +47,7 @@ class ParsedStyle {
 	public function setForElement(element:Element) {
 		var style = element.getStyle();
 		this.previousParsedStyle = element.getParsedStyle().copy();
+		values.clear();
 		time = Time.getTime();
 		for (selectorString in style.getSelectors()) {
 			var selector = new Selector(selectorString);

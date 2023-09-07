@@ -31,7 +31,7 @@ class ElementSwitcher extends Element {
 		if (getChildCount() == 0)
 			return;
 		for (i in 0...getChildCount()) {
-			getChild(i).setEnabled(i == currentElement);
+			getChild(i).visibility = i == currentElement ? Visible : Collapsed;
 		}
 	}
 
@@ -41,7 +41,7 @@ class ElementSwitcher extends Element {
 			setCurrentElement(0);
 		} else {
 			if (getChildCount() - 1 != currentElement) {
-				c.setEnabled(false);
+				c.visibility = Collapsed;
 			}
 		}
 	}

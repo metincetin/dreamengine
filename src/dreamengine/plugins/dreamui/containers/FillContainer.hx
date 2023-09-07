@@ -17,6 +17,7 @@ class FillContainer extends Element {
 	override function layout() {
         var size = getRect().getSize();
 		for (c in children){
+			if (c.visibility == Collapsed) continue;
 			c.rect.setSize(size);
 			c.rect.setPosition(Vector2.zero());
 		}

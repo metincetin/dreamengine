@@ -25,7 +25,7 @@ class Element {
 
 	var localScale = Vector2.one();
 
-	var enabled:Bool = true;
+	var visibility:Visibility = Visible;
 
 	var renderOpacity:Float = 1;
 
@@ -41,17 +41,6 @@ class Element {
 
 	public function getParsedStyle() {
 		return parsedStyle;
-	}
-
-	public function getEnabled() {
-		return enabled;
-	}
-
-	public function setEnabled(value:Bool) {
-		enabled = value;
-		for (c in children) {
-			c.setEnabled(value);
-		}
 	}
 
 	public function getStyle() {
@@ -126,6 +115,8 @@ class Element {
 	}
 
 	public final function render(g2:Graphics, opacity:Float) {
+		if (visibility != Visible)
+			return;
 		if (isDirty) {
 			layout();
 			isDirty = false;
@@ -133,9 +124,7 @@ class Element {
 				parent.isDirty = true;
 			}
 		}
-		if (!getEnabled())
-			return;
-		
+
 		g2.opacity *= renderOpacity;
 		onRender(g2, opacity);
 		for (c in children) {
@@ -154,7 +143,7 @@ class Element {
 	public function addChild(c:Element) {
 		if (children.contains(c))
 			return;
-		if (c == this){
+		if (c == this) {
 			throw "Can't add self as child.";
 		}
 		if (c.parent != null) {
@@ -181,13 +170,13 @@ class Element {
 	}
 
 	public function setDirty() {
+		isDirty = true;
 		setDirtyAllChildren();
 	}
 
 	function setDirtyAllChildren() {
-		isDirty = true;
 		for (c in children) {
-			c.setDirtyAllChildren();
+			c.setDirty();
 		}
 	}
 
@@ -210,23 +199,23 @@ class Element {
 	}
 
 	public function matchesQuerySelector(selector:Selector) {
-		if (selector.type != null) {
+		if (selector.getType() != null) {
 			var className = std.Type.getClassName(std.Type.getClass(this));
 			var packageHierarchy = className.split(".");
 			if (packageHierarchy.length > 0) {
 				className = packageHierarchy[packageHierarchy.length - 1];
 			}
-			if (selector.type != className) {
+			if (selector.getType() != className) {
 				return false;
 			}
 		}
 
-		for (cl in selector.classes) {
+		for (cl in selector.getClasses()) {
 			if (!styleClasess.contains(cl))
 				return false;
 		}
-		if (selector.id != null) {
-			if (selector.id != this.name) {
+		if (selector.getId() != null) {
+			if (selector.getId() != this.name) {
 				return false;
 			}
 		}
@@ -257,12 +246,18 @@ class Element {
 	public function parseStyle() {
 		if (style != null) {
 			this.parsedStyle.setForElement(this);
-			if (this.layoutParameters != null){
+			if (this.layoutParameters != null) {
 				this.layoutParameters.setValuesFromStyle(parsedStyle);
 			}
 
 			this.renderOpacity = this.parsedStyle.getFloatValue("opacity", 1);
-			isDirty = true;
+			var newVisibility = this.parsedStyle.getStringValue("visibility", "visible");
+			visibility = newVisibility;
+
+			if (visibility != newVisibility){
+				setDirty();
+			}
+
 		}
 	}
 
@@ -303,5 +298,24 @@ class Element {
 
 	public function queryAll<T:Class<Element>>(query:Selector, type:Class<T>):Array<T> {
 		return cast queryAllInternal(query, cast type);
+	}
+}
+
+enum abstract Visibility(Int) {
+	var Visible = 0;
+	var Hidden = 1;
+	var Collapsed = 2;
+
+	@:from
+	static function fromString(str:String) {
+		switch (str) {
+			case "visible":
+				return Visible;
+			case "hidden":
+				return Hidden;
+			case "collapsed":
+				return Collapsed;
+		}
+		return Visible;
 	}
 }

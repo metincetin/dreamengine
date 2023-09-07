@@ -16,6 +16,7 @@ class CanvasContainer extends Element {
 
 	override function layout() {
 		for (c in children) {
+			if (c.visibility == Collapsed) continue;
 			c.rect.setSize(getSizeFor(c));
 			c.rect.setPosition(getPositionFor(c));
 		}
