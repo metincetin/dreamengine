@@ -21,7 +21,7 @@ class PostProcessEffect {
 
 	function sendValues(destination:Image) {}
 
-	public function execute(source:Image, destination:Image) {
+	public function execute(source:Image, destination:Image, base: Image) {
 		var last:Image = source;
 		for (i in 0...passes.length) {
 			var p = passes[i];
@@ -33,7 +33,8 @@ class PostProcessEffect {
 			current.g4.setPipeline(pipeline);
 			current.g2.pipeline = pipeline;
 			sendValues(current);
-			current.g4.setTexture(pipeline.getTextureUnit("base"), source);
+			current.g4.setTexture(pipeline.getTextureUnit("base"), base);
+			p.passValues(current.g4);
 			kha.Scaler.scale(last, current, kha.System.screenRotation);
 			current.g2.end();
 

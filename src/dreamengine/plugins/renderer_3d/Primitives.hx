@@ -153,7 +153,7 @@ class Primitives {
 
 				normals.push(x);
 				normals.push(y);
-				normals.push(z);
+				normals.push(-z);
 				uvs.push(u);
 				uvs.push(v);
 				vertices.push(radius * x);

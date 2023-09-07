@@ -93,6 +93,7 @@ class ECS implements IPlugin {
 					case G4:
 						cam.renderTexture.g4.begin();
 						cam.renderTexture.g4.clear(Transparent, 8);
+						//cam.renderTexture.g4.clear(Black, 8);
 					case G2:
 						cam.renderTexture.g2.begin();
 					case G1:
@@ -117,7 +118,7 @@ class ECS implements IPlugin {
 		framebuffer.g2.begin(false);
 		for (i in 0...ActiveCamera.getCameraCount()) {
 			var cam = ActiveCamera.getCamera(i);
-			framebuffer.g2.clear(Color.Blue);
+			//framebuffer.g2.clear(Color.Blue);
 			//var res = Screen.getResolution();
 			Scaler.scale(cam.renderTexture, framebuffer, kha.System.screenRotation);
 			//framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);

@@ -35,4 +35,7 @@ class PostProcessEffectPass {
 	public function getPipeline(){
 		return pipeline;
 	}
+
+	public function passValues(graphics:Graphics) {
+	}
 }

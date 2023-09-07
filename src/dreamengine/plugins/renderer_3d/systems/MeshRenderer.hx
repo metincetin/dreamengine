@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d.systems;
 
+import dreamengine.plugins.renderer_base.components.Material;
 import dreamengine.plugins.ecs.ECSContext;
 import kha.Assets;
 import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
@@ -30,11 +31,12 @@ class MeshRenderer extends RenderSystem {
 	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
 		var g4 = renderContext.getRenderTarget().g4;
 
-		var f = ecsContext.filter([Mesh, Transform]);
+		var f = ecsContext.query([new With(Mesh), new With(Transform), new Optional(Material)]);
 
 		for (c in f) {
 			var mesh:Mesh = c.getComponent(Mesh);
 			var transform:Transform = c.getComponent(Transform);
+			var material:Material = c.getComponent(Material);
 
 			var pipelineState:PipelineState = renderContext.getPipelineState();
 
@@ -49,10 +51,16 @@ class MeshRenderer extends RenderSystem {
 			var structLength = Std.int(struct.byteSize() / 4);
 
 			pipelineState.inputLayout = [struct];
-			pipelineState.cullMode = Clockwise;
 
-			pipelineState.vertexShader = Shaders.simple_vert;
-			pipelineState.fragmentShader = Shaders.simple_frag;
+			if (material != null) {
+				pipelineState.vertexShader = material.getVertexShader();
+				pipelineState.fragmentShader = material.getFragmentShader();
+				pipelineState.cullMode = material.cullMode;
+			} else {
+				pipelineState.vertexShader = Shaders.simple_vert;
+				pipelineState.fragmentShader = Shaders.simple_frag;
+				pipelineState.cullMode = Clockwise;
+			}
 
 			pipelineState.depthWrite = true;
 			pipelineState.depthMode = CompareMode.Less;

@@ -38,7 +38,7 @@ class PostProcessStack{
         for(eff in effects){
             if (!eff.enabled) continue;
             var int2 = Image.createRenderTarget(img.width, img.height, img.format);
-            eff.execute(lastImage, int2);
+            eff.execute(lastImage, int2, img);
             lastImage.unload();
             lastImage = int2;
         }

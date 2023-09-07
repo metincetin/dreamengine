@@ -40,7 +40,7 @@ class Engine {
 		trace("Initializing Engine");
 
 		trace("Setting up Kha");
-		kha.System.start(new SystemOptions("Dream Game", 800, 400), function(w){ engine.onSystemStarted(w, onStarted);});
+		kha.System.start(new SystemOptions("Dream Game", 1344, 756), function(w){ engine.onSystemStarted(w, onStarted);});
 	}
 
 	function onSystemStarted(window:Window, onStarted: Engine->Void) {

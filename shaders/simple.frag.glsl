@@ -1,5 +1,4 @@
 #version 450
-
 // Interpolated values from the vertex shaders
 in vec3 fragmentColor;
 
@@ -19,7 +18,7 @@ uniform vec3 additionalLight0_position;
 void main() {
 	// Output color = color specified in the vertex shader,
 	// interpolated between all 3 surrounding vertices
-	float ldn = max(0.0, dot(directionalLightDirection, normal));
+	float ldn = max(0.0, dot(-directionalLightDirection, normal));
 
 
 
