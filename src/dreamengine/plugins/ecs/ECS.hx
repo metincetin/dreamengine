@@ -26,7 +26,6 @@ class ECS implements IPlugin {
 
 	var engine:Engine;
 
-	var customTicks = new Map<String, CustomTick>();
 
 	public function initialize(engine:Engine) {
 		this.engine = engine;
@@ -43,14 +42,6 @@ class ECS implements IPlugin {
 
 	public function registerRenderContextProvider(provider:IRenderContextProvider) {
 		renderContextProviders.push(provider);
-	}
-
-	public function registerCustomTick(name:String, systems:Array<System>, f:Function) {
-		customTicks.set(name, new CustomTick(systems, f));
-	}
-
-	public function unregisterCustomTick(name:String, f:Function) {
-		customTicks.remove(name);
 	}
 
 	function tickGame() {
@@ -197,15 +188,5 @@ class ECS implements IPlugin {
 
 	public function handleDependency(ofType:Class<IPlugin>) {
 		return null;
-	}
-}
-
-class CustomTick {
-	public var forSystems:Array<System>;
-	public var func:Function;
-
-	public function new(systems:Array<System>, func:Function) {
-		forSystems = systems;
-		this.func = func;
 	}
 }
