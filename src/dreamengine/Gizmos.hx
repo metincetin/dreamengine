@@ -1,5 +1,6 @@
 package dreamengine;
 
+import kha.math.Vector3;
 import kha.math.FastMatrix3;
 import dreamengine.device.Screen;
 import dreamengine.plugins.renderer_base.ActiveCamera;
@@ -24,8 +25,9 @@ class Gizmos{
         commands.push(function(fb){
             fb.g2.begin(false);
             fb.g2.color = kha.Color.Red;
-            var tr = ActiveCamera.getTransform(0);
-            var p = tr.getPosition();
+            var view = ActiveView.getView(0);
+            var vm = view.getViewMatrix();
+            var p = new Vector3(vm._03, vm._13, vm._23);
             var res = Screen.getResolution();
             p.x += res.x * 0.5;
             p.y += res.y * 0.5;

@@ -1,31 +1,16 @@
 package dreamengine.plugins.renderer_3d.systems;
 
 import kha.math.FastVector4;
-import js.html.BaseElement;
-import dreamengine.plugins.renderer_base.components.Material;
-import dreamengine.plugins.ecs.ECSContext;
-import kha.Assets;
-import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import dreamengine.plugins.renderer_base.ShaderGlobals;
-import kha.math.Vector3;
-import dreamengine.plugins.renderer_base.components.Transform;
-import dreamengine.plugins.renderer_2d.components.Transform2D;
-import kha.graphics4.PipelineState;
-import kha.graphics4.CompareMode;
 import kha.Shaders;
-import kha.math.FastMatrix4;
-import kha.math.FastMatrix3;
-import kha.graphics4.IndexBuffer;
-import kha.graphics5_.VertexStructure;
-import kha.graphics5_.Usage;
-import kha.graphics4.VertexBuffer;
-import dreamengine.plugins.renderer_3d.components.Mesh;
-import dreamengine.plugins.ecs.Component;
-import dreamengine.plugins.ecs.System;
+import dreamengine.plugins.renderer_3d.components.*;
+import dreamengine.plugins.renderer_base.components.*;
+import kha.graphics4.*;
+import dreamengine.plugins.ecs.ECSContext;
+import dreamengine.plugins.ecs.System.RenderContext;
+import dreamengine.plugins.ecs.System.RenderSystem;
 
-class MeshRenderer extends RenderSystem {
-	var lastRendered:RenderContext = null;
-
+class ShadowMapperSystem extends RenderSystem {
 	public function new() {
 		super();
 	}
@@ -54,21 +39,13 @@ class MeshRenderer extends RenderSystem {
 
 			pipelineState.inputLayout = [struct];
 
-			if (material != null) {
-				pipelineState.vertexShader = material.getVertexShader();
-				pipelineState.fragmentShader = material.getFragmentShader();
-				pipelineState.cullMode = material.cullMode;
-			} else {
-				pipelineState.vertexShader = Shaders.simple_vert;
-				pipelineState.fragmentShader = Shaders.simple_frag;
-				pipelineState.cullMode = Clockwise;
-			}
-
+			pipelineState.vertexShader = Shaders.shadowmap_vert;
+			pipelineState.fragmentShader = Shaders.shadowmap_frag;
+			pipelineState.cullMode = CounterClockwise;
 
 			pipelineState.depthWrite = true;
 			pipelineState.depthMode = CompareMode.Less;
 			pipelineState.compile();
-
 
 			var vertsNum = Std.int(positions.length / 3);
 			// Create vertex buffer
@@ -113,11 +90,10 @@ class MeshRenderer extends RenderSystem {
 			g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
 			g4.setMatrix(pipelineState.getConstantLocation("M"), model);
 			g4.setMatrix(pipelineState.getConstantLocation("V"), renderContext.getRenderView().getViewMatrix());
+			g4.setMatrix(pipelineState.getConstantLocation("lightSpaceMatrix"), renderContext.getRenderView().getViewProjectionMatrix());
 			ShaderGlobals.apply(pipelineState, g4);
 
 			// do setting material properties
-			g4.setVector4(pipelineState.getConstantLocation("baseColor"), new FastVector4(0,0,1,1));
-
 
 			// g4.drawIndexedVerticesInstanced(100);
 			g4.drawIndexedVertices();

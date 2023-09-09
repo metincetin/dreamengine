@@ -6,29 +6,23 @@ import kha.Image;
 import dreamengine.plugins.renderer_base.components.Camera;
 import dreamengine.plugins.renderer_base.components.Transform;
 
-class ActiveCamera {
-	static var cameras = new Array<Camera>();
-	static var transforms = new Array<Transform>();
+class ActiveView {
+	static var views = new Array<IRenderView>();
 
-	public static function getCameraCount() {
-		return cameras.length;
+	public static function getViewCount() {
+		return views.length;
 	}
 
-	public static function getCamera(i:Int) {
-		return cameras[i];
+	public static function getView(i:Int) {
+		return views[i];
 	}
 
-	public static function getTransform(i:Int) {
-		return transforms[i];
+
+	public static function registerView(view:IRenderView) {
+		views.push(view);
 	}
 
-	public static function registerCamera(camera:Camera, transform:Transform) {
-		cameras.push(camera);
-		transforms.push(transform);
-	}
-
-	public static function unregisterCamera(camera:Camera, transform:Transform) {
-		cameras.remove(camera);
-		transforms.remove(transform);
+	public static function unregisterView(view:IRenderView) {
+		views.remove(view);
 	}
 }

@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_3d;
 
+import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
+import dreamengine.plugins.renderer_base.IRenderView;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_3d.systems.PointLightSystem;
 import dreamengine.core.math.Quaternion;
@@ -53,9 +55,11 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 		var meshRenderer = new MeshRenderer();
 		ecs.registerRenderSystem(meshRenderer);
 		ecs.registerSystem(new DirectionalLightSystem());
+		ecs.registerRenderSystem(new ShadowMapperSystem());
 		ecs.registerSystem(new PointLightSystem());
 		ecs.registerSystem(new CameraSystem());
 		ecs.registerRenderContextProvider(this);
+		ecs.registerRenderContextProvider(new ShadowMapper(engine));
 	}
 
 	function initializeRenderer() {
@@ -85,7 +89,7 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 		return RenderingBackend.G4;
 	}
 
-	public function getRenderContext(camera:Camera):RenderContext {
-		return new RenderContext(this.engine, this.pipelineState, camera);
+	public function getRenderContext(view:IRenderView):RenderContext {
+		return new RenderContext(this.engine, this.pipelineState, view);
 	}
 }

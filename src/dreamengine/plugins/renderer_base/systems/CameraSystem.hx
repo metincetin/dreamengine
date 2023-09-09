@@ -21,8 +21,8 @@ class CameraSystem extends System {
 
 			var view = new FastMatrix4(
 				right.x,	up.x,	fw.x,	pos.x,
-				right.y,	-up.y, 	fw.y,	pos.y,
-				right.z,	up.z,	-fw.z, 	pos.z,
+				right.y,	up.y, 	fw.y,	pos.y,
+				right.z,	up.z,	fw.z, 	pos.z,
 				0,0,0,1
 			);
 

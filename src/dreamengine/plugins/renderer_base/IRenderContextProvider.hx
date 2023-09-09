@@ -14,6 +14,6 @@ enum RenderingBackend {
 }
 
 interface IRenderContextProvider {
-	public function getRenderContext(camera:Camera):RenderContext;
+	public function getRenderContext(view:IRenderView):RenderContext;
 	public function getRenderingBackend():RenderingBackend;
 }

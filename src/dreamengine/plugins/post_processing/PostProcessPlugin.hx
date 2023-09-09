@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing;
 
+import dreamengine.plugins.renderer_base.components.Camera;
 import dreamengine.plugins.renderer_base.ActiveCamera;
 import kha.Framebuffer;
 import dreamengine.core.Engine;
@@ -37,9 +38,11 @@ class PostProcessPlugin implements IPlugin {
 
 	function onRender(framebuffer:Framebuffer) {
         if (stack == null) return;
-		for (i in 0...ActiveCamera.getCameraCount()) {
-            var cam = ActiveCamera.getCamera(i);
-            stack.render(cam.renderTexture, framebuffer);
+		for (i in 0...ActiveView.getViewCount()) {
+            var view = ActiveView.getView(i);
+			if (view is Camera){
+            	stack.render(view.getRenderTarget(), framebuffer);
+			}
         }
 	}
 }

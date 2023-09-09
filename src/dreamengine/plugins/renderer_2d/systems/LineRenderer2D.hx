@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d.systems;
 
+import dreamengine.plugins.renderer_base.components.Camera;
 import kha.math.FastMatrix3;
 import dreamengine.core.math.Vector3;
 import dreamengine.plugins.renderer_2d.components.Line2D;
@@ -10,6 +11,7 @@ import dreamengine.plugins.ecs.System.RenderSystem;
 class LineRenderer2D extends RenderSystem {
 	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
 		var g2 = renderContext.getRenderTarget().g2;
+		if (renderContext.getRenderView() is Camera == false) return;
 
 		var filter = ecsContext.filter([Line2D]);
 		for (f in filter) {
@@ -18,12 +20,12 @@ class LineRenderer2D extends RenderSystem {
 				var p1 = line.getPosition(i);
 				var p2 = line.getPosition(i + 1);
 
-				var camera = renderContext.getCamera();
+				var camera:Camera = cast renderContext.getRenderView();
 				var viewMatrix = camera.getViewMatrix();
 				var cameraPos = new Vector3(viewMatrix._30, viewMatrix._31);
 				var cameraRight = new Vector3(viewMatrix._00, viewMatrix._01, viewMatrix._02);
 				var screenRes = dreamengine.device.Screen.getResolution();
-				var cameraSize = renderContext.getCamera().size;
+				var cameraSize = camera.size;
 
 				var s = 1 / (cameraSize);
 

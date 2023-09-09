@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_base.components;
 
+import dreamengine.plugins.renderer_3d.Renderer3D;
+import dreamengine.plugins.renderer_base.ActiveCamera.ActiveView;
 import kha.graphics4.TextureFormat;
 import dreamengine.device.Screen;
 import kha.Image;
@@ -10,7 +12,7 @@ import kha.math.FastMatrix4;
 import dreamengine.plugins.ecs.Entity;
 import dreamengine.plugins.ecs.Component.Component;
 
-class Camera extends Component {
+class Camera extends Component implements IRenderView{
 	public var projection:Projection;
 	public var fov:Float;
 	public var aspect:Float;
@@ -70,13 +72,13 @@ class Camera extends Component {
 	}
 
 	override function onAdded(entity:Entity) {
-		ActiveCamera.registerCamera(this, cast entity.getComponent(Transform));
+		ActiveView.registerView(this);
 
 		createRenderTexture();
 	}
 
 	override function onRemoved(entity:Entity) {
-		ActiveCamera.unregisterCamera(this, cast entity.getComponent(Transform));
+		ActiveView.unregisterView(this);
 		renderTexture.unload();
 	}
 
@@ -87,6 +89,18 @@ class Camera extends Component {
 
 	public function isInsideView(point: Vector3): Bool{
 		return true;
+	}
+
+	public function getRenderTarget():Image {
+		return renderTexture;
+	}
+
+	public function shouldRenderToFramebuffer():Bool {
+		return true;
+	}
+
+	public function getTargetRenderContextProviders():Array<Class<IRenderContextProvider>> {
+		return [Renderer3D];
 	}
 }
 

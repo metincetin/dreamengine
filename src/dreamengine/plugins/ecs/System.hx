@@ -1,5 +1,7 @@
 package dreamengine.plugins.ecs;
 
+import dreamengine.plugins.renderer_base.IRenderContextProvider;
+import dreamengine.plugins.renderer_base.IRenderView;
 import dreamengine.plugins.renderer_base.components.Camera;
 import dreamengine.core.Engine;
 import kha.math.FastMatrix4;
@@ -22,28 +24,29 @@ class System {
 
 class RenderSystem {
 	public function new() {}
+	var targetRenderContextProviders:Array<Class<IRenderContextProvider>> = [];
 
 	public function execute(ecsContext:ECSContext, renderContext:RenderContext) {}
 }
 
 class RenderContext {
 	var pipelineState:PipelineState;
-	var camera:Camera;
+	var view:IRenderView;
 
-	public function new(engine:Engine, pipelineState:PipelineState, camera:Camera) {
+	public function new(engine:Engine, pipelineState:PipelineState, view:IRenderView) {
 		this.pipelineState = pipelineState;
-		this.camera = camera;
+		this.view = view;
 	}
 
 	public function getPipelineState():PipelineState {
 		return pipelineState;
 	}
 
-	public function getCamera() {
-		return camera;
+	public function getRenderView() {
+		return view;
 	}
 
 	public function getRenderTarget() {
-		return camera.renderTexture;
+		return view.getRenderTarget();
 	}
 }

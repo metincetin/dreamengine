@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d;
 
+import dreamengine.plugins.renderer_base.IRenderView;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_2d.systems.ParticleRenderer2D.ParticleRenderer;
 import kha.graphics4.PipelineState;
@@ -63,8 +64,8 @@ class Renderer2D implements IPlugin implements IRenderContextProvider {
 		return null;
 	}
 
-	public function getRenderContext(camera:Camera):RenderContext {
-		return new RenderContext(engine, null, camera);
+	public function getRenderContext(view:IRenderView):RenderContext {
+		return new RenderContext(engine, null, view);
 	}
 
 	public function getRenderingBackend():RenderingBackend {

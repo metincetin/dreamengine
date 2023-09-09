@@ -1,5 +1,9 @@
 package dreamengine.plugins.ecs;
 
+import dreamengine.plugins.renderer_3d.Renderer3D;
+import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
+import dreamengine.plugins.renderer_3d.components.DirectionalLight;
+import dreamengine.plugins.renderer_base.ShaderGlobals;
 import kha.Scaler;
 import kha.Color;
 import dreamengine.plugins.renderer_base.ActiveCamera;
@@ -77,41 +81,44 @@ class ECS implements IPlugin {
 
 	function tickRender(framebuffer:Framebuffer) {
 		for (contextProvider in renderContextProviders) {
-			for (i in 0...ActiveCamera.getCameraCount()) {
-				var cam = ActiveCamera.getCamera(i);
+			for (i in 0...ActiveView.getViewCount()) {
+				var view = ActiveView.getView(i);
+				if (view.getTargetRenderContextProviders().contains(Type.getClass(contextProvider)) == false)
+					continue;
 
 				switch (contextProvider.getRenderingBackend()) {
 					case G4:
-						cam.renderTexture.g4.begin();
-						cam.renderTexture.g4.clear(Transparent, 8);
-						//cam.renderTexture.g4.clear(Black, 8);
+						view.getRenderTarget().g4.begin();
+						view.getRenderTarget().g4.clear(Black, 16);
+						//view.getRenderTarget().g4.clear(Black, 8);
 					case G2:
-						cam.renderTexture.g2.begin();
+						view.getRenderTarget().g2.begin();
 					case G1:
-						cam.renderTexture.g1.begin();
+						view.getRenderTarget().g1.begin();
 				}
 
 				for (renderSystem in renderSystems) {
-					renderSystem.execute(ecsContext, contextProvider.getRenderContext(cam));
+					renderSystem.execute(ecsContext, contextProvider.getRenderContext(view));
 				}
 
 				switch (contextProvider.getRenderingBackend()) {
 					case G4:
-						cam.renderTexture.g4.end();
-						break;
+						view.getRenderTarget().g4.end();
+						//break;
 					case G2:
-						cam.renderTexture.g2.end();
+						view.getRenderTarget().g2.end();
 					case G1:
-						cam.renderTexture.g1.end();
+						view.getRenderTarget().g1.end();
 				}
 			}
 		}
 		framebuffer.g2.begin(false);
-		for (i in 0...ActiveCamera.getCameraCount()) {
-			var cam = ActiveCamera.getCamera(i);
+		for (i in 0...ActiveView.getViewCount()) {
+			var view = ActiveView.getView(i);
+			if (!view.shouldRenderToFramebuffer()) continue;
 			//framebuffer.g2.clear(Color.Blue);
 			//var res = Screen.getResolution();
-			Scaler.scale(cam.renderTexture, framebuffer, kha.System.screenRotation);
+			Scaler.scale(view.getRenderTarget(), framebuffer, kha.System.screenRotation);
 			//framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
 		}
 		framebuffer.g2.end();

@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d.systems;
 
+import dreamengine.plugins.renderer_base.components.Camera;
 import dreamengine.core.math.Quaternion;
 import kha.Color;
 import dreamengine.core.Time;
@@ -21,6 +22,8 @@ import dreamengine.plugins.ecs.System.RenderSystem;
 
 class SpriteRenderer extends RenderSystem {
 	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
+		var camera:Camera = cast renderContext.getRenderView();
+		if (camera == null) return;
 		for (c in ecsContext.filter([Sprite, Transform])) {
 			var graphics = renderContext.getRenderTarget().g2;
 			var transform = c.getComponent(Transform);
@@ -40,12 +43,11 @@ class SpriteRenderer extends RenderSystem {
 			var localSize = localRect.getSize() * scale;
 			var ppuScale = spr.getPPU() / 100;
 
-			var camera = renderContext.getCamera();
 			var viewMatrix = camera.getViewMatrix();
 			var cameraPos = new Vector3(viewMatrix._30, viewMatrix._31);
 			var cameraRight = new Vector3(viewMatrix._00, viewMatrix._01, viewMatrix._02);
 			var screenRes = Screen.getResolution();
-			var cameraSize = renderContext.getCamera().size;
+			var cameraSize = camera.size;
 
 			var s = 1 / (cameraSize);
 
