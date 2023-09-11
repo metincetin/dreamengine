@@ -103,6 +103,7 @@ class ECS implements IPlugin {
 				}
 
 				for (renderSystem in renderSystems) {
+					if (renderSystem.shouldRenderToContextProvider(Type.getClass(contextProvider)) == false) continue;
 					Profiler.begin('ECS/Renderer/${Type.getClassName(Type.getClass(view))}/${Type.getClassName(Type.getClass(renderSystem))}');
 					renderSystem.execute(ecsContext, contextProvider.getRenderContext(view));
 					Profiler.end('ECS/Renderer/${Type.getClassName(Type.getClass(view))}/${Type.getClassName(Type.getClass(renderSystem))}');

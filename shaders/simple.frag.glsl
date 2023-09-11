@@ -11,12 +11,12 @@ in mat4 view;
 
 out vec4 fragColor;
 
-uniform vec4 baseColor;
+uniform vec4 baseColor = vec4(1);
 
 uniform vec3 directionalLightColor;
 uniform vec3 directionalLightDirection;
 
-uniform vec3 additionalLight0_color;
+uniform vec3 additionalLight0_color = vec3(1);
 uniform float additionalLight0_attenuation;
 uniform vec3 additionalLight0_position;
 
@@ -69,7 +69,6 @@ void main() {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
 	vec3 specular = specularStrength * spec * directionalLightColor * ldn;  
     float shadow = 1 - ShadowCalculation(FragPosLightSpace);
-    //shadow = 1;
 
     vec3 diffuse = baseColor.rgb * ldn * shadow;
     vec3 ambient = directionalLightColor * .1;

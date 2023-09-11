@@ -1,5 +1,6 @@
 package dreamengine.plugins.imgui;
 
+import kha.Assets;
 import dreamengine.core.math.Rect;
 import kha.graphics2.Graphics;
 import kha.Color;
@@ -56,9 +57,9 @@ class TextRenderer extends IMGUIRenderer {
 	}
 
 	override function render(graphics:Graphics) {
-		if (graphics.font == null)
-			return;
-		graphics.drawString(text, rect.position.x, rect.position.y);
+		graphics.font = Assets.fonts.OpenSans_Regular;
+		var position = rect.getPosition();
+		graphics.drawString(text, position.x, position.y);
 	}
 }
 
@@ -72,7 +73,9 @@ class BoxRenderer extends IMGUIRenderer {
 
 	override function render(graphics:Graphics) {
 		graphics.color = color;
-		graphics.fillRect(rect.position.x, rect.position.y, rect.size.x, rect.size.y);
+		var position = rect.getPosition();
+		var size = rect.getSize();
+		graphics.fillRect(position.x, position.y, size.x, size.y);
 		graphics.color = Color.White;
 	}
 }

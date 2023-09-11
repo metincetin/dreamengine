@@ -24,7 +24,11 @@ class System {
 
 class RenderSystem {
 	public function new() {}
+
 	var targetRenderContextProviders:Array<Class<IRenderContextProvider>> = [];
+	public final function shouldRenderToContextProvider(provider:Class<IRenderContextProvider>){
+		return targetRenderContextProviders.contains(provider);
+	}
 
 	public function execute(ecsContext:ECSContext, renderContext:RenderContext) {}
 }
@@ -48,5 +52,13 @@ class RenderContext {
 
 	public function getRenderTarget() {
 		return view.getRenderTarget();
+	}
+
+	public function updatePipelineState(state:PipelineState) {
+		pipelineState = state;
+	}
+
+	public function setView(view:IRenderView) {
+		this.view = view;
 	}
 }

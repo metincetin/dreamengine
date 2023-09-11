@@ -11,8 +11,36 @@ import dreamengine.plugins.ecs.System.RenderContext;
 import dreamengine.plugins.ecs.System.RenderSystem;
 
 class ShadowMapperSystem extends RenderSystem {
+	var structLength:Int;
+	var struct:VertexStructure;
+
+
 	public function new() {
 		super();
+		targetRenderContextProviders = [ShadowMapper];
+	}
+
+	function createPipelineState() {
+		var pipelineState = new PipelineState();
+
+		struct = new VertexStructure();
+		struct.add("vertexPosition", Float3);
+		struct.add("uv", Float2);
+		struct.add("vertexNormal", Float3);
+		structLength = Std.int(struct.byteSize() / 4);
+
+		pipelineState.inputLayout = [struct];
+
+		pipelineState.vertexShader = Shaders.shadowmap_vert;
+		pipelineState.fragmentShader = Shaders.shadowmap_frag;
+		pipelineState.cullMode = CounterClockwise;
+		// pipelineState.cullMode = CounterClockwise;
+
+		pipelineState.depthWrite = true;
+		pipelineState.depthMode = CompareMode.Less;
+		pipelineState.compile();
+
+		return pipelineState;
 	}
 
 	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
@@ -20,33 +48,17 @@ class ShadowMapperSystem extends RenderSystem {
 
 		var f = ecsContext.query([new With(Mesh), new With(Transform), new Optional(Material)]);
 
+		var pipelineState:PipelineState = createPipelineState();
+		renderContext.updatePipelineState(pipelineState);
+		g4.setPipeline(pipelineState);
+
 		for (c in f) {
 			var mesh:Mesh = c.getComponent(Mesh);
 			var transform:Transform = c.getComponent(Transform);
-			var material:Material = c.getComponent(Material);
-
-			var pipelineState:PipelineState = renderContext.getPipelineState();
 
 			var positions = mesh.getVertices();
 			var uvs = mesh.getUVs();
 			var normals = mesh.getNormals();
-
-			var struct = new VertexStructure();
-			struct.add("vertexPosition", Float3);
-			struct.add("uv", Float2);
-			struct.add("vertexNormal", Float3);
-			var structLength = Std.int(struct.byteSize() / 4);
-
-			pipelineState.inputLayout = [struct];
-
-			pipelineState.vertexShader = Shaders.shadowmap_vert;
-			pipelineState.fragmentShader = Shaders.shadowmap_frag;
-			pipelineState.cullMode = CounterClockwise;
-			//pipelineState.cullMode = CounterClockwise;
-
-			pipelineState.depthWrite = true;
-			pipelineState.depthMode = CompareMode.Less;
-			pipelineState.compile();
 
 			var vertsNum = Std.int(positions.length / 3);
 			// Create vertex buffer

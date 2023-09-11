@@ -11,14 +11,17 @@ class ShadowMapper implements IRenderContextProvider{
 
     var engine:Engine;
     var pipelineState:PipelineState;
+	var renderContext:RenderContext;
+
 
     public function new(engine:Engine){
         this.engine = engine;
-        this.pipelineState = new PipelineState();
+        this.renderContext = new RenderContext(engine, null, null);
     }
 
     public function getRenderContext(view:IRenderView):RenderContext {
-        return new RenderContext(this.engine, this.pipelineState, view);
+        renderContext.setView(view);
+        return renderContext;
     }
 
     public function getRenderingBackend():RenderingBackend {

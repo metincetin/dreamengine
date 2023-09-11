@@ -43,6 +43,8 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 	var projection:FastMatrix4;
 	var engine:Engine;
 
+	var renderContext:RenderContext;
+
 	public function new() {}
 
 	public function initialize(engine:Engine) {
@@ -57,11 +59,14 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 		ecs.registerRenderSystem(meshRenderer);
 		ecs.registerSystem(new DirectionalLightSystem());
 		ecs.registerRenderSystem(new ShadowMapperSystem());
-		ecs.registerRenderSystem(new GizmoRenderer());
-		ecs.registerSystem(new PointLightSystem());
+		//ecs.registerRenderSystem(new GizmoRenderer());
+		//ecs.registerSystem(new PointLightSystem());
 		ecs.registerSystem(new CameraSystem());
 		ecs.registerRenderContextProvider(this);
 		ecs.registerRenderContextProvider(new ShadowMapper(engine));
+
+
+		renderContext = new RenderContext(engine, null, null);
 	}
 
 	function initializeRenderer() {
@@ -92,6 +97,7 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 	}
 
 	public function getRenderContext(view:IRenderView):RenderContext {
-		return new RenderContext(this.engine, this.pipelineState, view);
+		renderContext.setView(view);
+		return renderContext;
 	}
 }

@@ -19,6 +19,10 @@ class Mesh extends Component {
 		super();
 	}
 
+	public function createBuffer(){
+
+	}
+
 	public function getVertices() {
 		return vertices;
 	}
