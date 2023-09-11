@@ -1,5 +1,6 @@
 package dreamengine.core.math;
 
+import kha.math.FastMatrix4;
 import dreamengine.core.math.Vector3;
 
 class Quaternion {
@@ -8,7 +9,7 @@ class Quaternion {
 	public var z:Float;
 	public var w:Float;
 
-	public function new(x:Float = 0, y:Float = 0, z:Float = 0, w:Float = 0) {
+	public function new(x:Float = 1, y:Float = 0, z:Float = 0, w:Float = 0) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -41,6 +42,25 @@ class Quaternion {
 
 	public function conjugated() {
 		return new Quaternion(-x, -y, -z, -w);
+	}
+
+	public function toMatrix(){
+		var s: Float = 2.0;
+
+		var xs: Float = x * s;
+		var ys: Float = y * s;
+		var zs: Float = z * s;
+		var wx: Float = w * xs;
+		var wy: Float = w * ys;
+		var wz: Float = w * zs;
+		var xx: Float = x * xs;
+		var xy: Float = x * ys;
+		var xz: Float = x * zs;
+		var yy: Float = y * ys;
+		var yz: Float = y * zs;
+		var zz: Float = z * zs;
+
+		return new FastMatrix4(1 - (yy + zz), xy - wz, xz + wy, 0, xy + wz, 1 - (xx + zz), yz - wx, 0, xz - wy, yz + wx, 1 - (xx + yy), 0, 0, 0, 0, 1);
 	}
 
 	public function toEuler() {

@@ -1,5 +1,7 @@
 package dreamengine.plugins.ecs;
 
+import dreamengine.core.Time;
+import dreamengine.debugging.Profiler;
 import dreamengine.plugins.renderer_3d.Renderer3D;
 import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
 import dreamengine.plugins.renderer_3d.components.DirectionalLight;
@@ -30,7 +32,6 @@ class ECS implements IPlugin {
 
 	var engine:Engine;
 
-
 	public function initialize(engine:Engine) {
 		this.engine = engine;
 		ecsContext = new ECSContext();
@@ -56,8 +57,8 @@ class ECS implements IPlugin {
 		spawnQueued();
 	}
 
-	function spawnQueued(){
-		for(components in ecsContext.getSpawnQueue()){
+	function spawnQueued() {
+		for (components in ecsContext.getSpawnQueue()) {
 			spawn(components);
 		}
 		ecsContext.clearSpawnQueue();
@@ -80,17 +81,21 @@ class ECS implements IPlugin {
 	}
 
 	function tickRender(framebuffer:Framebuffer) {
+		Profiler.begin("ECS/Renderer");
 		for (contextProvider in renderContextProviders) {
+			var ctxProviderSampleName = 'ECS/Renderer/${Type.getClassName(Type.getClass(contextProvider))}';
+			Profiler.begin(ctxProviderSampleName);
 			for (i in 0...ActiveView.getViewCount()) {
 				var view = ActiveView.getView(i);
-				if (view.getTargetRenderContextProviders().contains(Type.getClass(contextProvider)) == false)
+				if (view.shouldDrawToContext(contextProvider) == false)
 					continue;
 
+				Profiler.begin('ECS/Renderer/${Type.getClassName(Type.getClass(view))}');
 				switch (contextProvider.getRenderingBackend()) {
 					case G4:
 						view.getRenderTarget().g4.begin();
 						view.getRenderTarget().g4.clear(Black, 16);
-						//view.getRenderTarget().g4.clear(Black, 8);
+					// view.getRenderTarget().g4.clear(Black, 8);
 					case G2:
 						view.getRenderTarget().g2.begin();
 					case G1:
@@ -98,30 +103,39 @@ class ECS implements IPlugin {
 				}
 
 				for (renderSystem in renderSystems) {
+					Profiler.begin('ECS/Renderer/${Type.getClassName(Type.getClass(view))}/${Type.getClassName(Type.getClass(renderSystem))}');
 					renderSystem.execute(ecsContext, contextProvider.getRenderContext(view));
+					Profiler.end('ECS/Renderer/${Type.getClassName(Type.getClass(view))}/${Type.getClassName(Type.getClass(renderSystem))}');
 				}
 
 				switch (contextProvider.getRenderingBackend()) {
 					case G4:
 						view.getRenderTarget().g4.end();
-						//break;
+					// break;
 					case G2:
 						view.getRenderTarget().g2.end();
 					case G1:
 						view.getRenderTarget().g1.end();
 				}
+				Profiler.end('ECS/Renderer/${Type.getClassName(Type.getClass(view))}');
 			}
+
+			Profiler.end(ctxProviderSampleName);
 		}
 		framebuffer.g2.begin(false);
 		for (i in 0...ActiveView.getViewCount()) {
 			var view = ActiveView.getView(i);
-			if (!view.shouldRenderToFramebuffer()) continue;
-			//framebuffer.g2.clear(Color.Blue);
-			//var res = Screen.getResolution();
+			if (!view.shouldRenderToFramebuffer())
+				continue;
+			// framebuffer.g2.clear(Color.Blue);
+			// var res = Screen.getResolution();
 			Scaler.scale(view.getRenderTarget(), framebuffer, kha.System.screenRotation);
-			//framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
+			// framebuffer.g2.drawScaledImage(cam.renderTexture, 0, 0, res.x, res.y);
 		}
 		framebuffer.g2.end();
+		Profiler.end("ECS/Renderer");
+
+		//trace(Profiler.getJSON());
 	}
 
 	public function spawn(params:Array<Component>) {

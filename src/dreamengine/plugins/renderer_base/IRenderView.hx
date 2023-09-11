@@ -13,5 +13,5 @@ interface IRenderView {
 
 	public function getRenderTarget():Image;
 
-	public function getTargetRenderContextProviders():Array<Class<IRenderContextProvider>>;
+	public function shouldDrawToContext(contextProvider:IRenderContextProvider): Bool;
 }

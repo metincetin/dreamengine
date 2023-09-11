@@ -27,21 +27,16 @@ class DirectionalLightSystem extends System {
 			var up = tr.getUp();
 			var right = tr.getRight();
 
-			light.viewMatrix = new FastMatrix4(
-				right.x,	up.x,	fw.x,	pos.x,
-				right.y,	up.y, 	fw.y,	pos.y,
-				right.z,	up.z,	fw.z, 	pos.z,
-				0,0,0,1
-			);
+			light.viewMatrix = FastMatrix4.lookAt(pos, pos + fw, up);
 
 			light.viewProjectionMatrix = light.projectionMatrix.multmat(light.viewMatrix);
 
 			ShaderGlobals.setMatrix("lightSpaceMatrix", light.viewProjectionMatrix);
 
 			ShaderGlobals.setFloat3("directionalLightColor", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
-			ShaderGlobals.setFloat3("directionalLightDirection", fw);
+			ShaderGlobals.setFloat3("directionalLightDirection", fw * -1);
 			ShaderGlobals.setTexture("shadowMap", light.getRenderTarget());
-			ShaderGlobals.setFloat("depthBias", 0.0001);
+			ShaderGlobals.setFloat("depthBias", 0.01);
 		}
 	}
 

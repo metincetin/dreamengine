@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d;
 
+import dreamengine.plugins.renderer_3d.systems.GizmoRenderer;
 import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
 import dreamengine.plugins.renderer_base.IRenderView;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
@@ -56,6 +57,7 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 		ecs.registerRenderSystem(meshRenderer);
 		ecs.registerSystem(new DirectionalLightSystem());
 		ecs.registerRenderSystem(new ShadowMapperSystem());
+		ecs.registerRenderSystem(new GizmoRenderer());
 		ecs.registerSystem(new PointLightSystem());
 		ecs.registerSystem(new CameraSystem());
 		ecs.registerRenderContextProvider(this);

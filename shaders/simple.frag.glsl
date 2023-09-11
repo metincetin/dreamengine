@@ -48,7 +48,8 @@ float ShadowCalculation(vec4 fragPosLightSpace)
         for(int y = -1; y <= 1; ++y)
         {
             float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-            shadow += currentDepth - depthBias > pcfDepth ? 1.0 : 0.0;        
+            float bias = max(0.05 * (1.0 - dot(normal, directionalLightDirection)), 0.005) + depthBias;
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
         }    
     }
     shadow /= 9.0;
@@ -62,12 +63,13 @@ void main() {
 	vec3 normalizedNormal = normalize(normal);
 	float ldn = max(0.0, dot(directionalLightDirection, normalizedNormal));
 
-	vec3 viewDir = normalize(cameraPosition - worldPos);
+	vec3 viewDir = normalize(worldPos - cameraPosition);
 
 	vec3 reflectDir = reflect(directionalLightDirection, normalizedNormal);  
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
 	vec3 specular = specularStrength * spec * directionalLightColor * ldn;  
     float shadow = 1 - ShadowCalculation(FragPosLightSpace);
+    //shadow = 1;
 
     vec3 diffuse = baseColor.rgb * ldn * shadow;
     vec3 ambient = directionalLightColor * .1;

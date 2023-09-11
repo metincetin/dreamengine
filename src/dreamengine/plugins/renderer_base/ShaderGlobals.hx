@@ -1,6 +1,5 @@
 package dreamengine.plugins.renderer_base;
 
-import js.html.webgl.Texture;
 import kha.graphics4.TextureUnit;
 import kha.math.FastMatrix4;
 import kha.Image;

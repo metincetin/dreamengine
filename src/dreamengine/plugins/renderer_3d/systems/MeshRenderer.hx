@@ -1,7 +1,6 @@
 package dreamengine.plugins.renderer_3d.systems;
 
 import kha.math.FastVector4;
-import js.html.BaseElement;
 import dreamengine.plugins.renderer_base.components.Material;
 import dreamengine.plugins.ecs.ECSContext;
 import kha.Assets;

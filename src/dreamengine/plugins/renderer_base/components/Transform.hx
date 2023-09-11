@@ -104,13 +104,13 @@ class Transform extends Component {
 
 	function updateMatrix() {
 
-		var rot = rotation.toEuler();
+		var trMatrix = FastMatrix4.translation(position.x, position.y, position.z);
+		var rotMatrix = rotation.toMatrix();
+		var scaleMatrix = FastMatrix4.scale(scale.x, scale.y, scale.z);
 
-		var m = FastMatrix4.identity();
+		localMatrix = trMatrix.multmat(rotMatrix).multmat(scaleMatrix);
+
 		// m = m.multmat(FastMatrix4.rotation(rotation.x, rotation.y, rotation.z));
-		m = m.multmat(FastMatrix4.scale(scale.x, scale.y, scale.z));
-		m = m.multmat(FastMatrix4.rotation(Mathf.degToRad(rot.x), Mathf.degToRad(rot.y), Mathf.degToRad(rot.z)));
-		m = m.multmat(FastMatrix4.translation(position.x, -position.y, position.z));
 		// var m = FastMatrix4.rotation(Mathf.degToRad(rotation.x), Mathf.degToRad(rotation.y), Mathf.degToRad(rotation.z));
 		// // m = m.multmat(FastMatrix4.scale(scale.x, scale.y, scale.z));
 
@@ -131,6 +131,5 @@ class Transform extends Component {
 		// m._31 = position.y;
 		// m._32 = position.z;
 
-		localMatrix = m;
 	}
 }

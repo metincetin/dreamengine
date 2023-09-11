@@ -96,10 +96,10 @@ class Primitives {
 	];
 
 	static var planeNormals:Array<Float> = [
-		0, -1, 0,
-		0, -1, 0,
-		0, -1, 0,
-		0, -1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
 	];
 
 	static var planeUVs:Array<Float> = [
@@ -123,7 +123,7 @@ class Primitives {
 	public static function plane() {
 		var ret = new Mesh();
 		ret.setVertices(planeVertices);
-		ret.setIndices([0, 1, 2, 2, 1, 3]);
+		ret.setIndices([0, 2, 1, 2, 3, 1]);
 		ret.setNormals(planeNormals);
 		ret.setUVs(planeUVs);
 		return ret;

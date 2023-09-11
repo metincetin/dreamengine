@@ -24,8 +24,8 @@ class DirectionalLight extends Light implements IRenderView{
 	}
 	override function onAdded(entity:Entity) {
 		ActiveView.registerView(this);
-		shadowMap = Image.createRenderTarget(2048, 2048, TextureFormat.DEPTH16);
-		projectionMatrix = FastMatrix4.orthogonalProjection(-10, 10, -10, 10, 0.1, 50);
+		shadowMap = Image.createRenderTarget(1024, 1024, TextureFormat.DEPTH16);
+		projectionMatrix = FastMatrix4.orthogonalProjection(-10, 10, -10, 10, 0.1, 10);
 	}
 	override function onRemoved(entity:Entity) {
 		ActiveView.unregisterView(this);
@@ -51,7 +51,7 @@ class DirectionalLight extends Light implements IRenderView{
 		return false;
 	}
 
-	public function getTargetRenderContextProviders():Array<Class<IRenderContextProvider>> {
-		return [ShadowMapper];
+	public function shouldDrawToContext(contextProvider:IRenderContextProvider):Bool {
+		return contextProvider is ShadowMapper;
 	}
 }

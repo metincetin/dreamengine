@@ -99,8 +99,8 @@ class Camera extends Component implements IRenderView{
 		return true;
 	}
 
-	public function getTargetRenderContextProviders():Array<Class<IRenderContextProvider>> {
-		return [Renderer3D];
+	public function shouldDrawToContext(contextProvider:IRenderContextProvider):Bool {
+		return contextProvider is Renderer3D;
 	}
 }
 

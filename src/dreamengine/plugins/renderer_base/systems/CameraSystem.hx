@@ -19,12 +19,14 @@ class CameraSystem extends System {
 			var up = transform.getUp();
 			var right = transform.getRight();
 
-			var view = new FastMatrix4(
+			/*var view = new FastMatrix4(
 				right.x,	up.x,	fw.x,	pos.x,
 				right.y,	up.y, 	fw.y,	pos.y,
 				right.z,	up.z,	fw.z, 	pos.z,
 				0,0,0,1
-			);
+			);*/
+
+			var view = FastMatrix4.lookAt(pos, pos + fw, up);
 
 			camera.setViewMatrix(view);
 			ShaderGlobals.setFloat3("cameraPosition", pos);

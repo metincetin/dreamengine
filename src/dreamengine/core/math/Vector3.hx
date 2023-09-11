@@ -191,6 +191,7 @@ abstract Vector3(Array<Float>) from Array<Float>{
 		z = r.z;
 	}
 
+	@:to
 	public function asVector2():Vector2 {
 		return new Vector2(x, y);
 	}
@@ -199,6 +200,11 @@ abstract Vector3(Array<Float>) from Array<Float>{
 	static function fromIntArray(array:Array<Int>){
 		var n = new Vector3(cast array[0], cast array[1], cast array[2]);
 		return n;
+	}
+
+	@:to
+	function toFastVector3(){
+		return new kha.math.FastVector3(this[0], this[1], this[2]);
 	}
 
 }
