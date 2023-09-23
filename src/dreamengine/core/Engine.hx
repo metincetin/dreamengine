@@ -1,8 +1,6 @@
 package dreamengine.core;
 
 import dreamengine.plugins.renderer_3d.components.Mesh;
-import js.html.MediaDevices;
-import dreamengine.plugins.renderer_3d.loaders.ObjLoaderOld;
 import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import dreamengine.plugins.renderer_3d.Primitives;
 import dreamengine.device.Screen;

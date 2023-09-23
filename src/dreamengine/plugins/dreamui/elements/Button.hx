@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui.elements;
 
+import kha.Font;
 import kha.Assets;
 import dreamengine.core.math.Mathf;
 import dreamengine.plugins.dreamui.utils.LayoutUtils;
@@ -14,7 +15,11 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 
 	var onClicked:Array<Void->Void> = [];
 
-	var prefSize = new Vector2();
+
+	var font:Font;
+	var fontSize:Int = 12;
+	var padding:Dimension;
+
 
 	public function new(text:String = "") {
 		super();
@@ -22,39 +27,39 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 	}
 
 	override function getPreferredSize():Vector2 {
+		var prefSize = new Vector2();
+
+		var textSize = new Vector2();
+		textSize.x = font.width(fontSize, text) * 0.5;
+		textSize.y = font.height(fontSize) * 0.5;
+		
+		prefSize.y = textSize.y * 2 + (padding.top + padding.bottom);
+		prefSize.x = textSize.x * 2 + (padding.top + padding.bottom);
 		return prefSize;
 	}
 
 	override function parseStyle() {
 		super.parseStyle();
-		var padding = new Dimension(
+		padding = new Dimension(
 			parsedStyle.getFloatValue("padding-left", 0),
 			parsedStyle.getFloatValue("padding-top", 0),
 			parsedStyle.getFloatValue("padding-right", 0),
 			parsedStyle.getFloatValue("padding-bottom", 0));
 		
-		var textSize = new Vector2();
-		var font = Assets.fonts.get(parsedStyle.getStringValue("font", "OpenSans_Regular"));
-		var fontSize = parsedStyle.getIntValue("font-size", 12);
-		textSize.x = font.width(fontSize, text) * 0.5;
-		textSize.y = font.height(fontSize) * 0.5;
-		prefSize.x = textSize.x * 2 + (padding.left + padding.right);
-		prefSize.y = textSize.y * 2 + (padding.top + padding.bottom);
+		font = Assets.fonts.get(parsedStyle.getStringValue("font", "OpenSans_Regular"));
+		fontSize = parsedStyle.getIntValue("font-size", 12);
 	}
 
 	override function onRender(g2:Graphics, opacity:Float) {
 		var size = rect.getSize();
 		var pos = rect.getPosition();
 		
-		var padding = new Dimension(
+		padding = new Dimension(
 			parsedStyle.getFloatValue("padding-left", 0),
 			parsedStyle.getFloatValue("padding-top", 0),
 			parsedStyle.getFloatValue("padding-right", 0),
 			parsedStyle.getFloatValue("padding-bottom", 0));
 
-
-		size.x = Math.max(size.x, prefSize.x);
-		size.y = Math.max(size.y, prefSize.y);
 
 		//pos-=size * pivot;
 
@@ -74,6 +79,7 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		g2.fillRect(pos.x, pos.y, size.x, size.y);
 		g2.color = parsedStyle.getColorValue("text-color");
 		g2.drawString(text, center.x - textSize.x, center.y - textSize.y);
+
 	}
 
 	public function canBeTargeted():Bool {

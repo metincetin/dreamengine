@@ -31,6 +31,8 @@ class VerticalBoxContainer extends Element {
 
 		var rectPos = rect.getPosition();
 
+		var maxHorizontalSize = 0.0;
+
 		for (i in 0...getChildCount()) {
 			var c = getChild(i);
 			if (c.visibility == Collapsed) continue;
@@ -39,6 +41,8 @@ class VerticalBoxContainer extends Element {
 
 			var pivotOffset = size * c.pivot;
 			var xPos = 0.0;
+
+			if (size.x > maxHorizontalSize) maxHorizontalSize = size.x;
 
 			switch (c.getLayoutParametersAs(VerticalBoxLayoutParameters).horizontalAlignment) {
 				case Left:
@@ -66,6 +70,7 @@ class VerticalBoxContainer extends Element {
 			}
 		}
 
+		prefSize.x = maxHorizontalSize;
 		prefSize.y = offset;
 		switch (childStart) {
 			case Begin:
@@ -97,5 +102,6 @@ class VerticalBoxContainer extends Element {
 		return VerticalBoxLayoutParameters;
 	}
 
-	override function onRender(g2:Graphics, opacity:Float) {}
+	override function onRender(g2:Graphics, opacity:Float) {
+	}
 }

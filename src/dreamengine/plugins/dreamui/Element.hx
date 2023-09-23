@@ -131,6 +131,8 @@ class Element {
 			c.render(g2, renderOpacity);
 		}
 		g2.opacity = 1;
+
+		g2.drawRect(rect.getPosition().x, rect.getPosition().y, rect.getSize().x, rect.getSize().y);
 	}
 
 	function onRender(g2:Graphics, opacity:Float) {}
@@ -251,13 +253,14 @@ class Element {
 			}
 
 			this.renderOpacity = this.parsedStyle.getFloatValue("opacity", 1);
+			this.pivot.x = this.parsedStyle.getFloatValue("pivot.x", 0.5);
+			this.pivot.y = this.parsedStyle.getFloatValue("pivot.y", 0.5);
 			var newVisibility = this.parsedStyle.getStringValue("visibility", "visible");
 			visibility = newVisibility;
 
 			if (visibility != newVisibility){
 				setDirty();
 			}
-
 		}
 	}
 
@@ -296,7 +299,7 @@ class Element {
 		return cast queryInternal(query, cast type);
 	}
 
-	public function queryAll<T:Class<Element>>(query:Selector, type:Class<T>):Array<T> {
+	public function queryAll<T:Element>(query:Selector, type:Class<T>):Array<T> {
 		return cast queryAllInternal(query, cast type);
 	}
 }

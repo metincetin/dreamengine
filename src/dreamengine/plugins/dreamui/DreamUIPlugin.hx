@@ -1,5 +1,6 @@
 package dreamengine.plugins.dreamui;
 
+import kha.graphics4.PipelineState;
 import dreamengine.plugins.dreamui.styling.Style;
 import dreamengine.device.Screen;
 import dreamengine.plugins.dreamui.containers.*;
@@ -17,6 +18,8 @@ class DreamUIPlugin implements IPlugin {
 	var mainElement:Element;
 
 	var eventSystem:EventSystem;
+
+	var pipeline: PipelineState;
 
 	public function new() {
 		registerTypes();
