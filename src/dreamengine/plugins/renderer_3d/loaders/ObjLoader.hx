@@ -5,15 +5,7 @@ import kha.Assets;
 import dreamengine.plugins.renderer_3d.components.Mesh;
 
 class ObjLoader {
-	static var indexedVertices:Array<Float>;
-	static var indexedUVs:Array<Float>;
-	static var indexedNormals:Array<Float>;
-	static var index:Int;
-
-	public var data:Array<Float>;
-	public var indices:Array<Int>;
-
-	public function new(objData:String) {
+	public static function load(objData:String) {
 		var vertices:Array<Float> = [];
 		var uvs:Array<Float> = [];
 		var normals:Array<Float> = [];
@@ -82,34 +74,18 @@ class ObjLoader {
 			normals.push(normal[2]);
 		}
 
-		build(vertices, uvs, normals);
-
-		data = [];
-		for (i in 0...Std.int(vertices.length / 3)) {
-			data.push(indexedVertices[i * 3]);
-			data.push(indexedVertices[i * 3 + 1]);
-			data.push(indexedVertices[i * 3 + 2]);
-			data.push(indexedUVs[i * 2]);
-			data.push(1 - indexedUVs[i * 2 + 1]);
-			data.push(indexedNormals[i * 3]);
-			data.push(indexedNormals[i * 3 + 1]);
-			data.push(indexedNormals[i * 3 + 2]);
-		}
-	}
-
-	function build(vertices:Array<Float>, uvs:Array<Float>, normals:Array<Float>) {
-		indexedVertices = [];
-		indexedUVs = [];
-		indexedNormals = [];
-		indices = [];
+		var indices = new Array<Int>();
+		var indexedVertices = new Array<Float>();
+		var indexedUVs = new Array<Float>();
+		var indexedNormals = new Array<Float>();
 
 		// For each input vertex
 		for (i in 0...Std.int(vertices.length / 3)) {
 			// Try to find a similar vertex in out_XXXX
-			var found:Bool = getSimilarVertexIndex(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2], uvs[i * 2], uvs[i * 2 + 1], normals[i * 3],
-				normals[i * 3 + 1], normals[i * 3 + 2]);
+			var index = getSimilarVertexIndex(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2], uvs[i * 2], uvs[i * 2 + 1], normals[i * 3],
+				normals[i * 3 + 1], normals[i * 3 + 2], indexedVertices, indexedUVs, indexedNormals);
 
-			if (found) { // A similar vertex is already in the VBO, use it instead !
+			if (index != -1) { // A similar vertex is already in the VBO, use it instead !
 				indices.push(index);
 			} else { // If not, it needs to be added in the output data.
 				indexedVertices.push(vertices[i * 3]);
@@ -123,16 +99,23 @@ class ObjLoader {
 				indices.push(Std.int(indexedVertices.length / 3) - 1);
 			}
 		}
+
+		var mesh = new Mesh();
+		mesh.setVertices(indexedVertices);
+		mesh.setUVs(indexedUVs);
+		mesh.setNormals(indexedNormals);
+		mesh.setIndices(indices);
+		return mesh;
 	}
 
 	// Returns true if v1 can be considered equal to v2
-	function isNear(v1:Float, v2:Float):Bool {
+	static function isNear(v1:Float, v2:Float):Bool {
 		return Math.abs(v1 - v2) < 0.01;
 	}
 
 	// Searches through all already-exported vertices for a similar one.
 	// Similar = same position + same UVs + same normal
-	function getSimilarVertexIndex(vertexX:Float, vertexY:Float, vertexZ:Float, uvX:Float, uvY:Float, normalX:Float, normalY:Float, normalZ:Float):Bool {
+	static function getSimilarVertexIndex(vertexX:Float, vertexY:Float, vertexZ:Float, uvX:Float, uvY:Float, normalX:Float, normalY:Float, normalZ:Float, indexedVertices:Array<Float>, indexedUVs:Array<Float>, indexedNormals:Array<Float>):Int {
 		// Lame linear search
 		for (i in 0...Std.int(indexedVertices.length / 3)) {
 			if (isNear(vertexX, indexedVertices[i * 3])
@@ -143,12 +126,9 @@ class ObjLoader {
 				&& isNear(normalX, indexedNormals[i * 3])
 				&& isNear(normalY, indexedNormals[i * 3 + 1])
 				&& isNear(normalZ, indexedNormals[i * 3 + 2])) {
-				index = i;
-				return true;
+				return i;
 			}
 		}
-		// No other vertex could be used instead.
-		// Looks like we'll have to add it to the VBO.
-		return false;
+		return -1;
 	}
 }

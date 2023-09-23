@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_3d.systems;
 
+import dreamengine.plugins.renderer_base.ShaderGlobals;
+import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import dreamengine.core.math.Vector3;
 import dreamengine.core.math.Mathf;
 import kha.math.FastMatrix4;
@@ -12,51 +14,87 @@ import dreamengine.plugins.ecs.System.RenderContext;
 import dreamengine.plugins.ecs.System.RenderSystem;
 
 class GizmoRenderer extends RenderSystem {
-	var gizmo:Mesh;
+	var arrow:Mesh;
+	var lastRendered:RenderContext = null;
+	var lastMaterial:Material = null;
+	var lastStruct:VertexStructure;
+	var structLength = 0;
+
 
 	public function new() {
 		super();
-		gizmo = Primitives.cube();
+		arrow = ObjLoader.load(kha.Assets.blobs.engine_gizmos_arrow_obj.toString());
+		targetRenderContextProviders = [Renderer3D];
+	}
+
+
+	function createPipelineState(material:Material) {
+		var pipelineState = new PipelineState();
+		var struct = new VertexStructure();
+		struct.add("vertexPosition", Float3);
+		struct.add("uv", Float2);
+		struct.add("vertexNormal", Float3);
+		structLength = Std.int(struct.byteSize() / 4);
+
+		pipelineState.inputLayout = [struct];
+
+		pipelineState.vertexShader = Shaders.unlit_vert;
+		pipelineState.fragmentShader = Shaders.unlit_frag;
+		pipelineState.cullMode = Clockwise;
+
+		lastStruct = struct;
+		pipelineState.depthWrite = true;
+		pipelineState.depthMode = CompareMode.Less;
+		pipelineState.compile();
+
+		return pipelineState;
 	}
 
 	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
-		var f = ecsContext.query([
-			new With(Transform),
-			new Without(Camera),
-			new Optional(Mesh),
-			new Optional(DirectionalLight)
-		]);
 		var g4 = renderContext.getRenderTarget().g4;
+
+		var f = ecsContext.query([new With(DirectionalLight), new With(Transform), new Optional(Material)]);
+
+		var pipelineState:PipelineState = renderContext.getPipelineState();
+		if (f.length > 0){
+				pipelineState = createPipelineState(f[0].getComponent(Material));
+				renderContext.updatePipelineState(pipelineState);
+				g4.setPipeline(pipelineState);
+				ShaderGlobals.apply(pipelineState, g4);
+		}
+
+		g4.setPipeline(pipelineState);
+		var mvpLocation = pipelineState.getConstantLocation("MVP");
+		var vLocation = pipelineState.getConstantLocation("V");
+		var mLocation = pipelineState.getConstantLocation("M");
+
+		g4.setMatrix(vLocation, renderContext.getRenderView().getViewMatrix());
+
 		for (c in f) {
+			var mesh:Mesh = arrow;
 			var transform:Transform = c.getComponent(Transform);
+			var material:Material = c.getComponent(Material);
 
-			var pipelineState:PipelineState = renderContext.getPipelineState();
+			var positions = mesh.getVertices();
+			var uvs = mesh.getUVs();
+			var normals = mesh.getNormals();
 
-			var positions = gizmo.getVertices();
-			var uvs = gizmo.getUVs();
-			var normals = gizmo.getNormals();
+			if (pipelineState == null || lastStruct == null || lastMaterial != material) {
+				pipelineState = createPipelineState(material);
+				renderContext.updatePipelineState(pipelineState);
+				g4.setPipeline(pipelineState);
+				mvpLocation = pipelineState.getConstantLocation("MVP");
+				vLocation = pipelineState.getConstantLocation("V");
+				mLocation = pipelineState.getConstantLocation("M");
 
-			var struct = new VertexStructure();
-			struct.add("vertexPosition", Float3);
-			struct.add("uv", Float2);
-			struct.add("vertexNormal", Float3);
-			var structLength = Std.int(struct.byteSize() / 4);
-
-			pipelineState.inputLayout = [struct];
-
-			pipelineState.vertexShader = Shaders.unlit_vert;
-			pipelineState.fragmentShader = Shaders.unlit_frag;
-			pipelineState.cullMode = Clockwise;
-
-			pipelineState.depthWrite = true;
-			pipelineState.depthMode = CompareMode.Always;
-			pipelineState.compile();
+				g4.setMatrix(vLocation, renderContext.getRenderView().getViewMatrix());
+			}
 
 			var vertsNum = Std.int(positions.length / 3);
 			// Create vertex buffer
 			var vertexBuffer = new VertexBuffer(vertsNum, // Vertex count - 3 floats per vertex
-				struct, // Vertex structure
-				Usage.StaticUsage // Vertex data will stay the same
+				lastStruct, // Vertex structure
+				Usage.StaticUsage// Vertex data will stay the same
 			);
 
 			// Copy vertices and colors to vertex buffer
@@ -75,42 +113,40 @@ class GizmoRenderer extends RenderSystem {
 
 			vertexBuffer.unlock();
 
-			var indexBuffer = new IndexBuffer(gizmo.getIndices().length, Usage.StaticUsage);
+			var indexBuffer = new IndexBuffer(mesh.getIndices().length, Usage.StaticUsage);
 
 			var iData = indexBuffer.lock();
 
 			for (i in 0...iData.length) {
-				iData[i] = gizmo.getIndices()[i];
+				iData[i] = mesh.getIndices()[i];
 			}
 
 			indexBuffer.unlock();
 
-
-			var position = transform.getPosition();
-			var rotation = transform.getRotation();
-
-			var trMatrix = FastMatrix4.translation(position.x, position.y, position.z);
-			var rotMatrix = rotation.toMatrix();
-			var scale = new Vector3(0.2, 0.2, 0.2);
-			if (c.getComponent(DirectionalLight) != null) {
-				scale.z = 0.8;
-			}
-			var scaleMatrix = FastMatrix4.scale(scale.x, scale.y, scale.z);
-
-			var m = trMatrix.multmat(rotMatrix).multmat(scaleMatrix);
-
-			var mvp = renderContext.getRenderView().getViewProjectionMatrix().multmat(m);
+			var model = transform.localMatrix;
+			var mvp = renderContext.getRenderView().getViewProjectionMatrix().multmat(model);
 
 			g4.setVertexBuffer(vertexBuffer);
 			g4.setIndexBuffer(indexBuffer);
 
-			g4.setPipeline(pipelineState);
-			g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
-			g4.setMatrix(pipelineState.getConstantLocation("M"), m);
-			g4.setMatrix(pipelineState.getConstantLocation("V"), renderContext.getRenderView().getViewMatrix());
+			g4.setMatrix(mvpLocation, mvp);
+			g4.setMatrix(mLocation, model);
 
+			/*
+				g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
+				g4.setMatrix(pipelineState.getConstantLocation("M"), model);
+				g4.setMatrix(pipelineState.getConstantLocation("V"), renderContext.getRenderView().getViewMatrix());
+				ShaderGlobals.apply(pipelineState, g4);
+
+				// do setting material properties
+				g4.setVector4(pipelineState.getConstantLocation("baseColor"), new FastVector4(0, 0, 1, 1));
+			 */
+
+			ShaderGlobals.apply(pipelineState, g4);
+				
 			// g4.drawIndexedVerticesInstanced(100);
 			g4.drawIndexedVertices();
+			lastMaterial = material;
 		}
 	}
 }

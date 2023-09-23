@@ -34,9 +34,9 @@ class DirectionalLightSystem extends System {
 			ShaderGlobals.setMatrix("lightSpaceMatrix", light.viewProjectionMatrix);
 
 			ShaderGlobals.setFloat3("directionalLightColor", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
-			ShaderGlobals.setFloat3("directionalLightDirection", fw * -1);
+			ShaderGlobals.setFloat3("directionalLightDirection", fw);
 			ShaderGlobals.setTexture("shadowMap", light.getRenderTarget());
-			ShaderGlobals.setFloat("depthBias", 0.01);
+			ShaderGlobals.setFloat("depthBias", 0.005);
 		}
 	}
 

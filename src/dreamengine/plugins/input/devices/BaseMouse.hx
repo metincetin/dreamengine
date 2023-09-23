@@ -77,6 +77,11 @@ class BaseMouse implements IPointer implements IKeyDevice {
 		}
 	}
 
+	public function update(){
+		pointerDelta.x = 0;
+		pointerDelta.y = 0;
+	}
+
 	public function isKeyPressed(key:Int):Bool {
 		return false;
 	}

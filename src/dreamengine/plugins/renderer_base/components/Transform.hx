@@ -88,7 +88,8 @@ class Transform extends Component {
 	}
 
 	public function rotate(axis:Vector3, angle:Float) {
-		throw("Not implemented");
+		var v = rotation.multipliedV(axis * angle);
+		setRotation(v);
 	}
 
 	public function getScale():Vector3 {

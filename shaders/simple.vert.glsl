@@ -6,7 +6,7 @@ in vec3 vertexColor;
 in vec3 vertexNormal;
 
 out vec3 normal;
-out vec3 worldPos;
+out vec3 Position_World;
 out vec3 color;
 out vec4 FragPosLightSpace;
 out mat4 view;
@@ -32,8 +32,8 @@ void main() {
 	// The color of each vertex will be interpolated
 	// to produce the color of each fragment
 
-	worldPos = (M * vec4(vertexPosition, 1.0)).xyz;
-    FragPosLightSpace = lightSpaceMatrix * vec4(worldPos, 1.0);
+	Position_World = (M * vec4(vertexPosition, 1.0)).xyz;
+    FragPosLightSpace = lightSpaceMatrix * vec4(Position_World, 1.0);
 
 	view = V;
 

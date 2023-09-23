@@ -54,21 +54,4 @@ class Mesh extends Component {
 	public function setIndices(v:Array<Int>) {
 		this.indices = v;
 	}
-
-	public function getDataLength() {
-		return (vertices != null ? vertices.length : 0) + (uvs != null ? uvs.length : 0) + (normals != null ? normals.length : 0);
-	}
-
-	public function getData(i:Int):Float {
-		if (i < vertices.length) {
-			return vertices[i];
-		}
-		if (i - vertices.length < uvs.length) {
-			return uvs[i - vertices.length];
-		}
-		if (i - vertices.length - uvs.length < normals.length) {
-			return normals[i - vertices.length - uvs.length];
-		}
-		return 0;
-	}
 }

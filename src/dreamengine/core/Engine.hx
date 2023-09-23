@@ -1,5 +1,10 @@
 package dreamengine.core;
 
+import dreamengine.plugins.renderer_3d.components.Mesh;
+import js.html.MediaDevices;
+import dreamengine.plugins.renderer_3d.loaders.ObjLoaderOld;
+import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
+import dreamengine.plugins.renderer_3d.Primitives;
 import dreamengine.device.Screen;
 import kha.FramebufferOptions;
 import kha.WindowOptions;
@@ -41,6 +46,10 @@ class Engine {
 
 		trace("Setting up Kha");
 		kha.System.start(new SystemOptions("Dream Game", 1344, 756), function(w){ engine.onSystemStarted(w, onStarted);});
+		Assets.loadBlob("engine_primitive_sphere_obj", x->{Primitives.sphereMesh= ObjLoader.load(x.toString());});
+		Assets.loadBlob("engine_primitive_cube_obj", x->{Primitives.cubeMesh = ObjLoader.load(x.toString());});
+		Assets.loadBlob("engine_primitive_plane_obj", x->{Primitives.planeMesh = ObjLoader.load(x.toString());});
+		Assets.loadBlob("engine_primitive_suzanne_obj", x->{Primitives.suzanneMesh = ObjLoader.load(x.toString());});
 	}
 
 	function onSystemStarted(window:Window, onStarted: Engine->Void) {

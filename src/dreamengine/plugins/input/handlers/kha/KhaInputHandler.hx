@@ -40,5 +40,8 @@ class KhaInputHandler implements IInputHandler {
 			var k = cast(keyboard, Keyboard);
 			k.clearFrameInput();
 		}
+		for(mouse in mice){
+			mouse.update();
+		}
 	}
 }

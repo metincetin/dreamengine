@@ -68,12 +68,10 @@ class MeshRenderer extends RenderSystem {
 
 		var pipelineState:PipelineState = renderContext.getPipelineState();
 		if (f.length > 0){
-			if (pipelineState == null || lastMaterial != f[0].getComponent(Material)){
 				pipelineState = createPipelineState(f[0].getComponent(Material));
 				renderContext.updatePipelineState(pipelineState);
 				g4.setPipeline(pipelineState);
 				ShaderGlobals.apply(pipelineState, g4);
-			}
 		}
 
 		g4.setPipeline(pipelineState);
@@ -158,7 +156,7 @@ class MeshRenderer extends RenderSystem {
 
 			ShaderGlobals.apply(pipelineState, g4);
 				
-			g4.setVector4(pipelineState.getConstantLocation("baseColor"), new FastVector4(0, 0, 1, 1));
+			g4.setVector4(pipelineState.getConstantLocation("baseColor"), new FastVector4(1, 0, 0, 1));
 			// g4.drawIndexedVerticesInstanced(100);
 			g4.drawIndexedVertices();
 			lastMaterial = material;

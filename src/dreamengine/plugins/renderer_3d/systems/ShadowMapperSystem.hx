@@ -33,8 +33,7 @@ class ShadowMapperSystem extends RenderSystem {
 
 		pipelineState.vertexShader = Shaders.shadowmap_vert;
 		pipelineState.fragmentShader = Shaders.shadowmap_frag;
-		pipelineState.cullMode = CounterClockwise;
-		// pipelineState.cullMode = CounterClockwise;
+		pipelineState.cullMode = Clockwise;
 
 		pipelineState.depthWrite = true;
 		pipelineState.depthMode = CompareMode.Less;
@@ -57,8 +56,6 @@ class ShadowMapperSystem extends RenderSystem {
 			var transform:Transform = c.getComponent(Transform);
 
 			var positions = mesh.getVertices();
-			var uvs = mesh.getUVs();
-			var normals = mesh.getNormals();
 
 			var vertsNum = Std.int(positions.length / 3);
 			// Create vertex buffer
@@ -74,11 +71,6 @@ class ShadowMapperSystem extends RenderSystem {
 				vbData.set((i * structLength) + 0, positions[(i * 3) + 0]);
 				vbData.set((i * structLength) + 1, positions[(i * 3) + 1]);
 				vbData.set((i * structLength) + 2, positions[(i * 3) + 2]);
-				vbData.set((i * structLength) + 3, uvs[(i * 2) + 0]);
-				vbData.set((i * structLength) + 4, uvs[(i * 2) + 1]);
-				vbData.set((i * structLength) + 5, normals[(i * 3) + 0]);
-				vbData.set((i * structLength) + 6, normals[(i * 3) + 1]);
-				vbData.set((i * structLength) + 7, normals[(i * 3) + 2]);
 			}
 
 			vertexBuffer.unlock();

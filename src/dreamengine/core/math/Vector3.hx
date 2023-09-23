@@ -203,6 +203,10 @@ abstract Vector3(Array<Float>) from Array<Float>{
 	}
 
 	@:to
+	function toKhaVector3(){
+		return new kha.math.Vector3(this[0], this[1], this[2]);
+	}
+	@:to
 	function toFastVector3(){
 		return new kha.math.FastVector3(this[0], this[1], this[2]);
 	}
