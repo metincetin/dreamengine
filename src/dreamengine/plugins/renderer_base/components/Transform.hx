@@ -110,27 +110,5 @@ class Transform extends Component {
 		var scaleMatrix = FastMatrix4.scale(scale.x, scale.y, scale.z);
 
 		localMatrix = trMatrix.multmat(rotMatrix).multmat(scaleMatrix);
-
-		// m = m.multmat(FastMatrix4.rotation(rotation.x, rotation.y, rotation.z));
-		// var m = FastMatrix4.rotation(Mathf.degToRad(rotation.x), Mathf.degToRad(rotation.y), Mathf.degToRad(rotation.z));
-		// // m = m.multmat(FastMatrix4.scale(scale.x, scale.y, scale.z));
-
-		// m._00 *= scale.x;
-		// m._01 *= scale.x;
-		// m._02 *= scale.x;
-		// m._03 *= scale.x;
-		// m._10 *= scale.y;
-		// m._11 *= scale.y;
-		// m._12 *= scale.y;
-		// m._13 *= scale.y;
-		// m._20 *= scale.z;
-		// m._21 *= scale.z;
-		// m._22 *= scale.z;
-		// m._23 *= scale.z;
-
-		// m._30 = position.x;
-		// m._31 = position.y;
-		// m._32 = position.z;
-
 	}
 }

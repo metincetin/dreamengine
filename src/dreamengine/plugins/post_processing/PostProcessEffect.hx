@@ -1,5 +1,8 @@
 package dreamengine.plugins.post_processing;
 
+import kha.Scaler;
+import kha.graphics5_.TextureFormat;
+import dreamengine.device.Screen;
 import kha.Image;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexStructure;
@@ -11,6 +14,8 @@ class PostProcessEffect {
 
 	var passes:Array<PostProcessEffectPass>;
 
+	var intermediate:Image;
+
 	public function new() {
 		passes = createPasses();
 	}
@@ -19,35 +24,36 @@ class PostProcessEffect {
 		return [new SimplePostProcessPass()];
 	}
 
+	public function getIntermediate(){
+		return intermediate;
+	}
+	public function createIntermediate(){
+		var res = Screen.getResolution();
+		intermediate = Image.createRenderTarget(res.x, res.y);
+		return intermediate;
+	}
+
 	function sendValues(destination:Image) {}
 
-	public function execute(source:Image, destination:Image, base: Image) {
-		var last:Image = source;
+	public function execute(source:Image, destination: Image, screen:Image) {
 		for (i in 0...passes.length) {
 			var p = passes[i];
-			var current = p.createRenderTarget(last);
-
 
 			var pipeline = p.getPipeline();
-			current.g2.begin();
-			current.g4.setPipeline(pipeline);
-			current.g2.pipeline = pipeline;
-			sendValues(current);
-			current.g4.setTexture(pipeline.getTextureUnit("base"), base);
-			p.passValues(current.g4);
-			kha.Scaler.scale(last, current, kha.System.screenRotation);
-			current.g2.end();
+			destination.g2.begin(false);
+			destination.g4.setPipeline(pipeline);
+			destination.g2.pipeline = pipeline;
+			sendValues(destination);
+			destination.g4.setTexture(pipeline.getTextureUnit("sceneTexture"), screen);
+			p.passValues(destination.g4);
+			
+			Scaler.scale(source, destination, kha.System.screenRotation);
 
-			if (last != null && last != source)
-				last.unload();
+			destination.g2.end();
 
-			last = current;
+			source.g2.begin();
+			Scaler.scale(destination, source, kha.System.screenRotation);
+			source.g2.end();
 		}
-
-		destination.g2.begin();
-		kha.Scaler.scale(last, destination, kha.System.screenRotation);
-		destination.g2.end();
-
-		last.unload();
 	}
 }

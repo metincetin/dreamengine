@@ -14,15 +14,14 @@ import dreamengine.core.math.Vector2;
 import dreamengine.device.Screen;
 import dreamengine.core.math.Vector3;
 import dreamengine.core.math.Mathf;
-import dreamengine.plugins.ecs.System.RenderContext;
 import dreamengine.plugins.renderer_base.components.Transform;
 import dreamengine.plugins.renderer_2d.components.Sprite;
 import dreamengine.plugins.ecs.ECSContext;
-import dreamengine.plugins.ecs.System.RenderSystem;
+import dreamengine.plugins.ecs.System;
 
-class SpriteRenderer extends RenderSystem {
-	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
-		var camera:Camera = cast renderContext.getRenderView();
+class SpriteRenderer extends System {
+	override function execute(ecsContext:ECSContext) {
+		/*var camera:Camera = cast renderContext.getRenderView();
 		if (camera == null) return;
 		for (c in ecsContext.filter([Sprite, Transform])) {
 			var graphics = renderContext.getRenderTarget().g2;
@@ -67,5 +66,6 @@ class SpriteRenderer extends RenderSystem {
 			graphics.drawRect(localPos.x, localPos.y, localSize.x, localSize.y, cameraSize);
 			#end
 		}
+		*/
 	}
 }

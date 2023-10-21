@@ -8,6 +8,8 @@ class PostProcessEffectPass {
 
 	var enabled = true;
 
+	var renderTarget:Image;
+
 	public function new() {
 		createPipeline();
 	}
@@ -25,11 +27,17 @@ class PostProcessEffectPass {
 		pipeline.inputLayout = [structure];
 		pipeline.vertexShader = kha.Shaders.painter_image_vert;
 		pipeline.fragmentShader = getShader();
+
 		pipeline.compile();
 	}
 
+	public function getRenderTarget(){
+		return renderTarget;
+	}
+
 	public function createRenderTarget(source:Image){
-		return Image.createRenderTarget(source.width, source.height, source.format);
+		renderTarget = Image.createRenderTarget(source.width, source.height, source.format);
+		return renderTarget;
 	}
 
 	public function getPipeline(){

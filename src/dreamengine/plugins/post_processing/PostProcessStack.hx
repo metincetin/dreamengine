@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing;
 
+import kha.graphics5_.TextureFormat;
 import kha.System;
 import kha.Scaler;
 import kha.Framebuffer;
@@ -8,6 +9,9 @@ import kha.Image;
 
 class PostProcessStack{
     var effects = new Array<PostProcessEffect>();
+
+    var intermediate: Image;
+    var effectIntermediate: Image;
 
     public function new(rest:Array<PostProcessEffect>){
         for (e in rest){
@@ -25,27 +29,24 @@ class PostProcessStack{
         return null;
     }
 
-    public function render(img:Image, framebuffer:Framebuffer){
-        var intermediate = Image.createRenderTarget(img.width, img.height, img.format);
-
+    public function render(screenTexture:Image){
+        if (intermediate == null){
+            intermediate = Image.createRenderTarget(screenTexture.width, screenTexture.height, TextureFormat.RGBA64);
+        }
+        if (effectIntermediate == null){
+            effectIntermediate = Image.createRenderTarget(screenTexture.width, screenTexture.height, TextureFormat.RGBA64);
+        }
         intermediate.g2.begin();
-		Scaler.scale(img, intermediate, System.screenRotation);
+        kha.Scaler.scale(screenTexture, intermediate, System.screenRotation);
         intermediate.g2.end();
-
-
-        var lastImage :Image = intermediate;
-
         for(eff in effects){
             if (!eff.enabled) continue;
-            var int2 = Image.createRenderTarget(img.width, img.height, img.format);
-            eff.execute(lastImage, int2, img);
-            lastImage.unload();
-            lastImage = int2;
+            eff.execute(intermediate, effectIntermediate, screenTexture);
         }
 
-        framebuffer.g2.begin();
-		Scaler.scale(lastImage, framebuffer, System.screenRotation);
-        framebuffer.g2.end();
-        lastImage.unload();
+
+        screenTexture.g2.begin();
+        kha.Scaler.scale(intermediate, screenTexture, kha.System.screenRotation);
+        screenTexture.g2.end();
     }
 }

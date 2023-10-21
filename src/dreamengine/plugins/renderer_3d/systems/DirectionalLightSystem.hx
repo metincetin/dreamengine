@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d.systems;
 
+import dreamengine.core.Engine;
 import kha.math.FastMatrix4;
 import dreamengine.plugins.ecs.ECSContext;
 import dreamengine.core.Time;
@@ -12,6 +13,11 @@ import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import dreamengine.plugins.ecs.System;
 
 class DirectionalLightSystem extends System {
+	var engine:Engine;
+
+	override function onRegistered(engine:Engine) {
+		this.engine = engine;
+	}
 	override function execute(ctx:ECSContext) {
 		var filter = ctx.filter([Transform, DirectionalLight]);
 
@@ -37,6 +43,7 @@ class DirectionalLightSystem extends System {
 			ShaderGlobals.setFloat3("directionalLightDirection", fw);
 			ShaderGlobals.setTexture("shadowMap", light.getRenderTarget());
 			ShaderGlobals.setFloat("depthBias", 0.005);
+			engine.getRenderer().addLight(light);
 		}
 	}
 

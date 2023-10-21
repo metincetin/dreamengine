@@ -7,9 +7,9 @@ in vec3 vertexNormal;
 
 
 // Values that stay constant for the whole mesh
-uniform mat4 M;
+uniform mat4 Model;
 uniform mat4 lightSpaceMatrix;
 
 void main() {
-	gl_Position = lightSpaceMatrix * M * vec4(vertexPosition, 1.0);
+	gl_Position = lightSpaceMatrix * Model * vec4(vertexPosition, 1.0);
 }

@@ -1,8 +1,8 @@
 package dreamengine.plugins.renderer_3d.loaders;
 
+import dreamengine.plugins.renderer_base.Mesh;
 import kha.Blob;
 import kha.Assets;
-import dreamengine.plugins.renderer_3d.components.Mesh;
 
 class ObjLoader {
 	public static function load(objData:String) {
@@ -101,10 +101,10 @@ class ObjLoader {
 		}
 
 		var mesh = new Mesh();
-		mesh.setVertices(indexedVertices);
-		mesh.setUVs(indexedUVs);
-		mesh.setNormals(indexedNormals);
-		mesh.setIndices(indices);
+		mesh.vertices = indexedVertices;
+		mesh.uvs = indexedUVs;
+		mesh.normals = indexedNormals;
+		mesh.indices = indices;
 		return mesh;
 	}
 

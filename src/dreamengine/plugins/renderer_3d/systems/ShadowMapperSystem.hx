@@ -7,42 +7,21 @@ import dreamengine.plugins.renderer_3d.components.*;
 import dreamengine.plugins.renderer_base.components.*;
 import kha.graphics4.*;
 import dreamengine.plugins.ecs.ECSContext;
-import dreamengine.plugins.ecs.System.RenderContext;
-import dreamengine.plugins.ecs.System.RenderSystem;
+import dreamengine.plugins.ecs.System;
 
-class ShadowMapperSystem extends RenderSystem {
+class ShadowMapperSystem extends System {
 	var structLength:Int;
 	var struct:VertexStructure;
 
 
 	public function new() {
 		super();
-		targetRenderContextProviders = [ShadowMapper];
 	}
 
-	function createPipelineState() {
-		var pipelineState = new PipelineState();
 
-		struct = new VertexStructure();
-		struct.add("vertexPosition", Float3);
-		struct.add("uv", Float2);
-		struct.add("vertexNormal", Float3);
-		structLength = Std.int(struct.byteSize() / 4);
 
-		pipelineState.inputLayout = [struct];
-
-		pipelineState.vertexShader = Shaders.shadowmap_vert;
-		pipelineState.fragmentShader = Shaders.shadowmap_frag;
-		pipelineState.cullMode = Clockwise;
-
-		pipelineState.depthWrite = true;
-		pipelineState.depthMode = CompareMode.Less;
-		pipelineState.compile();
-
-		return pipelineState;
-	}
-
-	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
+	override function execute(ecsContext:ECSContext) {
+		/*
 		var g4 = renderContext.getRenderTarget().g4;
 
 		var f = ecsContext.query([new With(Mesh), new With(Transform), new Optional(Material)]);
@@ -103,5 +82,6 @@ class ShadowMapperSystem extends RenderSystem {
 			// g4.drawIndexedVerticesInstanced(100);
 			g4.drawIndexedVertices();
 		}
+			*/
 	}
 }

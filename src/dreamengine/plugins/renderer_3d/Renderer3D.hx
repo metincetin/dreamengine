@@ -1,8 +1,6 @@
 package dreamengine.plugins.renderer_3d;
 
-import dreamengine.plugins.renderer_3d.systems.GizmoRenderer;
 import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
-import dreamengine.plugins.renderer_base.IRenderView;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_3d.systems.PointLightSystem;
 import dreamengine.core.math.Quaternion;
@@ -12,10 +10,8 @@ import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import kha.Color;
 import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import dreamengine.plugins.renderer_3d.systems.DirectionalLightSystem;
-import dreamengine.plugins.renderer_base.ActiveCamera;
 import dreamengine.plugins.renderer_base.components.Transform;
 import dreamengine.plugins.ecs.Component;
-import dreamengine.plugins.renderer_base.IRenderContextProvider;
 import dreamengine.plugins.renderer_3d.systems.MeshRenderer;
 import kha.math.FastVector3;
 import kha.graphics4.ConstantLocation;
@@ -27,9 +23,8 @@ import kha.Framebuffer;
 import dreamengine.plugins.ecs.ECS;
 import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
-import dreamengine.plugins.ecs.System.RenderContext;
 
-class Renderer3D implements IPlugin implements IRenderContextProvider {
+class Renderer3D implements IPlugin{
 	var ecs:ECS;
 	var vertexBuffer:VertexBuffer;
 	var indexBuffer:IndexBuffer;
@@ -43,7 +38,6 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 	var projection:FastMatrix4;
 	var engine:Engine;
 
-	var renderContext:RenderContext;
 
 	public function new() {}
 
@@ -56,17 +50,12 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 		}
 
 		var meshRenderer = new MeshRenderer();
-		ecs.registerRenderSystem(meshRenderer);
+		ecs.registerSystem(meshRenderer);
 		ecs.registerSystem(new DirectionalLightSystem());
-		ecs.registerRenderSystem(new ShadowMapperSystem());
+		//ecs.registerSystem(new ShadowMapperSystem());
 		//ecs.registerRenderSystem(new GizmoRenderer());
 		//ecs.registerSystem(new PointLightSystem());
 		ecs.registerSystem(new CameraSystem());
-		ecs.registerRenderContextProvider(this);
-		ecs.registerRenderContextProvider(new ShadowMapper(engine));
-
-
-		renderContext = new RenderContext(engine, null, null);
 	}
 
 	function initializeRenderer() {
@@ -89,15 +78,5 @@ class Renderer3D implements IPlugin implements IRenderContextProvider {
 				return new ECS();
 		}
 		return null;
-	}
-
-
-	public function getRenderingBackend():RenderingBackend {
-		return RenderingBackend.G4;
-	}
-
-	public function getRenderContext(view:IRenderView):RenderContext {
-		renderContext.setView(view);
-		return renderContext;
 	}
 }

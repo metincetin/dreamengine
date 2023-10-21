@@ -1,5 +1,7 @@
 #version 450
 // Interpolated values from the vertex shaders
+#include "include/lighting.inc.glsl"
+
 in vec3 fragmentColor;
 
 in vec3 normal;
@@ -9,16 +11,13 @@ in vec4 FragPosLightSpace;
 in mat4 view;
 
 
+
 out vec4 fragColor;
 
 uniform vec4 baseColor = vec4(1);
+uniform vec4 emission;
+uniform float roughness;
 
-uniform vec3 directionalLightColor;
-uniform vec3 directionalLightDirection;
-
-uniform vec3 additionalLight0_color = vec3(1);
-uniform float additionalLight0_attenuation;
-uniform vec3 additionalLight0_position;
 
 uniform sampler2D shadowMap;
 uniform float depthBias = 0.3;
@@ -43,6 +42,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
 
+
     float bias = mix(0.05, 0, dot(normalize(normal), -directionalLightDirection));
     //float bias = max(0.05 * (1.0 - dot(normal, directionalLightDirection)), 0.0005);  
 
@@ -66,12 +66,11 @@ void main() {
 	// Output color = color specified in the vertex shader,
 	// interpolated between all 3 surrounding vertices
 	vec3 normalizedNormal = normalize(normal);
-	float ldn = max(0.0, dot(-directionalLightDirection, normalizedNormal));
-
+	float ldn = max(0.0, dot(-GetMainLightDirection(), normalizedNormal));
 
 	vec3 viewDir = normalize(cameraPosition - Position_World);
 
-    vec3 H = normalize(-directionalLightDirection + viewDir);
+    vec3 H = normalize(-GetMainLightDirection()+ viewDir);
     float ndh = max(0, dot(normalizedNormal, H));
 
 	float spec = pow(ndh, 64);
@@ -79,10 +78,11 @@ void main() {
     float shadow = 1 - ShadowCalculation(FragPosLightSpace);
 
     vec3 diffuse = baseColor.rgb * ldn * shadow;
-    vec3 ambient = directionalLightColor * .1;
+    vec3 ambient = GetMainLightColor() * .1;
 
     vec3 fn = ((ambient + diffuse) * baseColor.rgb + (specular * ldn * shadow)); 
 
 
-	fragColor = vec4(fn, 1);
+	fragColor = vec4((emission.rgb * emission.a) + PBR(baseColor.rgb, GetMainLightColor().rgb, normalizedNormal, -GetMainLightDirection(), viewDir, roughness), 1);
+
 }

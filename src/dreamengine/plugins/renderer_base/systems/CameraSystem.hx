@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_base.systems;
 
+import dreamengine.core.Engine;
 import dreamengine.plugins.ecs.ECSContext;
 import kha.math.FastVector3;
 import kha.math.FastMatrix4;
@@ -9,6 +10,13 @@ import dreamengine.plugins.ecs.Component;
 import dreamengine.plugins.ecs.System;
 
 class CameraSystem extends System {
+
+	var engine:Engine;
+
+	override function onRegistered(engine:Engine) {
+		this.engine = engine;
+	}
+
 	override function execute(ctx:ECSContext) {
 		for (c in ctx.filter([Camera, Transform])) {
 			var camera:Camera = cast c.getComponent(Camera);
@@ -30,6 +38,8 @@ class CameraSystem extends System {
 
 			camera.setViewMatrix(view);
 			ShaderGlobals.setFloat3("cameraPosition", pos);
+
+			engine.getRenderer().setCamera(camera);
 		}
 	}
 }

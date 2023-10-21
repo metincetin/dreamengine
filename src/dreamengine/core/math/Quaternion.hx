@@ -16,6 +16,19 @@ class Quaternion {
 		this.w = w;
 	}
 
+	public static function fromAxisAngle(axis:Vector3, degrees:Float){
+		var rad = Mathf.degToRad(degrees);
+
+		var q = new Quaternion();
+		q.w = Math.cos(rad * 0.5);
+		q.x = q.y = q.z = Math.sin(rad * 0.5);
+		q.x *= axis.x;
+		q.y *= axis.y;
+		q.z *= axis.z;
+
+		return q;
+	}
+
 	public static function fromEuler(euler:Vector3) {
 		var roll = Mathf.degToRad(euler.x);
 		var pitch = Mathf.degToRad(euler.y);

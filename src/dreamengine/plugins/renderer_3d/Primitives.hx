@@ -2,7 +2,7 @@ package dreamengine.plugins.renderer_3d;
 
 import dreamengine.core.math.Vector2;
 import dreamengine.core.math.Vector3;
-import dreamengine.plugins.renderer_3d.components.Mesh;
+import dreamengine.plugins.renderer_base.Mesh;
 
 class Primitives {
 	public static var suzanneMesh:Mesh;

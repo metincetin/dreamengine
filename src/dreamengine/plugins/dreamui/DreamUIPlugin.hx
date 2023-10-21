@@ -66,7 +66,6 @@ class DreamUIPlugin implements IPlugin {
 			throw "Input plugin not found";
 		}
 
-		engine.registerRenderEvent(onRender);
 		engine.registerLoopEvent(onLoop);
 
 		eventSystem = new EventSystem(this, inputPlugin.getInputHandler());

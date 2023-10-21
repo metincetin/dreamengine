@@ -9,20 +9,10 @@ class IMGUIPlugin implements IPlugin {
 	public function new() {}
 
 	public function initialize(engine:Engine) {
-		engine.registerRenderEvent(render);
+		engine.getRenderer().pipeline.push(new IMGUIRenderPass());
 	}
 
 	public function finalize() {}
-
-	function render(fb:Framebuffer) {
-		fb.g2.begin(false);
-		for (renderer in RenderStack.renderers) {
-			renderer.render(fb.g2);
-		}
-		fb.g2.end();
-
-		RenderStack.clear();
-	}
 
 	public function getName():String {
 		return "IMGUI";

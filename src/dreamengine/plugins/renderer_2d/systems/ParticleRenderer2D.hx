@@ -5,11 +5,11 @@ import dreamengine.plugins.renderer_2d.components.ParticleEmitter;
 import dreamengine.plugins.ecs.ECSContext;
 import dreamengine.plugins.ecs.System;
 
-class ParticleRenderer extends RenderSystem {
-	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
+class ParticleRenderer extends System{
+	override function execute(ecsContext:ECSContext) {
 		for (res in ecsContext.filter([Transform, ParticleEmitter])) {
 			var emitter = res.getComponent(ParticleEmitter);
-			emitter.update(res.getComponent(Transform), renderContext.getRenderTarget().g2);
+			//emitter.update(res.getComponent(Transform), renderContext.getRenderTarget().g2);
 		}
 	}
 }

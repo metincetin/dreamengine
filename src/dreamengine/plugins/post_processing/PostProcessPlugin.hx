@@ -1,14 +1,15 @@
 package dreamengine.plugins.post_processing;
 
 import dreamengine.plugins.renderer_base.components.Camera;
-import dreamengine.plugins.renderer_base.ActiveCamera;
 import kha.Framebuffer;
 import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
+import dreamengine.plugins.post_processing.passes.PostProcessPass;
 
 class PostProcessPlugin implements IPlugin {
     public function new(){}
 	private var stack:PostProcessStack;
+	var pass:PostProcessPass;
 
 	public function getStack() {
 		return stack;
@@ -19,7 +20,8 @@ class PostProcessPlugin implements IPlugin {
 	}
 
 	public function initialize(engine:Engine) {
-		engine.registerRenderEvent(onRender);
+		pass = new PostProcessPass(this);
+		engine.getRenderer().pipeline.push(pass);
 	}
 
 	public function finalize() {}
@@ -34,15 +36,5 @@ class PostProcessPlugin implements IPlugin {
 
 	public function handleDependency(ofType:Class<IPlugin>):IPlugin {
 		return null;
-	}
-
-	function onRender(framebuffer:Framebuffer) {
-        if (stack == null) return;
-		for (i in 0...ActiveView.getViewCount()) {
-            var view = ActiveView.getView(i);
-			if (view is Camera){
-            	stack.render(view.getRenderTarget(), framebuffer);
-			}
-        }
 	}
 }

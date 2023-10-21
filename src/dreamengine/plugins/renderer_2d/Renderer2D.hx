@@ -1,20 +1,17 @@
 package dreamengine.plugins.renderer_2d;
 
-import dreamengine.plugins.renderer_base.IRenderView;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_2d.systems.ParticleRenderer2D.ParticleRenderer;
 import kha.graphics4.PipelineState;
 import dreamengine.plugins.renderer_base.components.Camera;
 import dreamengine.plugins.ecs.Component;
-import dreamengine.plugins.ecs.System.RenderContext;
-import dreamengine.plugins.renderer_base.IRenderContextProvider;
 import kha.Framebuffer;
 import dreamengine.plugins.ecs.ECS;
 import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 import dreamengine.plugins.renderer_2d.systems.*;
 
-class Renderer2D implements IPlugin implements IRenderContextProvider {
+class Renderer2D implements IPlugin{
 	var ecs:ECS;
 	var engine:Engine;
 
@@ -34,18 +31,16 @@ class Renderer2D implements IPlugin implements IRenderContextProvider {
 			throw "Could not find ECS plugin";
 		}
 
-		ecs.registerRenderSystem(spriteRenderer);
-		ecs.registerRenderSystem(new LineRenderer2D());
-		ecs.registerRenderSystem(new ParticleRenderer());
+		ecs.registerSystem(spriteRenderer);
+		ecs.registerSystem(new LineRenderer2D());
+		ecs.registerSystem(new ParticleRenderer());
 		ecs.registerSystem(new CameraSystem());
 		ecs.registerSystem(new SpriteAnimationPlayer());
 		ecs.registerSystem(new CameraSystem());
 
-		ecs.registerRenderContextProvider(this);
 	}
 
 	public function finalize() {
-		ecs.unregisterRenderSystem(spriteRenderer);
 	}
 
 	public function getName():String {
@@ -64,11 +59,4 @@ class Renderer2D implements IPlugin implements IRenderContextProvider {
 		return null;
 	}
 
-	public function getRenderContext(view:IRenderView):RenderContext {
-		return new RenderContext(engine, null, view);
-	}
-
-	public function getRenderingBackend():RenderingBackend {
-		return RenderingBackend.G2;
-	}
 }

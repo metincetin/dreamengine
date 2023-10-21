@@ -5,12 +5,11 @@ import kha.math.FastMatrix3;
 import dreamengine.core.math.Vector3;
 import dreamengine.plugins.renderer_2d.components.Line2D;
 import dreamengine.plugins.ecs.ECSContext;
-import dreamengine.plugins.ecs.System.RenderContext;
-import dreamengine.plugins.ecs.System.RenderSystem;
+import dreamengine.plugins.ecs.System;
 
-class LineRenderer2D extends RenderSystem {
-	override function execute(ecsContext:ECSContext, renderContext:RenderContext) {
-		var g2 = renderContext.getRenderTarget().g2;
+class LineRenderer2D extends System {
+	override function execute(ecsContext:ECSContext) {
+		/*
 		if (renderContext.getRenderView() is Camera == false) return;
 
 		var filter = ecsContext.filter([Line2D]);
@@ -41,5 +40,6 @@ class LineRenderer2D extends RenderSystem {
 				g2.drawLine(p1.x * 200, -p1.y * 200, p2.x * 200, -p2.y * 200, cameraSize * line.width);
 			}
 		}
+			*/
 	}
 }

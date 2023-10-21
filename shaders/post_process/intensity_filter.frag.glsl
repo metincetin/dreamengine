@@ -10,10 +10,11 @@ in vec4 color;
 out vec4 FragColor;
 
 void main(){
-    vec4 col = texture(tex, texCoord) * color;
-    float intensity = dot(col.rgb, vec3(0.2126, 0.7152, 0.0722));
-    intensity = step(0.95, intensity);
+    vec4 col = texture(tex, texCoord);
+    float brightness = max(max(col.x, col.y), col.z);
 
-    FragColor = col * intensity;
+    float intensity = max(brightness - 2.1, 0);
+
+    FragColor = vec4(intensity);
 
 }

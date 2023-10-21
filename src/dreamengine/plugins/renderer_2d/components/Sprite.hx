@@ -1,6 +1,5 @@
 package dreamengine.plugins.renderer_2d.components;
 
-import dreamengine.plugins.renderer_base.components.Material;
 import dreamengine.plugins.renderer_base.components.Transform;
 import dreamengine.core.math.Vector3;
 import dreamengine.core.math.Vector2;

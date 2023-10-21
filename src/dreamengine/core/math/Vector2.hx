@@ -54,6 +54,19 @@ abstract Vector2(Array<Float>) from Array<Float>{
 		return new Vector2(this[0] * rhs, this[1] * rhs);
 	}
 
+
+
+
+	// returns a 1,0 vector
+	public static function right() {
+		return new Vector2(1,0);
+	}
+
+	// returns a 0,1 vector
+	public static function up() {
+		return new Vector2(0,1);
+	}
+
 	// returns a 0,0 vector
 	public static function zero():Vector2 {
 		return new Vector2();
@@ -176,3 +189,4 @@ abstract Vector2(Array<Float>) from Array<Float>{
 		return new kha.math.Vector2(x, y);
 	}
 }
+

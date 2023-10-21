@@ -13,8 +13,8 @@ import kha.graphics4.FragmentShader;
 class Vignette extends PostProcessEffect{
 
     public var color:Color = Black;
-    public var power:Float = 0.15;
-    public var intensity:Float = 25;
+    public var power:Float = 0.25;
+    public var intensity:Float = 55;
 
     override function createPasses():Array<PostProcessEffectPass> {
         return [new SimplePostProcessPass(Shaders.vignette_frag)];
