@@ -71,8 +71,12 @@ class DreamUIPlugin implements IPlugin {
 		eventSystem = new EventSystem(this, inputPlugin.getInputHandler());
 		screen = new ScreenContainer();
 		screen.setStyle(Style.fromJson(kha.Assets.blobs.defaultStyle_json.readUtf8String()));
+
 		// set up main theme here
 		Screen.registerSizeChangeListener(onScreenResolutionChanged);
+
+		// registering render pass
+		engine.getRenderer().pipeline.push(new DreamUIRenderPass(this));
 	}
 
 	function onScreenResolutionChanged(width:Int, height:Int){
@@ -81,14 +85,6 @@ class DreamUIPlugin implements IPlugin {
 
 	function onLoop() {
 		eventSystem.update();
-	}
-
-	function onRender(fb:Framebuffer) {
-		if (mainElement == null)
-			return;
-		fb.g2.begin(false);
-		screen.render(fb.g2, 1);
-		fb.g2.end();
 	}
 
 	public function finalize() {

@@ -22,13 +22,18 @@ class Renderer{
     var cameraIndex = 0;
     var lightIndex = 0;
 
+    var framebuffer:Framebuffer;
+
     public function new(){
         Material.setDefault(new Material(kha.Shaders.simple_vert, kha.Shaders.simple_frag));
         pipeline.push(new RenderOpaques());
         pipeline.push(new RenderShadows());
     }
 
+    public function getFramebuffer(){ return framebuffer; }
+
     public function render(framebuffer:Framebuffer){
+        this.framebuffer = framebuffer;
         for(c in cameras){
             var g = c.getRenderTarget().g2;
             g.begin();
@@ -37,12 +42,16 @@ class Renderer{
 
         }
 
+        framebuffer.g2.begin();
+        framebuffer.g2.clear();
+        framebuffer.g2.end();
+
         for(p in pipeline){
             p.execute(this);
         }
 
+        framebuffer.g2.begin(false);
 
-        framebuffer.g2.begin();
         for(c in cameras){
             Scaler.scale(c.getRenderTarget(), framebuffer, kha.System.screenRotation);
         }

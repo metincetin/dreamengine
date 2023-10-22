@@ -37,7 +37,7 @@ class ShaderGlobals {
 			var entry = floatEntries[entryKey];
 			if (entry == null)
 				continue;
-			g.setFloat(pipelineState.getConstantLocation(entryKey), entry);
+			g.setFloat(pipelineState.getConstantLocation(entryKey), cast entry);
 		}
 		for(entryKey in textureEntries.keys()){
 			var entry = textureEntries[entryKey];
