@@ -33,11 +33,6 @@ class DirectionalLightSystem extends System {
 			var up = tr.getUp();
 			var right = tr.getRight();
 
-			light.viewMatrix = FastMatrix4.lookAt(pos, pos + fw, up);
-
-			light.viewProjectionMatrix = light.projectionMatrix.multmat(light.viewMatrix);
-
-			ShaderGlobals.setMatrix("lightSpaceMatrix", light.viewProjectionMatrix);
 
 			ShaderGlobals.setFloat3("directionalLightColor", new Vector3(col.R * light.intensity, col.G * light.intensity, col.B * light.intensity));
 			ShaderGlobals.setFloat3("directionalLightDirection", fw);

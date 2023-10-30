@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d;
 
+import dreamengine.plugins.renderer_3d.passes.RenderSkybox;
 import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_3d.systems.PointLightSystem;
@@ -56,6 +57,7 @@ class Renderer3D implements IPlugin{
 		//ecs.registerRenderSystem(new GizmoRenderer());
 		//ecs.registerSystem(new PointLightSystem());
 		ecs.registerSystem(new CameraSystem());
+		engine.getRenderer().pipeline.push(new RenderSkybox());
 	}
 
 	function initializeRenderer() {

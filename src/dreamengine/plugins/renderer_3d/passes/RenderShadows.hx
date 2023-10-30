@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_3d.passes;
 
+import dreamengine.core.math.Vector3;
+import dreamengine.plugins.renderer_base.components.Camera;
 import kha.math.FastMatrix4;
 import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import kha.Shaders;
@@ -59,6 +61,8 @@ class RenderShadows extends RenderPass {
 
 				g4.setPipeline(pipelineState);
 
+				updateLight(d, cam);
+
 				for (rend in renderer.opaques) {
 					var mesh = rend.mesh;
 
@@ -116,7 +120,22 @@ class RenderShadows extends RenderPass {
 					g4.drawIndexedVertices();
 				}
                 g4.end();
+				cam.getRenderTarget().g2.begin(false);
+				cam.getRenderTarget().g2.drawRect(0,400,200,200);
+				cam.getRenderTarget().g2.drawScaledImage(d.getRenderTarget(), 0,400,200,200);
+				cam.getRenderTarget().g2.end();
 			}
 		}
+	}
+
+	function updateLight(light:DirectionalLight, cam:Camera) {
+		var camViewMatrix = cam.getViewMatrix();
+		var cameraPos = new Vector3(camViewMatrix._30, camViewMatrix._31, camViewMatrix._32);
+
+		//light.viewMatrix = FastMatrix4.lookAt(pos, pos + fw, up);
+
+		light.viewProjectionMatrix = light.projectionMatrix.multmat(light.viewMatrix);
+
+		ShaderGlobals.setMatrix("lightSpaceMatrix", light.viewProjectionMatrix);
 	}
 }
