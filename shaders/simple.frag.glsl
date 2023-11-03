@@ -4,7 +4,7 @@ in vec3 fragmentColor;
 
 in vec3 normal;
 in vec3 Position_World;
-in vec3 color;
+in vec4 color;
 in vec4 FragPosLightSpace;
 in mat4 view;
 

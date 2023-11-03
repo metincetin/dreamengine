@@ -2,10 +2,10 @@
 
 // Input vertex data, different for all executions of this shader
 in vec3 vertexPosition;
-in vec3 vertexColor;
+in vec4 vertexColor;
 in vec3 vertexNormal;
 
-out vec3 color;
+out vec4 color;
 
 // Values that stay constant for the whole mesh
 uniform mat4 MVP;

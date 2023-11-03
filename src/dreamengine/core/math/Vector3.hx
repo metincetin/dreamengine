@@ -95,7 +95,7 @@ abstract Vector3(Array<Float>) from Array<Float>{
 
 
 	@:op(A * B) @:commutative
-	public function miltiplied(v:Vector3){
+	public function multiplied(v:Vector3){
 		return new Vector3(this[0] * v.x, this[1] * v.y, this[2] * v.z);
 	}
 

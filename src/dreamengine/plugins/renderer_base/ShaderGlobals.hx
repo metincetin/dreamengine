@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_base;
 
+import kha.graphics4.CubeMap;
 import kha.graphics4.TextureUnit;
 import kha.math.FastMatrix4;
 import kha.Image;
@@ -8,6 +9,8 @@ import kha.graphics4.PipelineState;
 import dreamengine.core.math.Vector3;
 
 class ShaderGlobals {
+	static var cubeMapEntries:Map<String, CubeMap> = new Map<String, CubeMap>();
+
 	static var float3Entries:Map<String, Vector3> = new Map<String, Vector3>();
 	static var floatEntries:Map<String, Float> = new Map<String, Float>();
 	static var textureEntries:Map<String, Image> = new Map<String, Image>();
@@ -30,7 +33,7 @@ class ShaderGlobals {
 			var entry = float3Entries[entryKey];
 			if (entry == null)
 				continue;
-			
+
 			g.setFloat3(pipelineState.getConstantLocation(entryKey), entry.x, entry.y, entry.z);
 		}
 		for (entryKey in floatEntries.keys()) {
@@ -39,24 +42,36 @@ class ShaderGlobals {
 				continue;
 			g.setFloat(pipelineState.getConstantLocation(entryKey), cast entry);
 		}
-		for(entryKey in textureEntries.keys()){
+		for (entryKey in textureEntries.keys()) {
 			var entry = textureEntries[entryKey];
-			if (entry == null) continue;
+			if (entry == null)
+				continue;
 			g.setTexture(pipelineState.getTextureUnit(entryKey), entry);
 		}
-		for(entryKey in matrixEntries.keys()){
+		for (entryKey in matrixEntries.keys()) {
 			var entry = matrixEntries[entryKey];
-			if (entry == null) continue;
+			if (entry == null)
+				continue;
 			g.setMatrix(pipelineState.getConstantLocation(entryKey), entry);
 		}
-	}
+		for (entryKey in cubeMapEntries.keys()) {
+			var entry = cubeMapEntries[entryKey];
+			if (entry == null)
+				continue;
 
+			g.setCubeMap(pipelineState.getTextureUnit(entryKey), entry);
+		}
+	}
 
 	public static function getTexture(s:String) {
 		return textureEntries[s];
 	}
 
-	public static function setMatrix(s: String, value:FastMatrix4) {
-		matrixEntries.set(s,value);
+	public static function setMatrix(s:String, value:FastMatrix4) {
+		matrixEntries.set(s, value);
+	}
+
+	public static function setCubemap(s:String, value:CubeMap) {
+		cubeMapEntries.set(s, value);
 	}
 }

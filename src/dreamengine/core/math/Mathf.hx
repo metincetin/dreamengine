@@ -44,4 +44,12 @@ class Mathf {
 		c.A = Mathf.lerp(a.A, b.A, t);
 		return c;
 	}
+
+	public inline static function min(f:Float, f2:Float) {
+		return Math.min(f, f2);
+	}
+
+	public inline static function max(f:Float, f2:Float) {
+		return Math.max(f, f2);
+	}
 }

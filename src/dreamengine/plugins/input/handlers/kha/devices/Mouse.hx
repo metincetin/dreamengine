@@ -6,6 +6,8 @@ import dreamengine.plugins.input.devices.BaseMouse;
 class Mouse extends BaseMouse {
 	var khaMouseReference:kha.input.Mouse;
 
+	var pressedKeys = new Array<Int>();
+
 	public function new(index:Int) {
 		super(index);
 
@@ -17,24 +19,40 @@ class Mouse extends BaseMouse {
 
 	function onKhaMouseDown(button:Int, x:Int, y:Int) {
 		// making button enum?
-		for (ev in keyPressed[button]) {
-			ev();
+		if (!pressedKeys.contains(button))
+			pressedKeys.push(button);
+		if (keyPressed.exists(button)){
+			for (ev in keyPressed[button]) {
+				ev();
+			}
 		}
 	}
 
 	function onKhaMouseUp(button:Int, x:Int, y:Int) {
 		// making button enum?
-		for (ev in keyReleased[button]) {
-			ev();
+		pressedKeys.remove(button);
+		if (keyReleased.exists(button)){
+			for (ev in keyReleased[button]) {
+				ev();
+			}
 		}
 	}
 
-	function onKhaMouseWheel(delta:Int) {}
+	function onKhaMouseWheel(delta:Int) {
+		wheelDelta = delta;
+	}
+
+	override function getWheelDelta():Float {
+		return wheelDelta;
+	}
+	override function isKeyPressed(key:Int):Bool {
+		return pressedKeys.contains(key);
+	}
 
 	function onKhaMouseMove(x:Int, y:Int, newX:Int, newY:Int) {
 		pointerPosition.x = x;
 		pointerPosition.y = y;
-		// fixme: delta is not reset after mouse is stopped. This is expected behaviour, this function is not called as mouse stops
+
 		pointerDelta.x = newX;
 		pointerDelta.y = newY;
 		for (f in deltaChanged) {

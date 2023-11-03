@@ -1,6 +1,6 @@
 #version 450
 
-in vec3 color;
+in vec4 color;
 
 out vec4 fragColor;
 

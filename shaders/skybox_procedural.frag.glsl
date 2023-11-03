@@ -2,7 +2,7 @@
 
 
 in vec3 normal;
-in vec3 color;
+in vec4 color;
 in mat4 view;
 in vec3 Position_World;
 
@@ -35,6 +35,11 @@ void main(){
 
 	float sundisk = 1 - smoothstep(0.04, 0.06, angle);
 
+	vec3 skyColor = vec3(0.4,0.5,0.5);
+
+
+	vec3 finalColor = mix(skyColor, sundisk * GetMainLightColor(), sundisk);
+
 	
-	FragColor.rgb = sundisk * GetMainLightColor();
+	FragColor.rgb = finalColor;
 }

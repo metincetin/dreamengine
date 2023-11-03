@@ -3,20 +3,53 @@ package dreamengine.core.math;
 import kha.math.FastMatrix4;
 import dreamengine.core.math.Vector3;
 
-class Quaternion {
-	public var x:Float;
-	public var y:Float;
-	public var z:Float;
-	public var w:Float;
+abstract Quaternion(Array<Float>) from Array<Float> {
+	public var x(get, set):Float;
+	public var y(get, set):Float;
+	public var z(get, set):Float;
+	public var w(get, set):Float;
 
 	public function new(x:Float = 1, y:Float = 0, z:Float = 0, w:Float = 0) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.w = w;
+		this = [x, y, z, w];
 	}
 
-	public static function fromAxisAngle(axis:Vector3, degrees:Float){
+	function get_x() {
+		return this[0];
+	}
+
+	function set_x(value:Float) {
+		this[0] = value;
+		return value;
+	}
+
+	function get_y() {
+		return this[1];
+	}
+
+	function set_y(value:Float) {
+		this[1] = value;
+		return value;
+	}
+	
+	function get_z(){ 
+		return this[2];
+	}
+
+	function set_z(value:Float) {
+		this[2] = value;
+		return value;
+	}
+
+	function get_w(){ 
+		return this[3];
+	}
+
+	function set_w(value:Float) {
+		this[3] = value;
+		return value;
+	}
+
+	public static function fromAxisAngle(axis:Vector3, degrees:Float) {
 		var rad = Mathf.degToRad(degrees);
 
 		var q = new Quaternion();
@@ -30,23 +63,11 @@ class Quaternion {
 	}
 
 	public static function fromEuler(euler:Vector3) {
-		var roll = Mathf.degToRad(euler.x);
-		var pitch = Mathf.degToRad(euler.y);
-		var yaw = Mathf.degToRad(euler.z);
+		var a = fromAxisAngle(Vector3.up(), euler.y);
+		var b = fromAxisAngle(Vector3.right(), euler.x);
+		var c = fromAxisAngle(Vector3.forward(), euler.z);
 
-		var cy = Math.cos(yaw * 0.5);
-		var sy = Math.sin(yaw * 0.5);
-		var cp = Math.cos(pitch * 0.5);
-		var sp = Math.sin(pitch * 0.5);
-		var cr = Math.cos(roll * 0.5);
-		var sr = Math.sin(roll * 0.5);
-
-		var qw = cy * cp * cr + sy * sp * sr;
-		var qx = cy * cp * sr - sy * sp * cr;
-		var qy = sy * cp * sr + cy * sp * cr;
-		var qz = sy * cp * cr - cy * sp * sr;
-
-		return new Quaternion(qx, qy, qz, qw);
+		return c.rotated(b.rotated(a));
 	}
 
 	public function conjugated() {
@@ -73,10 +94,10 @@ class Quaternion {
 	}
 
 	public function toEuler() {
-		var qx:Float = this.x;
-		var qy:Float = this.y;
-		var qz:Float = this.z;
-		var qw:Float = this.w;
+		var qx:Float = this[0];
+		var qy:Float = this[1];
+		var qz:Float = this[2];
+		var qw:Float = this[3];
 
 		var ysqr:Float = qy * qy;
 
@@ -105,10 +126,10 @@ class Quaternion {
 	}
 
 	public function multiply(b:Quaternion) {
-		this.w = this.w * b.w - this.x * b.x - this.y * b.y - this.z * b.z;
-		this.x = this.w * b.x + this.x * b.w + this.y * b.z - this.z * b.y;
-		this.y = this.w * b.y - this.x * b.z + this.y * b.w + this.z * b.x;
-		this.z = this.w * b.z + this.x * b.y - this.y * b.x + this.z * b.w;
+		this[3] = this[3] * b.w - this[0] * b.x - this[1] * b.y - this[2] * b.z;
+		this[0] = this[3] * b.x + this[0] * b.w + this[1] * b.z - this[2] * b.y;
+		this[1] = this[3] * b.y - this[0] * b.z + this[1] * b.w + this[2] * b.x;
+		this[2] = this[3] * b.z + this[0] * b.y - this[1] * b.x + this[2] * b.w;
 	}
 
 	public function normalized() {
@@ -117,6 +138,7 @@ class Quaternion {
 		return v;
 	}
 
+	@:op(A * B)
 	public function multiplied(b:Quaternion) {
 		var n = new Quaternion();
 		n.x = x;

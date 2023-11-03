@@ -11,6 +11,8 @@ class BaseMouse implements IPointer implements IKeyDevice {
 	var pointerPosition = new Vector2i();
 	var pointerDelta = new Vector2i();
 
+	var wheelDelta = 0.0;
+
 	var keyPressed:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var keyReleased:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var deltaChanged:Array<Vector2i->Void> = new Array<Vector2i->Void>();
@@ -38,7 +40,7 @@ class BaseMouse implements IPointer implements IKeyDevice {
 
 	public function removeKeyPressedListener(f:Void->Void) {
 		var t = -1;
-		for (v in keyReleased.keyValueIterator()) {
+		for (v in keyPressed.keyValueIterator()) {
 			if (v.value.contains(f)) {
 				t = v.key;
 				break;
@@ -80,10 +82,15 @@ class BaseMouse implements IPointer implements IKeyDevice {
 	public function update(){
 		pointerDelta.x = 0;
 		pointerDelta.y = 0;
+		wheelDelta = 0;
 	}
 
 	public function isKeyPressed(key:Int):Bool {
 		return false;
+	}
+
+	public function getWheelDelta(){
+		return 0.0;
 	}
 
 	public function addPressedListener(f:KeyboardKey -> Void) {
