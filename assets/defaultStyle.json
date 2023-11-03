@@ -14,5 +14,11 @@
                 "background-color": "#292929"
             }
         }
+    },
+    "ToggleBox #box":{
+        "background-color": "#092929"
+    },
+    "ToggleBox #box.activated":{
+        "background-color": "#292929"
     }
 }

@@ -83,6 +83,10 @@ abstract Selector(SelectorCache) {
 		return this.type;
 	}
 
+	public function getDescending(){
+		return this.descendingSelectors;
+	}
+
 	@:from
 	static function fromString(str:String) {
 		return new Selector(str);

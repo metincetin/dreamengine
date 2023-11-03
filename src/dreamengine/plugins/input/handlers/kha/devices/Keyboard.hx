@@ -15,7 +15,13 @@ class Keyboard extends BaseKeyboard {
 		super(index);
 
 		khaKeyboardReference = kha.input.Keyboard.get(index);
-		khaKeyboardReference.notify(onKhaKeyDown, onKhaKeyUp);
+		khaKeyboardReference.notify(onKhaKeyDown, onKhaKeyUp, onKhaKeyPress);
+	}
+
+	function onKhaKeyPress(char:String){
+		for (f in inputReceived){
+			f(char);
+		}
 	}
 
 	function onKhaKeyDown(key:KeyCode) {
@@ -29,9 +35,6 @@ class Keyboard extends BaseKeyboard {
 			keysInFrame.push(conv);
 		if (!pressedKeys.contains(conv))
 			pressedKeys.push(conv);
-		for (f in inputReceived) {
-			f(new KeyboardKeyEvent(cast key, false, false));
-		}
 		for(f in pressed){
 			f(conv);
 		}

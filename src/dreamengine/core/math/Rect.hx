@@ -54,8 +54,8 @@ class Rect{
 
 	public function getMin() {
 		var min = new Vector2();
-		min.x = position.x - size.x;
-		min.y = position.y - size.y;
+		min.x = position.x;
+		min.y = position.y;
 		return min;
 	}
 

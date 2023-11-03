@@ -16,6 +16,9 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 	var placeholder:String = "Enter text..";
 	var focused = false;
 
+	var cursorPos = 0;
+	var prefSize:Vector2 = Vector2.zero();
+
 	public function new() {
 		super();
 	}
@@ -34,6 +37,7 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 
 	public function onFocused() {
 		focused = true;
+		trace("Focused input field");
 	}
 
 	public function onFocusLost() {
@@ -52,11 +56,16 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 
 	public function onPointerExited() {}
 
-	public function onPressed() {}
+	public function onPressed(data:PointerEventData) {}
 
-	public function onReleased() {}
+	public function onReleased(data:PointerEventData) {}
+
+	override function getPreferredSize():Vector2 {
+		return prefSize;
+	}
 
 	override function onRender(g2:Graphics, opacity:Float) {
+		super.onRender(g2, opacity);
 		var rect = getRect();
 		var pos = rect.getPosition();
 		var size = rect.getSize();
@@ -68,7 +77,7 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 
 		g2.color = kha.Color.White;
 		
-		var prefSize = new Vector2(
+		prefSize = new Vector2(
 			g2.font.width(g2.fontSize, text),
 			g2.font.height(g2.fontSize)
 		);
@@ -103,11 +112,7 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 		return focused;
 	}
 
-	public function onInputReceived(key:KeyboardKeyEvent) {
-		if (key.isBackspace() && text.length != 0) {
-			text = text.substr(0, text.length - 1);
-			return;
-		}
-		text += (key.toString());
+	public function onInputReceived(char:String) {
+		text += (char);
 	}
 }

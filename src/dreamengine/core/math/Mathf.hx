@@ -52,4 +52,19 @@ class Mathf {
 	public inline static function max(f:Float, f2:Float) {
 		return Math.max(f, f2);
 	}
+	public static function inverseLerp(a:Float, b:Float, t:Float) {
+		return (t - a) / (b - a);
+	}
+
+	public inline static function floor(v:Float) {
+		return Math.floor(v);
+	}
+
+	public inline static function ceil(v:Float) {
+		return Math.ceil(v);
+	}
+
+	public inline static function round(v:Float) {
+		return Math.round(v);
+	}
 }

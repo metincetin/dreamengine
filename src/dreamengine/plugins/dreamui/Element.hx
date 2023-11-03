@@ -38,6 +38,8 @@ class Element {
 	var style:Style;
 
 	var parsedStyle = ParsedStyle.empty();
+	
+	var parentIds = [];
 
 	public function getParsedStyle() {
 		return parsedStyle;
@@ -126,10 +128,12 @@ class Element {
 		}
 
 		g2.opacity *= renderOpacity;
+		g2.pushScale(localScale.x, localScale.y);
 		onRender(g2, opacity);
 		for (c in children) {
 			c.render(g2, renderOpacity);
 		}
+		g2.popTransformation();
 		g2.opacity = 1;
 
 		g2.drawRect(rect.getPosition().x, rect.getPosition().y, rect.getSize().x, rect.getSize().y);
@@ -153,6 +157,7 @@ class Element {
 		}
 
 		children.push(c);
+		c.parentIds.push(this.name);
 		c.parent = this;
 
 		if (!Std.isOfType(c.getLayoutParameters(), getChildLayoutParameterType())) {
@@ -167,6 +172,7 @@ class Element {
 	function removeChild(c:Element) {
 		if (c.parent == this) {
 			children.remove(c);
+			c.parentIds.remove(name);
 			c.parent = null;
 		}
 	}
@@ -255,6 +261,10 @@ class Element {
 			this.renderOpacity = this.parsedStyle.getFloatValue("opacity", 1);
 			this.pivot.x = this.parsedStyle.getFloatValue("pivot.x", 0.5);
 			this.pivot.y = this.parsedStyle.getFloatValue("pivot.y", 0.5);
+
+			this.localScale.x = this.parsedStyle.getFloatValue("scale.x", 1);
+			this.localScale.y = this.parsedStyle.getFloatValue("scale.y", 1);
+
 			var newVisibility = this.parsedStyle.getStringValue("visibility", "visible");
 			visibility = newVisibility;
 

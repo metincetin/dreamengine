@@ -1,5 +1,7 @@
 package dreamengine.plugins.dreamui.elements;
 
+import dreamengine.plugins.dreamui.events.PointerEventData;
+import js.html.PointerEvent;
 import kha.Font;
 import kha.Assets;
 import dreamengine.core.math.Mathf;
@@ -67,6 +69,7 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		center.x += size.x * 0.5 + (padding.left - padding.right);
 		center.y += size.y * 0.5 + (padding.top - padding.bottom);
 
+		g2.font = font;
 		g2.color = parsedStyle.getColorValue("background-color", kha.Color.Cyan);
 		g2.fontSize = parsedStyle.getIntValue("font-size", 12);
 
@@ -106,11 +109,11 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		return true;
 	}
 
-	public function onPressed() {
+	public function onPressed(data:PointerEventData) {
 		parsedStyle.setState("pressed");
 	}
 
-	public function onReleased() {
+	public function onReleased(data:PointerEventData) {
 		parsedStyle.setState("hovered");
 		invokeOnClicked();
 	}

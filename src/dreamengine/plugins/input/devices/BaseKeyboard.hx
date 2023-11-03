@@ -9,7 +9,7 @@ class BaseKeyboard implements IKeyDevice {
 
 	var keyPressed:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
 	var keyReleased:Map<Int, Array<Void->Void>> = new Map<Int, Array<Void->Void>>();
-	var inputReceived:Array<KeyboardKeyEvent->Void> = new Array<KeyboardKeyEvent->Void>();
+	var inputReceived:Array<String->Void> = new Array<String->Void>();
 
 	var pressed:Array<(KeyboardKey)->Void> = [];
 	var released:Array<(KeyboardKey)->Void> = [];
@@ -18,11 +18,11 @@ class BaseKeyboard implements IKeyDevice {
 		this.index = index;
 	}
 
-	public function addInputListener(f:KeyboardKeyEvent->Void) {
+	public function addInputListener(f:String->Void) {
 		inputReceived.push(f);
 	}
 
-	public function removeInputListener(f:KeyboardKeyEvent->Void) {
+	public function removeInputListener(f:String->Void) {
 		inputReceived.remove(f);
 	}
 

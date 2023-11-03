@@ -33,6 +33,7 @@ class DreamUIPlugin implements IPlugin {
 		UIXMLElementTypes.registerType("Label", Label);
 		UIXMLElementTypes.registerType("Image", Image);
 		UIXMLElementTypes.registerType("ToggleBox", ToggleBox);
+		UIXMLElementTypes.registerType("InputField", InputField);
 
 		UIXMLElementTypes.registerType("Box", Box);
 

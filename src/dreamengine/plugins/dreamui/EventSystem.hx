@@ -1,5 +1,7 @@
 package dreamengine.plugins.dreamui;
 
+import haxe.display.Server.ConfigurePrintParams;
+import dreamengine.plugins.dreamui.events.IDraggable;
 import haxe.rtti.Rtti;
 import dreamengine.plugins.input.events.KeyboardKeyEvent;
 import dreamengine.plugins.dreamui.events.IInputTarget;
@@ -12,11 +14,18 @@ import dreamengine.core.math.Vector2i;
 class EventSystem {
 	var focused:IFocusable;
 	var pointerPosition:Vector2i = new Vector2i();
+
 	var hovered:Element;
 	var uiPlugin:DreamUIPlugin;
 	var inputHandler:IInputHandler;
 
+	var pressed:Bool;
+
 	var currentPointerTarget:IPointerTarget;
+	
+	var dragStartPosition:Vector2i;
+
+	var dragTarget:IDraggable;
 
 	public function new(uiPlugin:DreamUIPlugin, inputHandler:IInputHandler) {
 		this.uiPlugin = uiPlugin;
@@ -28,11 +37,12 @@ class EventSystem {
 		this.inputHandler.getKeyboard(0).addInputListener(onInput);
 	}
 
-	function onInput(event:KeyboardKeyEvent) {
+
+	function onInput(char:String) {
 		if (focused != null && Std.isOfType(focused, IInputTarget)) {
 			var inputTarget:IInputTarget = cast focused;
 			if (inputTarget.allowInput()) {
-				inputTarget.onInputReceived(event);
+				inputTarget.onInputReceived(char);
 			}
 		}
 	}
@@ -40,21 +50,29 @@ class EventSystem {
 	function onPressed() {
 		if (currentPointerTarget != null && Std.isOfType(currentPointerTarget, IClickable)) {
 			var clickable:IClickable = cast currentPointerTarget;
-			clickable.onPressed();
+			clickable.onPressed({position: pointerPosition, start: pointerPosition});
 
 			if (Std.isOfType(currentPointerTarget, IFocusable)) {
 				setFocused(cast currentPointerTarget);
 			}
+			if (currentPointerTarget is IDraggable){
+				dragStartPosition = pointerPosition;
+				dragTarget = cast currentPointerTarget;
+			}
 		} else {
 			setFocused(null);
 		}
+
+		pressed = true;
 	}
 
 	function onReleased() {
 		if (currentPointerTarget != null && Std.isOfType(currentPointerTarget, IClickable)) {
 			var clickable:IClickable = cast currentPointerTarget;
-			clickable.onReleased();
+			clickable.onReleased({position: pointerPosition, start:pointerPosition});
 		}
+		dragTarget = null;
+		pressed = false;
 	}
 
 	public function update() {
@@ -64,6 +82,8 @@ class EventSystem {
 		var target = uiPlugin.getScreenElement();
 		if (target == null)
 			return;
+
+
 
 		var pointerTarget = getPointerTargetInChildren(target);
 		if (pointerTarget != null) {
@@ -79,6 +99,10 @@ class EventSystem {
 			if (currentPointerTarget != null)
 				currentPointerTarget.onPointerExited();
 			currentPointerTarget = null;
+		}
+
+		if (dragTarget != null){
+			dragTarget.onDrag({position: pointerPosition, start: dragStartPosition});
 		}
 	}
 
