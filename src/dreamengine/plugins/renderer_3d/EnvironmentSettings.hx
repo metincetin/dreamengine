@@ -13,7 +13,7 @@ class EnvironmentSettings{
     public function new(){}
     
     public var ambientLightType: AmbientLightType = Sky;
-    public var ambientLightColor: Color;
+    public var ambientLightColor: Color = 0x4F4747;
 
     public var ambientLightIntensity = 1.0;
 }

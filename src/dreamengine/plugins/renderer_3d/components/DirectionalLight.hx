@@ -21,8 +21,7 @@ class DirectionalLight extends Light {
 	}
 
 	override function onAdded(entity:Entity) {
-		shadowMap = Image.createRenderTarget(2048, 2048, TextureFormat.DEPTH16);
-		projectionMatrix = FastMatrix4.orthogonalProjection(-5, 5, -5, 5, 1, 10);
+		projectionMatrix = FastMatrix4.orthogonalProjection(-5, 5, -5, 5, 1, 30);
 	}
 
 	override function onRemoved(entity:Entity) {}

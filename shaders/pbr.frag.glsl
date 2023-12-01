@@ -18,12 +18,10 @@ uniform vec4 emission;
 uniform float roughness;
 
 
-uniform sampler2D shadowMap;
-uniform float depthBias = 0.3;
 
-uniform vec3 cameraPosition;
-
-float specularStrength = 1.0;
+uniform sampler2D _ShadowMap;
+uniform float _DepthBias = 0.3;
+uniform vec3 _CameraPosition;
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
@@ -35,14 +33,14 @@ float ShadowCalculation(vec4 fragPosLightSpace)
         return 0;
     }
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    float depth = texture(shadowMap, projCoords.xy).r; 
+    float depth = texture(_ShadowMap, projCoords.xy).r; 
     // check whether current frag pos is in shadow
 
     float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    vec2 texelSize = 1.0 / textureSize(_ShadowMap, 0);
 
 
-    float bias = mix(0.05, 0, dot(normalize(normal), -directionalLightDirection));
+    float bias = mix(0.05, 0, dot(normalize(normal), -GetMainLightDirection()));
     //float bias = max(0.05 * (1.0 - dot(normal, directionalLightDirection)), 0.0005);  
 
 
@@ -62,25 +60,19 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 }  
 
 void main() {
-	// Output color = color specified in the vertex shader,
-	// interpolated between all 3 surrounding vertices
 	vec3 normalizedNormal = normalize(normal);
 	float ldn = max(0.0, dot(-GetMainLightDirection(), normalizedNormal));
 
-	vec3 viewDir = normalize(cameraPosition - Position_World);
+	vec3 viewDir = normalize(_CameraPosition - Position_World);
 
     vec3 H = normalize(-GetMainLightDirection()+ viewDir);
     float ndh = max(0, dot(normalizedNormal, H));
 
-	float spec = pow(ndh, 64);
-	vec3 specular = specularStrength * spec * directionalLightColor * ldn;  
     float shadow = 1 - ShadowCalculation(FragPosLightSpace);
 
-    vec3 diffuse = baseColor.rgb * ldn * shadow;
-    vec3 ambient = GetMainLightColor() * .1;
+    vec3 ambient = GetMainLightColor() * _AmbientColor.rgb * baseColor.rgb;
+    vec3 diffuse = PBR(baseColor.rgb, GetMainLightColor().rgb, normalizedNormal, -GetMainLightDirection(), viewDir, roughness) * shadow;
 
-    vec3 fn = ((ambient + diffuse) * baseColor.rgb + (specular * ldn * shadow)); 
-
-
-	fragColor = vec4((emission.rgb * emission.a) + PBR(baseColor.rgb, GetMainLightColor().rgb, normalizedNormal, -GetMainLightDirection(), viewDir, roughness, _AmbientColor.rgb), 1);
+    vec3 emissive = emission.rgb * emission.a;
+    fragColor = vec4(diffuse + ambient + emissive, 1);
 }

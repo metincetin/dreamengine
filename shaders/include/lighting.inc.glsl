@@ -1,5 +1,5 @@
-uniform vec3 directionalLightColor;
-uniform vec3 directionalLightDirection;
+uniform vec3 _DirectionalLightColor;
+uniform vec3 _DirectionalLightDirection;
 
 uniform vec3 additionalLight0_color = vec3(1);
 uniform float additionalLight0_attenuation;
@@ -10,10 +10,10 @@ uniform vec4 _AmbientColor;
 #include "common.inc.glsl"
 
 vec3 GetMainLightDirection(){
-    return directionalLightDirection;
+    return _DirectionalLightDirection;
 }
 vec3 GetMainLightColor(){
-    return directionalLightColor;
+    return _DirectionalLightColor;
 }
 
 float chiGGX(float v)
@@ -86,7 +86,7 @@ vec3 BRDF(vec3 lambert, vec3 N, vec3 L, vec3 V, vec3 H, float roughness){
     return Kd * lambert + spec;
 }
 
-vec3 PBR(vec3 color, vec3 lightColor, vec3 N, vec3 L, vec3 V, float roughness, vec3 ambient){
+vec3 PBR(vec3 color, vec3 lightColor, vec3 N, vec3 L, vec3 V, float roughness){
     vec3 H = normalize(L + V);
 
     vec3 lambert = color;

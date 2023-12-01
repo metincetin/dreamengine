@@ -10,11 +10,12 @@ import dreamengine.plugins.renderer_base.Material;
 class PhysicalMaterial extends Material{
     public function new(baseColor:Color = White, roughness:Float = 0.5){
         super(Shaders.simple_vert, Shaders.pbr_frag);
-        addGlobalUniform("shadowMap");
-        addGlobalUniform("depthBias");
-        addGlobalUniform("cameraPosition");
-        addGlobalUniform("directionalLightColor");
-        addGlobalUniform("directionalLightDirection");
+        addGlobalUniform("_ShadowMap");
+        addGlobalUniform("_DepthBias");
+        addGlobalUniform("_CameraPosition");
+        addGlobalUniform("_DirectionalLightColor");
+        addGlobalUniform("_DirectionalLightDirection");
+        addGlobalUniform("_LightSpaceMatrix");
 
         setColorParam("baseColor", new FastVector4(baseColor.R, baseColor.G, baseColor.B, baseColor.A));
         setFloatParam("roughness", roughness);

@@ -11,12 +11,13 @@ import dreamengine.plugins.renderer_3d.passes.RenderOpaques;
 import kha.Scaler;
 import kha.Framebuffer;
 import dreamengine.plugins.renderer_base.components.Camera;
+import dreamengine.plugins.renderer_base.*;
 
 class Renderer{
     public var opaques:Array<Renderable> = [];
     public var transparents:Array<Renderable> = [];
     public var cameras:Array<Camera> = [];
-    public var lights:Array<Light> = [];
+    public var lights:Array<LightData> = [];
     public var pipeline:Array<RenderPass> = [];
 
 
@@ -28,9 +29,6 @@ class Renderer{
 
     public function new(){
         Material.setDefault(new Material(kha.Shaders.simple_vert, kha.Shaders.simple_frag));
-        pipeline.push(new RenderOpaques());
-        pipeline.push(new RenderShadows());
-        pipeline.push(new RenderSkybox());
     }
 
     public function getFramebuffer(){ return framebuffer; }
@@ -75,7 +73,7 @@ class Renderer{
         cameraIndex++;
     }
 
-    public function addLight(light:Light) {
+    public function addLight(light:LightData) {
         lights[lightIndex] = light;
         lightIndex++;
     }

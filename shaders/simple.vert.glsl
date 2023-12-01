@@ -16,7 +16,7 @@ out vec2 texCoord;
 uniform mat4 MVP;
 uniform mat4 Model;
 uniform mat4 V;
-uniform mat4 lightSpaceMatrix;
+uniform mat4 _LightSpaceMatrix;
 
 void main() {
 	// Output position of the vertex, in clip space: MVP * position
@@ -30,7 +30,7 @@ void main() {
 	// to produce the color of each fragment
 
 	Position_World = (Model * vec4(vertexPosition, 1.0)).xyz;
-    FragPosLightSpace = lightSpaceMatrix * vec4(Position_World, 1.0);
+    FragPosLightSpace = _LightSpaceMatrix * vec4(Position_World, 1.0);
 
 	view = V;
 

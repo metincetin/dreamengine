@@ -3,7 +3,6 @@ package dreamengine.plugins.ecs;
 import dreamengine.core.Time;
 import dreamengine.debugging.Profiler;
 import dreamengine.plugins.renderer_3d.Renderer3D;
-import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
 import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import dreamengine.plugins.renderer_base.ShaderGlobals;
 import kha.Scaler;

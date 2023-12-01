@@ -37,9 +37,15 @@ class RenderSkybox extends RenderPass {
 	var viewLocation:ConstantLocation;
 
 
+	var shadowMap:Image;
+
+
 
 	public function new() {
 		super();
+
+
+
 		pipeline = new PipelineState();
 		pipeline.vertexShader = kha.Shaders.skybox_vert;
 		pipeline.fragmentShader = kha.Shaders.skybox_procedural_frag;

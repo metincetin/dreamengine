@@ -36,8 +36,9 @@ class CameraSystem extends System {
 
 			var view = FastMatrix4.lookAt(pos, pos + fw, up);
 
+			ShaderGlobals.setFloat3("_CameraPosition", pos);
+
 			camera.setViewMatrix(view);
-			ShaderGlobals.setFloat3("cameraPosition", pos);
 
 			engine.getRenderer().setCamera(camera);
 		}

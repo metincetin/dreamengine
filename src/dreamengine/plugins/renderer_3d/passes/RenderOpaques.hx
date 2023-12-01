@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_3d.passes;
 
+import dreamengine.core.math.Vector3;
+import kha.graphics4.ConstantLocation;
 import kha.graphics4.Graphics;
 import dreamengine.plugins.renderer_base.Mesh;
 import dreamengine.plugins.renderer_base.ShaderGlobals;
@@ -20,6 +22,8 @@ class RenderOpaques extends RenderPass {
 	var lastMesh:Mesh;
 	var structLength = 0;
 	var pipelineState:PipelineState;
+
+	var cameraPositionLocation:ConstantLocation;
 
 	function createPipelineState(material:Material) {
 		var pipelineState = new PipelineState();
@@ -45,6 +49,8 @@ class RenderOpaques extends RenderPass {
 		pipelineState.compile();
 
 		this.pipelineState = pipelineState;
+
+		cameraPositionLocation = pipelineState.getConstantLocation("_CameraPosition");
 	}
 
 
@@ -82,6 +88,7 @@ class RenderOpaques extends RenderPass {
 
 				if (pipelineState == null || lastMaterial != mat) {
 					createPipelineState(mat);
+
 				}
 
 				g4.setPipeline(pipelineState);
@@ -92,7 +99,6 @@ class RenderOpaques extends RenderPass {
 				if (mesh != lastMesh){
 					g4.setVertexBuffer(mesh.getVertexBuffer());
 					g4.setIndexBuffer(mesh.getIndexBuffer());
-
 				}
 
 
@@ -100,7 +106,6 @@ class RenderOpaques extends RenderPass {
 
 				g4.setMatrix(pipelineState.getConstantLocation("Model"), rend.modelMatrix);
 				g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
-
 
 				applyEnvironment(g4);
 
@@ -117,6 +122,8 @@ class RenderOpaques extends RenderPass {
 			}
 			g4.end();
 		}
+		lastMaterial = null;
+		lastMesh = null;
 	}
 
 	function render(renderable:Renderable, g4:kha.graphics4.Graphics) {}

@@ -1,7 +1,8 @@
 package dreamengine.plugins.renderer_3d;
 
+import dreamengine.plugins.renderer_3d.passes.RenderShadows;
+import dreamengine.plugins.renderer_3d.passes.RenderOpaques;
 import dreamengine.plugins.renderer_3d.passes.RenderSkybox;
-import dreamengine.plugins.renderer_3d.systems.ShadowMapperSystem;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_3d.systems.PointLightSystem;
 import dreamengine.core.math.Quaternion;
@@ -53,10 +54,10 @@ class Renderer3D implements IPlugin{
 		var meshRenderer = new MeshRenderer();
 		ecs.registerSystem(meshRenderer);
 		ecs.registerSystem(new DirectionalLightSystem());
-		//ecs.registerSystem(new ShadowMapperSystem());
-		//ecs.registerRenderSystem(new GizmoRenderer());
-		//ecs.registerSystem(new PointLightSystem());
 		ecs.registerSystem(new CameraSystem());
+
+        engine.getRenderer().pipeline.push(new RenderOpaques());
+        engine.getRenderer().pipeline.push(new RenderShadows());
 		engine.getRenderer().pipeline.push(new RenderSkybox());
 	}
 
