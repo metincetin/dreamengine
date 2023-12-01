@@ -33,38 +33,58 @@ class Engine {
 
 	var waitingRenderer = false;
 
-	function new(){
+	function new() {}
 
-	}
-
-	public static function start(onStarted: Engine->Void) {
+	public static function start(onStarted:Engine->Void) {
 		var engine = new Engine();
 		engine.pluginContainer = new PluginContainer(engine);
-
 
 		trace("Initializing Engine");
 
 		trace("Setting up Kha");
-		kha.System.start(new SystemOptions("Dream Game", 1024, 1024), function(w){ 
+		kha.System.start(new SystemOptions("Dream Game", 1024, 1024), function(w) {
+			var primitivesLoaded = 0;
+			Assets.loadBlob("engine_primitive_sphere_obj", x -> {
+				Primitives.sphereMesh = ObjLoader.load(x.toString());
+				primitivesLoaded++;
+				if (primitivesLoaded >= 4) {
+					engine.onSystemStarted(w, onStarted);
+				}
+			});
+			Assets.loadBlob("engine_primitive_cube_obj", x -> {
+				Primitives.cubeMesh = ObjLoader.load(x.toString());
+				primitivesLoaded++;
+				if (primitivesLoaded >= 4) {
+					engine.onSystemStarted(w, onStarted);
+				}
+			});
+			Assets.loadBlob("engine_primitive_plane_obj", x -> {
+				Primitives.planeMesh = ObjLoader.load(x.toString());
 
-			Assets.loadBlob("engine_primitive_sphere_obj", x->{Primitives.sphereMesh = ObjLoader.load(x.toString());});
-			Assets.loadBlob("engine_primitive_cube_obj", x->{Primitives.cubeMesh = ObjLoader.load(x.toString());});
-			Assets.loadBlob("engine_primitive_plane_obj", x->{Primitives.planeMesh = ObjLoader.load(x.toString());});
-			Assets.loadBlob("engine_primitive_suzanne_obj", x->{Primitives.suzanneMesh = ObjLoader.load(x.toString());});
-
-			engine.renderer = new Renderer();
-			engine.onSystemStarted(w, onStarted);
+				primitivesLoaded++;
+				if (primitivesLoaded >= 4) {
+					engine.onSystemStarted(w, onStarted);
+				}
+			});
+			Assets.loadBlob("engine_primitive_suzanne_obj", x -> {
+				Primitives.suzanneMesh = ObjLoader.load(x.toString());
+				primitivesLoaded++;
+				if (primitivesLoaded >= 4) {
+					engine.onSystemStarted(w, onStarted);
+				}
+			});
 		});
 	}
 
-	function onSystemStarted(window:Window, onStarted: Engine->Void) {
-
+	function onSystemStarted(window:Window, onStarted:Engine->Void) {
 		mainWindow = window;
 		trace("Setting up game loop");
 		Scheduler.addTimeTask(onTick, 0, 1 / 60);
 		kha.System.notifyOnFrames(onFrame);
 
 		initializeDevice();
+
+		renderer = new Renderer();
 
 		onStarted(this);
 	}
@@ -73,23 +93,23 @@ class Engine {
 		Screen.initialize();
 	}
 
-
-	public function getRenderer(){
+	public function getRenderer() {
 		return renderer;
 	}
 
-	public function createTimeTask(task:Void->Void, period:Float){
-		Scheduler.addTimeTask(task,0, period);
+	public function createTimeTask(task:Void->Void, period:Float) {
+		Scheduler.addTimeTask(task, 0, period);
 	}
-
 
 	public function registerLoopEvent(event:Void->Void) {
 		loopEvents.push(event);
 	}
-	public function registerPostLoopEvent(event:Void->Void){
+
+	public function registerPostLoopEvent(event:Void->Void) {
 		postLoopEvents.push(event);
 	}
-	public function unregisterPostLoopEvent(event:Void->Void){
+
+	public function unregisterPostLoopEvent(event:Void->Void) {
 		postLoopEvents.remove(event);
 	}
 
@@ -98,19 +118,20 @@ class Engine {
 	}
 
 	function onFrame(framebuffers:Array<kha.Framebuffer>) {
-		for(fr in framebuffers){
+		for (fr in framebuffers) {
 			renderer.render(fr);
 		}
 		waitingRenderer = false;
 	}
 
 	public function onTick() {
-		if (waitingRenderer) return;
+		if (waitingRenderer)
+			return;
 		for (e in loopEvents) {
 			e();
 		}
 		Time.update();
-		for(e in postLoopEvents){
+		for (e in postLoopEvents) {
 			e();
 		}
 

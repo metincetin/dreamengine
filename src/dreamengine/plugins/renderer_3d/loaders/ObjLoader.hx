@@ -105,6 +105,8 @@ class ObjLoader {
 		mesh.uvs = indexedUVs;
 		mesh.normals = indexedNormals;
 		mesh.indices = indices;
+
+		mesh.generate();
 		return mesh;
 	}
 

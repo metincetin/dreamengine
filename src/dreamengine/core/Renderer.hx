@@ -1,5 +1,7 @@
 package dreamengine.core;
 
+import dreamengine.plugins.renderer_3d.passes.RenderSkybox;
+import dreamengine.plugins.dreamui.events.IFocusable;
 import kha.System;
 import dreamengine.plugins.renderer_3d.components.DirectionalLight;
 import dreamengine.plugins.renderer_3d.components.Light;
@@ -28,6 +30,7 @@ class Renderer{
         Material.setDefault(new Material(kha.Shaders.simple_vert, kha.Shaders.simple_frag));
         pipeline.push(new RenderOpaques());
         pipeline.push(new RenderShadows());
+        pipeline.push(new RenderSkybox());
     }
 
     public function getFramebuffer(){ return framebuffer; }

@@ -1,5 +1,4 @@
 #version 450
-// Interpolated values from the vertex shaders
 #include "include/lighting.inc.glsl"
 
 in vec3 fragmentColor;
@@ -83,6 +82,5 @@ void main() {
     vec3 fn = ((ambient + diffuse) * baseColor.rgb + (specular * ldn * shadow)); 
 
 
-	fragColor = vec4((emission.rgb * emission.a) + PBR(baseColor.rgb, GetMainLightColor().rgb, normalizedNormal, -GetMainLightDirection(), viewDir, roughness), 1);
-
+	fragColor = vec4((emission.rgb * emission.a) + PBR(baseColor.rgb, GetMainLightColor().rgb, normalizedNormal, -GetMainLightDirection(), viewDir, roughness, _AmbientColor.rgb), 1);
 }

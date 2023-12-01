@@ -28,6 +28,46 @@ class ShaderGlobals {
 		textureEntries.set(key, value);
 	}
 
+	public static function applyMaterial(pipelineState:PipelineState, g:Graphics, material:Material){
+		for (entryKey in float3Entries.keys()) {
+			var entry = float3Entries[entryKey];
+			if (entry == null)
+				continue;
+			if (!material.hasGlobalUniform(entryKey)) continue;
+
+			g.setFloat3(pipelineState.getConstantLocation(entryKey), entry.x, entry.y, entry.z);
+		}
+		for (entryKey in floatEntries.keys()) {
+			var entry = floatEntries[entryKey];
+			if (entry == null)
+				continue;
+			if (!material.hasGlobalUniform(entryKey)) continue;
+			g.setFloat(pipelineState.getConstantLocation(entryKey), cast entry);
+		}
+		for (entryKey in textureEntries.keys()) {
+			var entry = textureEntries[entryKey];
+			if (entry == null)
+				continue;
+			if (!material.hasGlobalUniform(entryKey)) continue;
+			g.setTexture(pipelineState.getTextureUnit(entryKey), entry);
+		}
+		for (entryKey in matrixEntries.keys()) {
+			var entry = matrixEntries[entryKey];
+			if (entry == null)
+				continue;
+			if (!material.hasGlobalUniform(entryKey)) continue;
+			g.setMatrix(pipelineState.getConstantLocation(entryKey), entry);
+		}
+		for (entryKey in cubeMapEntries.keys()) {
+			var entry = cubeMapEntries[entryKey];
+			if (entry == null)
+				continue;
+
+			if (!material.hasGlobalUniform(entryKey)) continue;
+			g.setCubeMap(pipelineState.getTextureUnit(entryKey), entry);
+		}
+	}
+
 	public static function apply(pipelineState:PipelineState, g:Graphics) {
 		for (entryKey in float3Entries.keys()) {
 			var entry = float3Entries[entryKey];

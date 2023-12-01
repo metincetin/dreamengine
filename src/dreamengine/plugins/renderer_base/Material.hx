@@ -20,6 +20,16 @@ typedef FloatParam = {
 	value:Float,
 }
 
+enum UniformType{
+	Vector;
+	Float;
+}
+
+typedef GlobalUniform = {
+	type:UniformType,
+	name:String
+}
+
 class Material{
 	var fragmentShader:FragmentShader;
 	var vertexShader:VertexShader;
@@ -29,8 +39,14 @@ class Material{
 	public var depthWrite = true;
 
 	private static var defaultMaterial:Material;
+
 	public static function getDefault(){ return defaultMaterial; }
 	public static function setDefault(mat:Material){ return defaultMaterial = mat; }
+
+
+	var uniforms:Array<String> = [];
+
+
 
 
 	var colorParams = new Array<ColorParam>();
@@ -42,6 +58,14 @@ class Material{
 	public function new(vShader:VertexShader, fShader:FragmentShader) {
 		this.fragmentShader = fShader;
 		this.vertexShader = vShader;
+	}
+
+	public function addGlobalUniform(name:String){
+		if (hasGlobalUniform(name)) return;
+		uniforms.push(name);
+	}
+	public function hasGlobalUniform(name:String){
+		return uniforms.contains(name);
 	}
 
 	public function getVertexShader() {

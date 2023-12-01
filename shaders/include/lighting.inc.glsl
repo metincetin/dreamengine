@@ -4,6 +4,7 @@ uniform vec3 directionalLightDirection;
 uniform vec3 additionalLight0_color = vec3(1);
 uniform float additionalLight0_attenuation;
 uniform vec3 additionalLight0_position;
+uniform vec4 _AmbientColor;
 
 #define PI 3.141592653589793238462643383279502884197
 #include "common.inc.glsl"
@@ -76,7 +77,8 @@ vec3 BRDF(vec3 lambert, vec3 N, vec3 L, vec3 V, vec3 H, float roughness){
 	F0 = mix(F0, vec3(1.0, 0, 0), 0);
 
 
-    vec3 Ks = vec3(0);//SchlickFresnel(V, H, F0);
+    //vec3 Ks = vec3(0);//SchlickFresnel(V, H, F0);
+    vec3 Ks = SchlickFresnel(V, H, F0);
     vec3 Kd = vec3(1.0) - Ks;
     
     vec3 spec = CookTorrance(H, V, N, L, roughness,F0);
@@ -84,7 +86,7 @@ vec3 BRDF(vec3 lambert, vec3 N, vec3 L, vec3 V, vec3 H, float roughness){
     return Kd * lambert + spec;
 }
 
-vec3 PBR(vec3 color, vec3 lightColor, vec3 N, vec3 L, vec3 V, float roughness){
+vec3 PBR(vec3 color, vec3 lightColor, vec3 N, vec3 L, vec3 V, float roughness, vec3 ambient){
     vec3 H = normalize(L + V);
 
     vec3 lambert = color;

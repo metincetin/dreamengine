@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_3d.passes;
 
+import kha.graphics4.Graphics;
+import dreamengine.plugins.renderer_base.Mesh;
 import dreamengine.plugins.renderer_base.ShaderGlobals;
 import kha.math.FastVector4;
 import kha.graphics4.VertexStructure;
@@ -15,6 +17,7 @@ class RenderOpaques extends RenderPass {
 
 	var lastMaterial:Material = null;
 	var lastStruct:VertexStructure;
+	var lastMesh:Mesh;
 	var structLength = 0;
 	var pipelineState:PipelineState;
 
@@ -44,13 +47,33 @@ class RenderOpaques extends RenderPass {
 		this.pipelineState = pipelineState;
 	}
 
+
+	function applyEnvironment(graphics:Graphics){
+		var settings = EnvironmentSettings.active;
+		if (settings == null) return;
+
+		switch (settings.ambientLightType){
+			case Color:
+				var col = settings.ambientLightColor;
+				var int = settings.ambientLightIntensity;
+				col.R *= int;
+				col.G *= int;
+				col.B *= int;
+				col.A *= int;
+
+				graphics.setVector4(pipelineState.getConstantLocation("_AmbientColor"), new FastVector4(col.R, col.G, col.B, col.A));
+			case Sky:
+		}
+	}
+
 	override function execute(renderer:Renderer) {
 		for (cam in renderer.cameras) {
 			var g4 = cam.getRenderTarget().g4;
 			g4.begin();
 			g4.clear(null, 8);
 
-			for (rend in renderer.opaques) {
+			for (i in 0...renderer.opaques.length){
+				var rend = renderer.opaques[i];
 				var mat = rend.material;
 
 				if (mat == null) {
@@ -65,58 +88,32 @@ class RenderOpaques extends RenderPass {
 
 				var mesh = rend.mesh;
 
-				var positions = mesh.vertices;
-				var uvs = mesh.uvs;
-				var normals = mesh.normals;
 
-				var vertsNum = Std.int(positions.length / 3);
-				// Create vertex buffer
-				var vertexBuffer = new VertexBuffer(vertsNum, // Vertex count - 3 floats per vertex
-					lastStruct, // Vertex structure
-					Usage.StaticUsage // Vertex data will stay the same
-				);
+				if (mesh != lastMesh){
+					g4.setVertexBuffer(mesh.getVertexBuffer());
+					g4.setIndexBuffer(mesh.getIndexBuffer());
 
-				// Copy vertices and colors to vertex buffer
-				var vbData = vertexBuffer.lock();
-
-				for (i in 0...vertsNum) {
-					vbData.set((i * structLength) + 0, positions[(i * 3) + 0]);
-					vbData.set((i * structLength) + 1, positions[(i * 3) + 1]);
-					vbData.set((i * structLength) + 2, positions[(i * 3) + 2]);
-					vbData.set((i * structLength) + 3, uvs[(i * 2) + 0]);
-					vbData.set((i * structLength) + 4, uvs[(i * 2) + 1]);
-					vbData.set((i * structLength) + 5, normals[(i * 3) + 0]);
-					vbData.set((i * structLength) + 6, normals[(i * 3) + 1]);
-					vbData.set((i * structLength) + 7, normals[(i * 3) + 2]);
 				}
-
-				vertexBuffer.unlock();
-
-				var indexBuffer = new kha.graphics4.IndexBuffer(mesh.indices.length, Usage.StaticUsage);
-
-				var iData = indexBuffer.lock();
-
-				for (i in 0...iData.length) {
-					iData[i] = mesh.indices[i];
-				}
-
-				indexBuffer.unlock();
-
-				g4.setVertexBuffer(vertexBuffer);
-				g4.setIndexBuffer(indexBuffer);
-
 
 
 				var mvp = cam.getViewProjectionMatrix().multmat(rend.modelMatrix);
+
 				g4.setMatrix(pipelineState.getConstantLocation("Model"), rend.modelMatrix);
 				g4.setMatrix(pipelineState.getConstantLocation("MVP"), mvp);
-				ShaderGlobals.apply(pipelineState, g4);
 
-				mat.applyParams(g4, pipelineState);
+
+				applyEnvironment(g4);
+
+
+				if (lastMaterial != mat || i == 0){
+					ShaderGlobals.applyMaterial(pipelineState, g4, mat);
+					mat.applyParams(g4, pipelineState);
+				}
 
 				g4.drawIndexedVertices();
 
 				lastMaterial = mat;
+				lastMesh = mesh;
 			}
 			g4.end();
 		}
