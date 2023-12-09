@@ -103,6 +103,7 @@ class RenderSkybox extends RenderPass {
 	}
 
 	override function execute(renderer:Renderer) {
+		if (EnvironmentSettings.active.skybox == None) return;
 		var bakedEnvironment = false;
 		for (cam in renderer.cameras) {
 			var g = cam.getRenderTarget().g4;

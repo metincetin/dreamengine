@@ -179,7 +179,13 @@ abstract Vector3(Array<Float>) from Array<Float>{
 		return n;
 	}
 
-	public function rotate(q:Quaternion) {}
+	public function rotated(q:Quaternion): Vector3{
+		var m = q.toMatrix();
+
+		var v = m.multvec(new kha.math.FastVector4(this[0],this[1],this[2],0));
+
+		return [v.x, v.y, v.z];
+	}
 
 	public function reflected(normal:Vector3) {
 		var n = normal.normalized();

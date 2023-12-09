@@ -45,21 +45,21 @@ class Engine {
 		kha.System.start(new SystemOptions("Dream Game", 1920, 1080), function(w) {
 			var primitivesLoaded = 0;
 			Assets.loadBlob("engine_primitive_sphere_obj", x -> {
-				Primitives.sphereMesh = ObjLoader.load(x.toString());
+				Primitives.sphereMesh = ObjLoader.load(x);
 				primitivesLoaded++;
 				if (primitivesLoaded >= 4) {
 					engine.onSystemStarted(w, onStarted);
 				}
 			});
 			Assets.loadBlob("engine_primitive_cube_obj", x -> {
-				Primitives.cubeMesh = ObjLoader.load(x.toString());
+				Primitives.cubeMesh = ObjLoader.load(x);
 				primitivesLoaded++;
 				if (primitivesLoaded >= 4) {
 					engine.onSystemStarted(w, onStarted);
 				}
 			});
 			Assets.loadBlob("engine_primitive_plane_obj", x -> {
-				Primitives.planeMesh = ObjLoader.load(x.toString());
+				Primitives.planeMesh = ObjLoader.load(x);
 
 				primitivesLoaded++;
 				if (primitivesLoaded >= 4) {
@@ -67,7 +67,7 @@ class Engine {
 				}
 			});
 			Assets.loadBlob("engine_primitive_suzanne_obj", x -> {
-				Primitives.suzanneMesh = ObjLoader.load(x.toString());
+				Primitives.suzanneMesh = ObjLoader.load(x);
 				primitivesLoaded++;
 				if (primitivesLoaded >= 4) {
 					engine.onSystemStarted(w, onStarted);

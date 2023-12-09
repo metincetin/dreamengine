@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_base.components;
 
+import dreamengine.core.math.Mathf;
 import dreamengine.plugins.renderer_3d.Renderer3D;
 import kha.graphics4.TextureFormat;
 import dreamengine.device.Screen;
@@ -39,7 +40,7 @@ class Camera extends Component{
 		cam.fov = fov;
 		cam.projection = Perspective;
 		cam.clippingPlanes = clippingPlanes;
-		cam.projectionMatrix = FastMatrix4.perspectiveProjection(fov, aspect, clippingPlanes.x, clippingPlanes.y);
+		cam.projectionMatrix = FastMatrix4.perspectiveProjection(Mathf.degToRad(fov), aspect, clippingPlanes.x, clippingPlanes.y);
 		return cam;
 	}
 

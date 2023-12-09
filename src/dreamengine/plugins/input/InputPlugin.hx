@@ -1,5 +1,6 @@
 package dreamengine.plugins.input;
 
+import dreamengine.plugins.input.handlers.kha.KhaInputHandler;
 import dreamengine.core.Engine;
 import dreamengine.core.Plugin.IPlugin;
 
@@ -8,11 +9,11 @@ class InputPlugin implements IPlugin {
 	var inputHandler:IInputHandler;
 	public var inputMap:InputMap;
 
-	public function new(inputHandler:IInputHandler) {
-		this.inputHandler = inputHandler;
+	public function new(inputHandler:IInputHandler = null) {
 		if (this.inputHandler == null) {
-			throw "Input handler should not be null.";
+			inputHandler = new KhaInputHandler();
 		}
+		this.inputHandler = inputHandler;
 	}
 
 	public function getInputHandler():IInputHandler {

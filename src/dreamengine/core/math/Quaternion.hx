@@ -9,7 +9,7 @@ abstract Quaternion(Array<Float>) from Array<Float> {
 	public var z(get, set):Float;
 	public var w(get, set):Float;
 
-	public function new(x:Float = 1, y:Float = 0, z:Float = 0, w:Float = 0) {
+	public function new(x:Float = 0, y:Float = 0, z:Float = 0, w:Float = 1) {
 		this = [x, y, z, w];
 	}
 
@@ -60,6 +60,35 @@ abstract Quaternion(Array<Float>) from Array<Float> {
 		q.z *= axis.z;
 
 		return q;
+	}
+
+	// from kha quaternion
+	public function slerp(q: Quaternion, t:Float) {
+		var epsilon: Float = 0.0005;
+
+		var dot = dot(q);
+
+		if (dot > 1 - epsilon) {
+			var result: Quaternion = q.added((subtracted(q)).scaled(t));
+			result.normalize();
+			return result;
+		}
+		if (dot < 0)
+			dot = 0;
+		if (dot > 1)
+			dot = 1;
+
+		var theta0: Float = Math.acos(dot);
+		var theta: Float = theta0 * t;
+
+		var q2: Quaternion = q.subtracted(scaled(dot));
+		q2.normalize();
+
+		var result: Quaternion = scaled(Math.cos(theta)).added(q2.scaled(Math.sin(theta)));
+
+		result.normalize();
+
+		return result;
 	}
 
 	public static function fromEuler(euler:Vector3) {
@@ -149,6 +178,22 @@ abstract Quaternion(Array<Float>) from Array<Float> {
 		return n;
 	}
 
+	@:op(A * B)
+	public function scaled(scale: Float): Quaternion {
+		return new Quaternion(x * scale, y * scale, z * scale, w * scale);
+	}
+
+	@:op(A + B)
+	public inline function added(q: Quaternion): Quaternion {
+		return new Quaternion(x + q.x, y + q.y, z + q.z, w + q.w);
+	}
+
+	@:op(A - B)
+	public inline function subtracted(q: Quaternion): Quaternion {
+		return new Quaternion(x - q.x, y - q.y, z - q.z, w - q.w);
+	}
+
+
 	public function multiplyV(euler:Vector3) {
 		var q = Quaternion.fromEuler(euler);
 		multiply(q);
@@ -169,7 +214,11 @@ abstract Quaternion(Array<Float>) from Array<Float> {
 	}
 
 	public static function identity() {
-		return new Quaternion(1, 0, 0, 0);
+		return new Quaternion(0, 0, 0, 0);
+	}
+
+	public function dot(b:Quaternion){
+        return get_x() * b.x + get_y() * b.y + get_z() * b.z + get_w() * b.w;
 	}
 
 	public function rotated(by:Quaternion) {

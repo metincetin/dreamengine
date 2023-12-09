@@ -31,30 +31,24 @@ abstract Vector2i(Array<Int>) {
 	}
 
 	@:op(A * B)
-	public function multiplied(rhs:Vector2) {
-		return new Vector2(this[0] * rhs.x, this[1] * rhs.y);
+	public function multiplied(rhs:Vector2i) {
+		return new Vector2i(this[0] * rhs.x, this[1] * rhs.y);
 	}
 
 	@:op(A * B)
 	public function scaled(rhs:Int) {
-		return new Vector2(this[0] * rhs, this[1] * rhs);
+		return new Vector2i(this[0] * rhs, this[1] * rhs);
 	}
 
 	// returns a 0,0 vector
-	public static function zero():Vector2 {
-		return new Vector2();
+	public static function zero():Vector2i {
+		return new Vector2i();
 	}
 
 	// returns a 1,1 vector
-	public static function one():Vector2 {
-		return new Vector2(1, 1);
+	public static function one():Vector2i {
+		return new Vector2i(1, 1);
 	}
-
-	// returns 0.5, 0.5 vector
-	public static function half():Vector2 {
-		return new Vector2(0.5, 0.5);
-	}
-
 
 	public function negated() {
 		var n = copy();
@@ -72,11 +66,11 @@ abstract Vector2i(Array<Int>) {
 	}
 
 	public function copy() {
-		return new Vector2(x, y);
+		return new Vector2i(x, y);
 	}
 
 	@:op(A + B)
-	public function added(v:Vector2) {
+	public function added(v:Vector2i) {
 		var nv = copy();
 		nv.x += v.x;
 		nv.y += v.y;

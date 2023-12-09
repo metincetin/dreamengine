@@ -5,7 +5,10 @@ import kha.Blob;
 import kha.Assets;
 
 class ObjLoader {
-	public static function load(objData:String) {
+	public static function load(asset:kha.Blob){
+		return loadString(asset.readUtf8String());
+	}
+	public static function loadString(objData:String) {
 		var vertices:Array<Float> = [];
 		var uvs:Array<Float> = [];
 		var normals:Array<Float> = [];

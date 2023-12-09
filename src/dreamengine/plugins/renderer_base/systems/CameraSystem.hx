@@ -24,7 +24,7 @@ class CameraSystem extends System {
 			var pos = transform.getPosition();
 			var euler = transform.getRotation().toEuler();
 			var fw = transform.getForward();
-			var up = transform.getUp();
+			var up = transform.getUp().scaled(-1);
 			var right = transform.getRight();
 
 			/*var view = new FastMatrix4(
