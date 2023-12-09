@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing.effects;
 
+import haxe.macro.Compiler.DefineDescription;
 import kha.graphics4.PipelineState;
 import kha.graphics4.Graphics2;
 import kha.graphics4.Graphics2.ImageShaderPainter;
@@ -120,6 +121,7 @@ class Bloom extends PostProcessEffect {
 
 			rt.g2.end();
 
+
 			i--;
 		}
 
@@ -143,11 +145,8 @@ class Bloom extends PostProcessEffect {
 		source.g4.setTexture(pip.getTextureUnit("sceneTexture"), screen);
 
 		Scaler.scale(tex, source,rot);
-		source.g2.drawScaledImage(screen, 0,0,100,100);
 
 		//source.g2.drawScaledImage(rts[i+1], 0,0, 200,200);
-		source.g2.drawScaledImage(rts[3], 200,0, 200,200);
-
 		source.g2.end();
 	}
 }

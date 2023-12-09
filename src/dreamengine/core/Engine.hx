@@ -42,7 +42,7 @@ class Engine {
 		trace("Initializing Engine");
 
 		trace("Setting up Kha");
-		kha.System.start(new SystemOptions("Dream Game", 1024, 1024), function(w) {
+		kha.System.start(new SystemOptions("Dream Game", 1920, 1080), function(w) {
 			var primitivesLoaded = 0;
 			Assets.loadBlob("engine_primitive_sphere_obj", x -> {
 				Primitives.sphereMesh = ObjLoader.load(x.toString());

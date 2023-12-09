@@ -1,7 +1,7 @@
 #version 450
 
 uniform sampler2D tex;
-uniform vec4 vignetteColor = vec4(0);
+uniform vec4 vignetteColor = vec4(0.0627, 0.0627, 0.0627, 0.0);
 uniform float power = 1.5;
 uniform float intensity = 1;
 
@@ -16,11 +16,10 @@ out vec4 FragColor;
 void main(){
     vec4 fCol = texture(tex, texCoord);
 
-    vec2 u = texCoord * (1. - texCoord.yx);
+    float vignette = length(texCoord - vec2(0.5));
+    vignette = pow(vignette, power);
+    vignette = clamp(vignette, 0.0,1.0);
 
-    float vignette = 1 - pow(u.x * u.y * intensity, power);
-    vignette = clamp(vignette, 0, 1);
 
-
-    FragColor = mix(fCol,vignetteColor, vignette);
+    FragColor = mix(fCol, vignetteColor, vignette * intensity);
 }

@@ -13,8 +13,7 @@ void main(){
     vec4 col = texture(tex, texCoord);
     float brightness = max(max(col.x, col.y), col.z);
 
-    float intensity = max(brightness - 2.1, 0);
+    float intensity = max(brightness - 3.1, 0);
 
-    FragColor = vec4(intensity);
-
+    FragColor = vec4(vec3(intensity), 1);
 }

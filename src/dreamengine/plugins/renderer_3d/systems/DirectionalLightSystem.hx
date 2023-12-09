@@ -35,15 +35,10 @@ class DirectionalLightSystem extends System {
 			ShaderGlobals.setMatrix("_LightSpaceMatrix", light.getViewProjectionMatrix());
 
 			ShaderGlobals.setFloat("_DepthBias", 0.005);
-			engine.getRenderer().addLight({
-				position: null,
-				direction: fw,
-				intensity: light.intensity,
-				color: light.color,
-				range: 0,
-				type: Directional,
-				projection: light.projectionMatrix
-			});
+			light.data.direction = fw;
+			engine.getRenderer().addLight(
+				light.data
+			);
 		}
 	}
 

@@ -38,6 +38,7 @@ void main(){
     col += texture(tex, texCoord + vec2(-1, 0) * texel * 2) * v;
     col += texture(tex, texCoord + vec2(-1,-1) * texel * 2) * v;
     col += texture(tex, texCoord + vec2(0,-1) * texel * 2) * v;
+    col.a = 1;
 
     FragColor = col;
 }
