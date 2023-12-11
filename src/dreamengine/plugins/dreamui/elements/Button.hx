@@ -28,6 +28,9 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		this.text = text;
 	}
 
+	public function getText(){ return text; }
+	public function setText(value:String){ text = value; }
+
 	override function getPreferredSize():Vector2 {
 		var prefSize = new Vector2();
 
@@ -70,7 +73,7 @@ class Button extends Element implements IPointerTarget implements IClickable imp
 		center.y += size.y * 0.5 + (padding.top - padding.bottom);
 
 		g2.font = font;
-		g2.color = parsedStyle.getColorValue("background-color", kha.Color.Cyan);
+		g2.color = parsedStyle.getColorValue("background-color", kha.Color.Red);
 		g2.fontSize = parsedStyle.getIntValue("font-size", 12);
 
 

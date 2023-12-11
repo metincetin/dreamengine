@@ -94,7 +94,7 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 	}
 
 	function renderBlink(g2:Graphics, alignedPos:Vector2, opacity:Float) {
-		var x = g2.font.width(g2.fontSize, text) + 4;
+		var x = g2.font.width(g2.fontSize, text) + 2;
 		var pos = alignedPos;
 		var height = g2.font.height(g2.fontSize);
 		var halfHeight = height * 0.5;
@@ -114,5 +114,13 @@ class InputField extends Element implements IFocusable implements IPointerTarget
 
 	public function onInputReceived(char:String) {
 		text += (char);
+		cursorPos++;
+	}
+
+	public function onBackspaceRequested() {
+		if (cursorPos > 0){
+			text = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
+			cursorPos--;
+		}
 	}
 }

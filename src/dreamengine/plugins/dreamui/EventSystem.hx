@@ -1,5 +1,7 @@
 package dreamengine.plugins.dreamui;
 
+import dreamengine.plugins.input.devices.BaseKeyboard.KeyboardKey;
+import kha.input.Keyboard;
 import haxe.display.Server.ConfigurePrintParams;
 import dreamengine.plugins.dreamui.events.IDraggable;
 import haxe.rtti.Rtti;
@@ -35,8 +37,17 @@ class EventSystem {
 		this.inputHandler.getMouse(0).addKeyReleasedListener(0, onReleased);
 
 		this.inputHandler.getKeyboard(0).addInputListener(onInput);
+		this.inputHandler.getKeyboard(0).addPressedListener(onKeyPressed);
 	}
 
+
+	function onKeyPressed(key:Int){
+		if (key == KeyboardKey.Backspace && focused != null && focused is IInputTarget){
+			var inputTarget:IInputTarget = cast focused;
+
+			inputTarget.onBackspaceRequested();
+		}
+	}
 
 	function onInput(char:String) {
 		if (focused != null && Std.isOfType(focused, IInputTarget)) {

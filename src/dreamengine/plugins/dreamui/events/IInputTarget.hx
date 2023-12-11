@@ -6,4 +6,5 @@ import dreamengine.plugins.input.devices.BaseKeyboard.KeyboardKey;
 interface IInputTarget {
 	function allowInput():Bool;
 	function onInputReceived(char:String):Void;
+	function onBackspaceRequested():Void;
 }
