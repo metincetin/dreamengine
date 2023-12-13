@@ -1,5 +1,7 @@
 package dreamengine.plugins.renderer_3d.passes;
 
+import kha.Assets;
+import kha.graphics4.TextureUnit;
 import dreamengine.core.math.Vector3;
 import kha.graphics4.ConstantLocation;
 import kha.graphics4.Graphics;
@@ -51,6 +53,8 @@ class RenderOpaques extends RenderPass {
 		this.pipelineState = pipelineState;
 
 		cameraPositionLocation = pipelineState.getConstantLocation("_CameraPosition");
+
+		material.updateLocations(pipelineState);
 	}
 
 
@@ -125,8 +129,8 @@ class RenderOpaques extends RenderPass {
 
 				if (lastMaterial != mat || i == 0){
 					ShaderGlobals.applyMaterial(pipelineState, g4, mat);
-					mat.applyParams(g4, pipelineState);
 				}
+				mat.applyParams(g4);
 
 				g4.drawIndexedVertices();
 

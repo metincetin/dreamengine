@@ -1,5 +1,8 @@
 package dreamengine.plugins.renderer_base;
 
+import kha.graphics4.TextureUnit;
+import kha.graphics4.ConstantLocation;
+import kha.Image;
 import kha.graphics4.Graphics;
 import kha.math.FastVector4;
 import kha.graphics4.PipelineState;
@@ -13,11 +16,19 @@ import kha.graphics4.VertexShader;
 typedef ColorParam = {
 	name:String,
 	value:FastVector4,
+	?location:ConstantLocation
 }
 
 typedef FloatParam = {
 	name:String,
 	value:Float,
+	?location:ConstantLocation
+}
+
+typedef TextureParam = {
+	name:String,
+	value:Image,
+	?location:TextureUnit
 }
 
 enum UniformType{
@@ -46,12 +57,9 @@ class Material{
 
 	var uniforms:Array<String> = [];
 
-
-
-
 	var colorParams = new Array<ColorParam>();
 	var floatParams = new Array<FloatParam>();
-
+	var textureParams = new Array<TextureParam>();
 
 
 
@@ -95,13 +103,31 @@ class Material{
 		colorParams.push({name:name, value:value});
 	}
 
-	public function applyParams(g4:Graphics, pipelineState:PipelineState) {
+	public function updateLocations(pipelineState:PipelineState){
 		for(c in colorParams){
-			g4.setVector4(pipelineState.getConstantLocation(c.name), c.value);
+			c.location = pipelineState.getConstantLocation(c.name);
 		}
 
 		for(c in floatParams){
-			g4.setFloat(pipelineState.getConstantLocation(c.name), c.value);
+			c.location = pipelineState.getConstantLocation(c.name);
+		}
+
+		for(c in textureParams){
+			c.location = pipelineState.getTextureUnit(c.name);
+		}
+	}
+
+	public function applyParams(g4:Graphics) {
+		for(c in colorParams){
+			g4.setVector4(c.location, c.value);
+		}
+
+		for(c in floatParams){
+			g4.setFloat(c.location, c.value);
+		}
+
+		for(c in textureParams){
+			g4.setTexture(c.location, c.value);
 		}
 	}
 
@@ -112,7 +138,15 @@ class Material{
 				return;
 			}
 		}
-
 		floatParams.push({name:name, value:value});
+	}
+	public function setTextureParam(name:String, value:Image){
+		for(c in textureParams){
+			if (c.name == name){
+				c.value = value;
+				return;
+			}
+		}
+		textureParams.push({name:name, value:value});
 	}
 }

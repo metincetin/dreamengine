@@ -4,6 +4,8 @@
 in vec3 vertexPosition;
 in vec3 uv;
 in vec3 vertexNormal;
+in vec3 vertexTangent;
+in vec3 vertexBitangent;
 
 out vec3 normal;
 out vec3 Position_World;
@@ -11,6 +13,7 @@ out vec4 color;
 out vec4 FragPosLightSpace;
 out mat4 view;
 out vec2 texCoord;
+out mat3 TBN;
 
 // Values that stay constant for the whole mesh
 uniform mat4 MVP;
@@ -37,4 +40,8 @@ void main() {
 
 
 	normal = (Model * vec4(vertexNormal, 0.0)).xyz;
+	vec3 tangent = (Model * vec4(vertexTangent, 0.0)).xyz;
+	vec3 bitangent = (Model * vec4(vertexBitangent, 0.0)).xyz;
+
+	TBN = mat3(tangent, bitangent, normal);
 }

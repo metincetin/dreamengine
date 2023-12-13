@@ -6,17 +6,21 @@ in vec3 fragmentColor;
 in vec3 normal;
 in vec3 Position_World;
 in vec4 color;
-in vec4 FragPosLightSpace;
 in vec2 texCoord;
+in vec4 FragPosLightSpace;
 in mat4 view;
+in mat3 TBN;
 
 
 
 out vec4 fragColor;
 
-uniform vec4 baseColor = vec4(1);
-uniform vec4 emission;
-uniform float roughness;
+uniform vec4 _BaseColor = vec4(1);
+uniform sampler2D _BaseMap;
+uniform sampler2D _NormalMap;
+uniform sampler2D _AmbientOcclusionMap;
+uniform vec4 _Emission;
+uniform float _Roughness;
 
 
 uniform bool _DistanceFog;
@@ -57,21 +61,34 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     return 0;
 }  
 
+vec3 CalculateNormal(){
+    vec3 textureNormal = texture(_NormalMap, texCoord).xyz;
+    textureNormal = textureNormal * 2 - 1;
+    return normalize(TBN * textureNormal);
+}
+
 void main() {
-	vec3 normalizedNormal = normalize(normal);
-	float ldn = max(0.0, dot(-GetMainLightDirection(), normalizedNormal));
+    vec3 finalNormal = CalculateNormal();
+	float ldn = max(0.0, dot(-GetMainLightDirection(), finalNormal));
 
 	vec3 viewDir = normalize(_CameraPosition - Position_World);
 
     vec3 H = normalize(-GetMainLightDirection()+ viewDir);
-    float ndh = max(0, dot(normalizedNormal, H));
+    float ndh = max(0, dot(finalNormal, H));
 
-    float shadow = 1 - ShadowCalculation(FragPosLightSpace);
+    float shadow = 1;//1 - ShadowCalculation(FragPosLightSpace);
 
-    vec3 ambient = GetMainLightColor() * _AmbientColor.rgb * baseColor.rgb;
-    vec3 diffuse = PBR(baseColor.rgb, GetMainLightColor().rgb, normalizedNormal, -GetMainLightDirection(), viewDir, roughness) * shadow;
+    
+    vec4 difColor = texture(_BaseMap, texCoord) * _BaseColor;
 
-    vec3 emissive = emission.rgb * emission.a;
+
+    float ao = texture(_AmbientOcclusionMap, texCoord).r;
+    vec3 ambient = GetMainLightColor() * _AmbientColor.rgb * difColor.rgb * ao;
+
+    vec3 diffuse = PBR(difColor.rgb, GetMainLightColor().rgb, finalNormal, -GetMainLightDirection(), viewDir, _Roughness) * shadow;
+
+    vec3 emissive = _Emission.rgb * _Emission.a;
+
 
     vec3 finalColor = diffuse + ambient + emissive;
 
@@ -82,7 +99,6 @@ void main() {
     if (_HeightFog){
         finalColor = applyHeightFog(finalColor, _HeightFogColor, _HeightFogStart, _HeightFogEnd, Position_World.y);
     }
-
 
     fragColor = vec4(finalColor, 1);
 }

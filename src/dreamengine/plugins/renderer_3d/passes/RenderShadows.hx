@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_3d.passes;
 
+import dreamengine.plugins.renderer_base.DefaultTextures;
 import dreamengine.plugins.renderer_3d.components.Light;
 import kha.Image;
 import dreamengine.core.math.Vector3;
@@ -108,12 +109,13 @@ class RenderShadows extends RenderPass {
 					g4.drawIndexedVertices();
 				}
                 g4.end();
+				/*
 				cam.getRenderTarget().g2.begin(false);
-				cam.getRenderTarget().g2.drawRect(0,400,200,200);
 				cam.getRenderTarget().g2.font = kha.Assets.fonts.OpenSans_Regular;
-				cam.getRenderTarget().g2.drawScaledImage(shadowMap, 0,400,200,200);
+				cam.getRenderTarget().g2.drawScaledImage((), 0,400,200,200);
 				cam.getRenderTarget().g2.drawString("Shadowmap", 0,400);
 				cam.getRenderTarget().g2.end();
+				*/
 
 				ShaderGlobals.setTexture("_ShadowMap", shadowMap);
 			}
