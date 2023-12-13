@@ -23,10 +23,5 @@ class PhysicalMaterial extends Material{
         setTextureParam("_BaseMap", DefaultTextures.getWhite());
         setTextureParam("_AmbientOcclusionMap", DefaultTextures.getWhite());
         setTextureParam("_NormalMap", DefaultTextures.getNormal());
-
-        setTextureParam("_BaseMap", kha.Assets.images.get("stone_brick_wall_001_diff_2k"));
-        setTextureParam("_AmbientOcclusionMap", kha.Assets.images.get("stone_brick_wall_001_ao_2k"));
-
-        setTextureParam("_NormalMap", kha.Assets.images.stone_brick_wall_001_nor_gl_2k);
     }
 }
