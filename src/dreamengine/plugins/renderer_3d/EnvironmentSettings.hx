@@ -12,6 +12,20 @@ enum SkyboxType{
     Material;
 }
 
+typedef DistanceFog = {
+    enabled:Bool,
+    density:Float,
+    color:Color
+};
+
+typedef HeightFog = {
+    enabled:Bool,
+    start:Float,
+    end:Float,
+    color:Color,
+    opacity:Float
+};
+
 class EnvironmentSettings{
     public static var active:EnvironmentSettings = new EnvironmentSettings();
 
@@ -23,4 +37,18 @@ class EnvironmentSettings{
     public var skybox: SkyboxType = Material;
 
     public var ambientLightIntensity = 1.0;
+
+    public var distanceFog:DistanceFog = {
+        enabled: false,
+        density: 0.5,
+        color: 0x5A5A5A
+    };
+
+    public var heightFog:HeightFog = {
+        enabled: false,
+        start: 0,
+        end: 5,
+        color: 0x5A5A5A,
+        opacity: 1
+    };
 }

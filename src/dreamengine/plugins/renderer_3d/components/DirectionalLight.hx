@@ -24,6 +24,7 @@ class DirectionalLight extends Light {
 			position: null,
 			direction: null,
 			projection: null,
+			viewProjection: null,
 			intensity: intensity,
 			color: color,
 			range: null,
@@ -46,7 +47,7 @@ class DirectionalLight extends Light {
 	}
 
 	public function getViewProjectionMatrix():FastMatrix4 {
-		return viewProjectionMatrix;
+		return data.viewProjection;
 	}
 
 	public function getRenderTarget():Image {

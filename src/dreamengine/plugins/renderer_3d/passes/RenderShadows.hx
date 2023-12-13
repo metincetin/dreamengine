@@ -30,6 +30,7 @@ class RenderShadows extends RenderPass {
 	public function new(){
 		super();
 		shadowMap = Image.createRenderTarget(2048, 2048, DEPTH16);
+		ShaderGlobals.setTexture("_ShadowMap", shadowMap);
 	}
 
 	function createPipelineState() {
@@ -87,40 +88,17 @@ class RenderShadows extends RenderPass {
 							var camProj = cam.getProjectionMatrix();
 
 							var camVP = cam.getViewProjectionMatrix();
-							var invVP = camVP.inverse();
-							var NDC = [
-								// leftup near
-								new FastVector4(-1.0, -1.0, -1.0, 1.0),
-								// right up  near
-								new FastVector4(1.0, -1.0, -1.0, 1.0),
-								// left down near
-								new FastVector4(-1.0, 1.0, -1.0, 1.0),
-								// right down near
-								new FastVector4(1.0, 1.0, -1.0, 1.0),
-								//left up far
-								new FastVector4(-1.0, -1.0, 1.0, 1.0),
-								//right up far
-								new FastVector4(1.0, -1.0, 1.0, 1.0),
-								// left down far
-								new FastVector4(-1.0, 1.0, 1.0, 1.0),
-								// right up far
-								new FastVector4(1.0, 1.0, 1.0, 1.0),
-							];
-							for (i in 0...NDC.length)
-							{
-								NDC[i] = invVP.multvec(NDC[i]);
-								//NDC[i].mult(1 / NDC[i].w);
-							}
 
 							var view = FastMatrix4.lookAt(camPos, camPos + light.direction, Vector3.up());
 							//var view = FastMatrix4.lookAt(Vector3.zero(), light.direction, Vector3.up());
 
-							//light.projection = FastMatrix4.orthogonalProjection(minX, maxX, minY, maxY, minZ, maxZ);
+							light.projection = FastMatrix4.orthogonalProjection(-35,35,-35,35, 0.1, 50);
 
 							var viewProjection = light.projection.multmat(view);
 
                             var mvp = viewProjection.multmat(rend.modelMatrix);
                             g4.setMatrix(pipelineState.getConstantLocation("_LightSpaceMatrix"), mvp);
+							light.viewProjection = viewProjection;
 
 						case _:
                     }

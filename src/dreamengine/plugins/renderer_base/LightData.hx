@@ -17,5 +17,6 @@ typedef LightData = {
     range:Float,
     color:Color,
     intensity:Float,
-    projection:FastMatrix4
+    projection:FastMatrix4,
+    viewProjection:FastMatrix4
 }

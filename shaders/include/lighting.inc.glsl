@@ -93,3 +93,19 @@ vec3 PBR(vec3 color, vec3 lightColor, vec3 N, vec3 L, vec3 V, float roughness){
 
     return BRDF(lambert, N, L, V, H, roughness) * max(dot(L, N), 0);
 }
+
+
+vec3 applyDistanceFog(vec3 base, vec3 fogColor, float density, float factor){
+    float fac = clamp(1.0 - exp(-density * factor), 0, 1);
+    return mix(base, fogColor, fac);
+}
+
+// A fog opacity
+vec3 applyHeightFog(vec3 base, vec4 fogColor, float start, float end, float h){
+    float t = (h - start) / (end - start);
+    t = clamp(t, 0, 1);
+    t = 1 - t;
+
+
+    return mix(base, fogColor.xyz, t * fogColor.a);
+}

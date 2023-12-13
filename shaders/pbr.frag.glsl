@@ -7,6 +7,7 @@ in vec3 normal;
 in vec3 Position_World;
 in vec4 color;
 in vec4 FragPosLightSpace;
+in vec2 texCoord;
 in mat4 view;
 
 
@@ -18,6 +19,14 @@ uniform vec4 emission;
 uniform float roughness;
 
 
+uniform bool _DistanceFog;
+uniform vec4 _DistanceFogColor;
+uniform float _DistanceFogDensity;
+
+uniform bool _HeightFog;
+uniform vec4 _HeightFogColor;
+uniform float _HeightFogStart;
+uniform float _HeightFogEnd;
 
 uniform sampler2D _ShadowMap;
 uniform float _DepthBias = 0.3;
@@ -40,21 +49,10 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     vec2 texelSize = 1.0 / textureSize(_ShadowMap, 0);
 
 
-    float bias = mix(0.05, 0, dot(normalize(normal), -GetMainLightDirection()));
-    //float bias = max(0.05 * (1.0 - dot(normal, directionalLightDirection)), 0.0005);  
+    //float bias = mix(0.05, 0, dot(normalize(normal), -GetMainLightDirection()));
+    //float bias = max(0.05 * (1.0 - dot(normalize(normal), -GetMainLightDirection())), 0.0005);  
 
-
-    // for(int x = -1; x <= 1; ++x)
-    // {
-    //     for(int y = -1; y <= 1; ++y)
-    //     {
-    //         float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-
-    //         shadow += currentDepth + bias > pcfDepth ? 1.0 : 0.0;        
-    //     }    
-    // }
-    // shadow /= 9.0;
-    if (projCoords.z - bias> depth) return 1;
+    if (projCoords.z - _DepthBias > depth) return 1;
 
     return 0;
 }  
@@ -74,5 +72,17 @@ void main() {
     vec3 diffuse = PBR(baseColor.rgb, GetMainLightColor().rgb, normalizedNormal, -GetMainLightDirection(), viewDir, roughness) * shadow;
 
     vec3 emissive = emission.rgb * emission.a;
-    fragColor = vec4(diffuse + ambient + emissive, 1);
+
+    vec3 finalColor = diffuse + ambient + emissive;
+
+    if (_DistanceFog){
+        finalColor = applyDistanceFog(finalColor, _DistanceFogColor.xyz, _DistanceFogDensity, gl_FragCoord.z / gl_FragCoord.w);
+    }
+
+    if (_HeightFog){
+        finalColor = applyHeightFog(finalColor, _HeightFogColor, _HeightFogStart, _HeightFogEnd, Position_World.y);
+    }
+
+
+    fragColor = vec4(finalColor, 1);
 }

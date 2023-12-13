@@ -70,6 +70,19 @@ class RenderOpaques extends RenderPass {
 				graphics.setVector4(pipelineState.getConstantLocation("_AmbientColor"), new FastVector4(col.R, col.G, col.B, col.A));
 			case Sky:
 		}
+
+		if (settings.distanceFog.enabled){
+			graphics.setBool(pipelineState.getConstantLocation("_DistanceFog"), true);
+			graphics.setFloat(pipelineState.getConstantLocation("_DistanceFogDensity"), settings.distanceFog.density);
+			graphics.setFloat4(pipelineState.getConstantLocation("_DistanceFogColor"), settings.distanceFog.color.R, settings.distanceFog.color.G, settings.distanceFog.color.B, settings.distanceFog.color.A);
+		}
+
+		if (settings.heightFog.enabled){
+			graphics.setBool(pipelineState.getConstantLocation("_HeightFog"), true);
+			graphics.setFloat(pipelineState.getConstantLocation("_HeightFogStart"), settings.heightFog.start);
+			graphics.setFloat(pipelineState.getConstantLocation("_HeightFogEnd"), settings.heightFog.end);
+			graphics.setFloat4(pipelineState.getConstantLocation("_HeightFogColor"), settings.heightFog.color.R, settings.heightFog.color.G, settings.heightFog.color.B, settings.heightFog.opacity);
+		}
 	}
 
 	override function execute(renderer:Renderer) {
