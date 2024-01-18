@@ -1,5 +1,8 @@
 package dreamengine.plugins.renderer_3d.passes;
 
+import dreamengine.core.math.Mathf;
+import kha.Assets;
+import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import js.html.idb.VersionChangeEvent;
 import kha.CanvasImage;
 import kha.math.FastVector2;
@@ -51,7 +54,7 @@ class RenderSkybox extends RenderPass {
 		pipeline.fragmentShader = kha.Shaders.skybox_procedural_frag;
 		pipeline.depthWrite = false;
 		pipeline.depthMode = LessEqual;
-		pipeline.cullMode = CounterClockwise;
+		pipeline.cullMode = None;
 
 		environment = CubeMap.createRenderTarget(256);
 
@@ -66,7 +69,7 @@ class RenderSkybox extends RenderPass {
 
 		pipeline.compile();
 
-		var mesh = Primitives.sphereMesh;
+		var mesh = ObjLoader.load(Assets.blobs.engine_primitive_skybox_obj);
 		vertexBuffer = mesh.getVertexBuffer();
 		indexBuffer = mesh.getIndexBuffer();
 
@@ -78,20 +81,7 @@ class RenderSkybox extends RenderPass {
 
 	function drawSkybox(g:Graphics, view:FastMatrix4, projection:FastMatrix4, clipping:Vector2){
 			g.setPipeline(pipeline);
-            g.setVertexBuffer(vertexBuffer);
-            g.setIndexBuffer(indexBuffer);
 
-
-            var camView = new FastMatrix4(
-				view._00, view._10,view._20, view._30, view._01, view._11, view._21, view._31, view._02, view._12, view._22, view._32, view._03, view._13, view._23, view._33
-			);
-			camView._30 = 0;
-			camView._31 = 0;
-			camView._32 = 0;
-
-			var l = clipping.y;
-
-            //g.setMatrix(modelLocation, modelMatrix);
             g.setMatrix(viewLocation, view);
             g.setMatrix(projectionLocation, projection);
 
@@ -99,6 +89,8 @@ class RenderSkybox extends RenderPass {
 			g.setVector2(screenResolutionLocation, new FastVector2(res.x, res.y));
 			ShaderGlobals.apply(pipeline, g);
 
+            g.setVertexBuffer(vertexBuffer);
+            g.setIndexBuffer(indexBuffer);
 			g.drawIndexedVertices();
 	}
 
@@ -108,14 +100,19 @@ class RenderSkybox extends RenderPass {
 		for (cam in renderer.cameras) {
 			var g = cam.getRenderTarget().g4;
 			g.begin();
-			drawSkybox(g, cam.getViewMatrix(), cam.getViewProjectionMatrix(), cam.clippingPlanes);
+			var v = cam.getViewMatrix();
+			v._30 = 0;
+			v._31 = 0;
+			v._32 = 0;
+
+			drawSkybox(g, v, cam.getProjectionMatrix(), cam.clippingPlanes);
 			g.end();
 
 			if (!bakedEnvironment){
 				for(i in 0...6){
 					environment.g4.beginFace(i);
 					environment.g4.clear(null);
-					var p = FastMatrix4.perspectiveProjection(45, 1, cam.clippingPlanes.x , cam.clippingPlanes.y);
+					var p = FastMatrix4.perspectiveProjection(Mathf.degToRad(45), 1, cam.clippingPlanes.x , cam.clippingPlanes.y);
 					var v = FastMatrix4.lookAt(Vector3.zero(), skyboxFaces[i], Vector3.up());
 
 					var vp = p.multmat(v);
@@ -125,7 +122,8 @@ class RenderSkybox extends RenderPass {
 					environment.g4.end();
 
 				}
-				ShaderGlobals.setCubemap("environmentMap", environment);
+				ShaderGlobals.setCubemap("_EnvironmentMap", environment);
+
 				bakedEnvironment = true;
 			}
 

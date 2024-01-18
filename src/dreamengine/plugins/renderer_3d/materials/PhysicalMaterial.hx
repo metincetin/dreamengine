@@ -17,6 +17,7 @@ class PhysicalMaterial extends Material{
         addGlobalUniform("_DirectionalLightColor");
         addGlobalUniform("_DirectionalLightDirection");
         addGlobalUniform("_LightSpaceMatrix");
+        addGlobalUniform("_EnvironmentMap");
 
         setColorParam("_BaseColor", new FastVector4(baseColor.R, baseColor.G, baseColor.B, baseColor.A));
         setFloatParam("_Roughness", roughness);

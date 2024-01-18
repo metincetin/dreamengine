@@ -6,7 +6,6 @@ in vec3 normal;
 in vec4 color;
 in mat4 view;
 in vec2 texCoord;
-in vec3 Position_World;
 
 uniform mat4 MVP;
 uniform mat4 Model;
@@ -15,95 +14,71 @@ uniform vec3 cameraPosition;
 
 uniform vec2 resolution;
 
+#include "include/lighting.inc.glsl"
+
+
+in vec3 pos;
 
 out vec4 FragColor;
 
-#include "include/lighting.inc.glsl"
-#include "include/common.inc.glsl"
+const float cirrus = 0.4;
+const float cumulus = 0.6;
 
-const float invPi = 1.0 / PI;
+const float Br = 0.0025;
+const float Bm = 0.0003;
+const float g =  0.9800;
+const vec3 nitrogen = vec3(0.650, 0.570, 0.475);
+const vec3 Kr = Br / pow(nitrogen, vec3(4.0));
+const vec3 Km = Bm / pow(nitrogen, vec3(0.84));
 
-const float zenithOffset = 0.1;
-const float multiScatterPhase = 0.1;
-const float density = 0.7;
-
-const float anisotropicIntensity = 0.0; //Higher numbers result in more anisotropic scattering
-
-const vec3 skyColor = vec3(0.39, 0.57, 1.0) * (1.0 + anisotropicIntensity); //Make sure one of the conponents is never 0.0
-
-#define smooth(x) x*x*(3.0-2.0*x)
-#define zenithDensity(x) density / pow(max(x - zenithOffset, 0.35e-2), 0.75)
-
-vec3 getSkyAbsorption(vec3 x, float y){
-	
-	vec3 absorption = x * -y;
-	     absorption = exp2(absorption) * 2.0;
-	
-	return absorption;
+float hash(float n)
+{
+	return fract(sin(n) * 43758.5453123);
 }
 
-float getSunPoint(vec2 p, vec2 lp){
-	return smoothstep(0.03, 0.026, distance(p, lp)) * 50.0;
-}
+float noise(vec3 x)
+{
+	vec3 f = fract(x);
+	float n = dot(floor(x), vec3(1.0, 157.0, 113.0));
+	return mix(mix(mix(hash(n +   0.0), hash(n +   1.0), f.x),
+					mix(hash(n + 157.0), hash(n + 158.0), f.x), f.y),
+				mix(mix(hash(n + 113.0), hash(n + 114.0), f.x),
+					mix(hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
+	}
 
-float getRayleigMultiplier(vec2 p, vec2 lp){
-	return 1.0 + pow(1.0 - clamp(distance(p, lp), 0.0, 1.0), 2.0) * PI * 0.5;
-}
-
-float getMie(vec2 p, vec2 lp){
-	float disk = clamp(1.0 - pow(distance(p, lp), 0.1), 0.0, 1.0);
-	
-	return disk*disk*(3.0 - 2.0 * disk) * 2.0 * PI;
-}
-
-vec3 getAtmosphericScattering(vec2 p, vec2 lp){
-	vec2 correctedLp = lp / max(resolution.x, resolution.y) * resolution.xy;
-		
-	float zenith = zenithDensity(p.y);
-	float sunPointDistMult =  clamp(length(max(correctedLp.y + multiScatterPhase - zenithOffset, 0.0)), 0.0, 1.0);
-	
-	float rayleighMult = getRayleigMultiplier(p, correctedLp);
-	
-	vec3 absorption = getSkyAbsorption(skyColor, zenith);
-    vec3 sunAbsorption = getSkyAbsorption(skyColor, zenithDensity(correctedLp.y + multiScatterPhase));
-	vec3 sky = skyColor * zenith * rayleighMult;
-	vec3 sun = getSunPoint(p, correctedLp) * absorption;
-	vec3 mie = getMie(p, correctedLp) * sunAbsorption;
-	
-	vec3 totalSky = mix(sky * absorption, sky / (sky + 0.5), sunPointDistMult);
-         totalSky += sun + mie;
-	     totalSky *= sunAbsorption * 0.5 + 0.5 * length(sunAbsorption);
-	
-	return totalSky;
-}
-
-vec3 jodieReinhardTonemap(vec3 c){
-    float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
-    vec3 tc = c / (c + 1.0);
-
-    return mix(c / (l + 1.0), tc, tc);
-}
-
-vec2 DirectionToTexCoord(vec3 direction) {
-    // Calculate polar coordinates
-    float azimuth = atan(direction.y, direction.x);
-    float inclination = acos(direction.z);
-
-    // Map polar coordinates to texture coordinates
-    float u = (azimuth + PI) / (2.0 * PI);
-    float v = inclination / PI;
-
-    return vec2(u, v);
+	const mat3 m = mat3(0.0, 1.60,  1.20, -1.6, 0.72, -0.96, -1.2, -0.96, 1.28);
+	float fbm(vec3 p)
+	{
+	float f = 0.0;
+	f += noise(p) / 2; p = m * p * 1.1;
+	f += noise(p) / 4; p = m * p * 1.2;
+	f += noise(p) / 6; p = m * p * 1.3;
+	f += noise(p) / 12; p = m * p * 1.4;
+	f += noise(p) / 24;
+	return f;
 }
 
 void main(){
 
-	vec2 position = texCoord;
-	vec2 lightPosition = DirectionToTexCoord(GetMainLightDirection());
-	
-	vec3 color = getAtmosphericScattering(position, lightPosition) * PI;
-	color = jodieReinhardTonemap(color);
- 	color = pow(color, vec3(2.2)); //Back to linear
-	
-	FragColor = vec4(color, 1.0);
+	vec3 fsun = -GetMainLightDirection();
+	vec3 p = normalize(normal);
+	if (p.y < 0)
+	{
+		FragColor.rgb = vec3(0);
+		return;
+	}
+	// Atmosphere Scattering
+	float mu = dot(normalize(p), normalize(fsun));
+	float rayleigh = 3.0 / (8.0 * 3.14) * (1.0 + mu * mu);
+	vec3 mie = (Kr + Km * (1.0 - g * g) / (2.0 + g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5)) / (Br + Bm);
+
+	vec3 day_extinction = exp(-exp(-((p.y + fsun.y * 4.0) * (exp(-p.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-p.y * 16.0) + 0.1) * Kr / Br) * exp(-p.y * exp(-p.y * 8.0 ) * 4.0) * exp(-p.y * 2.0) * 4.0;
+	vec3 night_extinction = vec3(1.0 - exp(fsun.y)) * 0.2;
+	vec3 extinction = mix(day_extinction, night_extinction, -fsun.y * 0.2 + 0.5);
+	FragColor.rgb = rayleigh * mie * extinction;
+
+	// Dithering Noise
+	FragColor.rgb += noise(p* 1000) * 0.01;
+	FragColor.xyz = FragColor.xyz / (FragColor.xyz + vec3(1.0));
+	FragColor.xyz = pow(FragColor.xyz, vec3(1.0/2.2));
 }
