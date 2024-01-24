@@ -136,7 +136,7 @@ class Element {
 		g2.popTransformation();
 		g2.opacity = 1;
 
-		g2.drawRect(rect.getPosition().x, rect.getPosition().y, rect.getSize().x, rect.getSize().y);
+		//g2.drawRect(rect.getPosition().x, rect.getPosition().y, rect.getSize().x, rect.getSize().y);
 	}
 
 	function onRender(g2:Graphics, opacity:Float) {}

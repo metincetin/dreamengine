@@ -3,8 +3,6 @@ package dreamengine.plugins.renderer_3d.passes;
 import dreamengine.core.math.Mathf;
 import kha.Assets;
 import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
-import js.html.idb.VersionChangeEvent;
-import kha.CanvasImage;
 import kha.math.FastVector2;
 import dreamengine.device.Screen;
 import kha.graphics4.ConstantLocation;

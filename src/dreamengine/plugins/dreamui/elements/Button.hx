@@ -1,7 +1,6 @@
 package dreamengine.plugins.dreamui.elements;
 
 import dreamengine.plugins.dreamui.events.PointerEventData;
-import js.html.PointerEvent;
 import kha.Font;
 import kha.Assets;
 import dreamengine.core.math.Mathf;

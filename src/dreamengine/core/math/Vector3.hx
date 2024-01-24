@@ -184,7 +184,7 @@ abstract Vector3(Array<Float>) from Array<Float>{
 
 		var v = m.multvec(new kha.math.FastVector4(this[0],this[1],this[2],0));
 
-		return [v.x, v.y, v.z];
+		return new Vector3(v.x, v.y, v.z);
 	}
 
 	public function reflected(normal:Vector3) {

@@ -27,7 +27,7 @@ class DirectionalLight extends Light {
 			viewProjection: null,
 			intensity: intensity,
 			color: color,
-			range: null,
+			range: 0,
 			type: Directional
 		};
 	}
