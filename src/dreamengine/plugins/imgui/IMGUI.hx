@@ -1,5 +1,6 @@
 package dreamengine.plugins.imgui;
 
+import kha.Image;
 import kha.Assets;
 import dreamengine.core.math.Rect;
 import kha.graphics2.Graphics;
@@ -18,6 +19,10 @@ class IMGUI {
 		RenderStack.add(new ButtonRenderer(rect, text));
 		return false;
 	}
+
+	public static function image(rect:Rect, image:Image) {
+		RenderStack.add(new ImageRenderer(rect, image));
+	}
 }
 
 class IMGUIRenderer {
@@ -28,6 +33,27 @@ class IMGUIRenderer {
 	}
 
 	public function render(graphics:Graphics) {}
+}
+
+class ImageRenderer extends IMGUIRenderer{
+	var image:Image;
+
+	public function new(rect:Rect, image:Image){
+		super(rect);
+		this.image = image;
+	}
+
+	override function render(graphics:Graphics) {
+		var pos = rect.getPosition();
+		var size = rect.getSize();
+		if (image == null){
+			graphics.color = Pink;
+			graphics.fillRect(pos.x, pos.y, size.x, size.y);
+			graphics.color = White;
+		}
+		else
+			graphics.drawScaledImage(image, pos.x, pos.y, size.x, size.y);
+	}
 }
 
 class ButtonRenderer extends IMGUIRenderer {

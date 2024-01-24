@@ -131,6 +131,14 @@ class Material{
 		}
 	}
 
+	public function getFloatUniform(name:String, def:Float = 0.0){
+		for(c in floatParams){
+			if (c.name == name){
+				return c.value;
+			}
+		}
+		return def;
+	}
 	public function setFloatParam(name:String, value:Float) {
 		for(c in floatParams){
 			if (c.name == name){

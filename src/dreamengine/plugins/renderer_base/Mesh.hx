@@ -2,7 +2,7 @@ package dreamengine.plugins.renderer_base;
 
 import kha.Scaler.TargetRectangle;
 import dreamengine.core.math.Vector2;
-import kha.graphics5_.IndexBuffer;
+import kha.graphics4.IndexBuffer;
 import dreamengine.core.math.Vector3;
 import kha.graphics4.VertexStructure;
 import kha.graphics4.VertexBuffer;

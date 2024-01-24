@@ -36,9 +36,9 @@ class Renderer{
     public function render(framebuffer:Framebuffer){
         this.framebuffer = framebuffer;
         for(c in cameras){
-            var g = c.getRenderTarget().g2;
+            var g = c.getRenderTarget().g4;
             g.begin();
-            g.clear(Blue);
+            g.clear(Red, 1);
             g.end();
 
         }

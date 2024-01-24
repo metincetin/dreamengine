@@ -93,7 +93,6 @@ class RenderOpaques extends RenderPass {
 		for (cam in renderer.cameras) {
 			var g4 = cam.getRenderTarget().g4;
 			g4.begin();
-			g4.clear(null, 8);
 
 			for (i in 0...renderer.opaques.length){
 				var rend = renderer.opaques[i];

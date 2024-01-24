@@ -20,6 +20,7 @@ class PhysicalMaterial extends Material{
         addGlobalUniform("_EnvironmentMap");
 
         setColorParam("_BaseColor", new FastVector4(baseColor.R, baseColor.G, baseColor.B, baseColor.A));
+        setColorParam("_Emission", new FastVector4(0,0,0,0));
         setFloatParam("_Roughness", roughness);
         setTextureParam("_BaseMap", DefaultTextures.getWhite());
         setTextureParam("_AmbientOcclusionMap", DefaultTextures.getWhite());
