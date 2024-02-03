@@ -63,6 +63,7 @@ class Sprite extends Component {
 		return ppu;
 	}
 	public function getPPUScale(){
+		if (image == null) return Vector3.one();
 		var imageSize:Vector2i = new Vector2i(image.realWidth, image.realHeight);
 		var sx = imageSize.x / ppu;
 		var sy = imageSize.y / ppu;

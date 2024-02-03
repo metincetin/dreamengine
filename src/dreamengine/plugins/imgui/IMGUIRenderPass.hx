@@ -9,6 +9,10 @@ class IMGUIRenderPass extends RenderPass{
             var g2 = c.getRenderTarget().g2;
 
             g2.begin(false);
+
+            g2.color = IMGUI.color;
+            g2.fontSize = IMGUI.fontSize;
+
             for(r in RenderStack.renderers){
                 r.render(g2);
             }

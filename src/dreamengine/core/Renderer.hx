@@ -20,13 +20,14 @@ class Renderer{
     public var lights:Array<LightData> = [];
     public var pipeline:Array<RenderPass> = [];
 
-
     var opaqueIndex = 0;
     var transparentIndex = 0;
     var cameraIndex = 0;
     var lightIndex = 0;
 
     var framebuffer:Framebuffer;
+	public var waitingRenderer:Bool;
+
 
     public function new(){
         Material.setDefault(new Material(kha.Shaders.simple_vert, kha.Shaders.simple_frag));
@@ -39,9 +40,8 @@ class Renderer{
         for(c in cameras){
             var g = c.getRenderTarget().g4;
             g.begin();
-            g.clear(Red, 1);
+            g.clear(Transparent, 1);
             g.end();
-
         }
 
         framebuffer.g2.begin();
@@ -60,26 +60,31 @@ class Renderer{
         framebuffer.g2.end();
 
         opaqueIndex = 0;
+        transparentIndex = 0;
         cameraIndex = 0;
         lightIndex = 0;
     }
 
     public function addOpaque(renderable:Renderable){
+        if (waitingRenderer) return;
         opaques[opaqueIndex] = renderable;
         opaqueIndex++;
     }
 
     public function setCamera(camera:Camera) {
+        if (waitingRenderer) return;
         cameras[cameraIndex] = camera;
         cameraIndex++;
     }
 
     public function addLight(light:LightData) {
+        if (waitingRenderer) return;
         lights[lightIndex] = light;
         lightIndex++;
     }
 
     public function addTransparent(renderable: Renderable) {
+        if (waitingRenderer) return;
         transparents[transparentIndex] = renderable;
         transparentIndex++;
     }

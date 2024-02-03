@@ -7,6 +7,9 @@ import kha.graphics2.Graphics;
 import kha.Color;
 
 class IMGUI {
+	public static var color:Color = White;
+	public static var fontSize:Int = 12;
+
 	public static function text(rect:Rect, text:String) {
 		RenderStack.add(new TextRenderer(rect, text));
 	}

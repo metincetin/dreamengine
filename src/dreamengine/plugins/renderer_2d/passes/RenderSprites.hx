@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d.passes;
 
+import kha.SystemImpl;
 import kha.Shaders;
 import kha.graphics4.VertexStructure;
 import kha.graphics5_.BlendingFactor;
@@ -19,6 +20,12 @@ class RenderSprites extends RenderPass {
         pipeline = new PipelineState();
         pipeline.depthWrite = false;
         pipeline.depthMode = Always;
+
+		pipeline.blendSource = BlendingFactor.BlendOne;
+		pipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
+		pipeline.alphaBlendSource = BlendingFactor.BlendOne;
+		pipeline.alphaBlendDestination = BlendingFactor.InverseSourceAlpha;
+
         pipeline.cullMode = None;
 
         var vertexLayout = new VertexStructure();
@@ -42,13 +49,12 @@ class RenderSprites extends RenderPass {
 		for (cam in renderer.cameras) {
             var g4 = cam.getRenderTarget().g4;
             g4.begin();
-            g4.clear(Black, 0,0);
+            g4.setPipeline(pipeline);
 
+            var vp = cam.getViewProjectionMatrix();
             for(rend in renderer.transparents){
-                g4.setPipeline(pipeline);
 
 
-                var vp = cam.getViewProjectionMatrix();
                 var mvp = vp.multmat(rend.modelMatrix);
                 g4.setMatrix(mvpLocation, mvp);
 

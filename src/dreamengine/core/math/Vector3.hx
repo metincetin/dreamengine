@@ -190,11 +190,12 @@ abstract Vector3(Array<Float>) from Array<Float>{
 	public function reflected(normal:Vector3) {
 		var n = normal.normalized();
 		var dot = dot(normal);
-		var n = normal * dot * 2;
+		n = normal * dot * 2;
 		var r = this - n;
-		x = r.x;
-		y = r.y;
-		z = r.z;
+		n.x = r.x;
+		n.y = r.y;
+		n.z = r.z;
+		return n;
 	}
 
 	@:to

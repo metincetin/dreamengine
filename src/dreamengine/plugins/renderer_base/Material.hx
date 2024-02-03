@@ -70,10 +70,10 @@ class Material{
 
 	public function copy() {
 		var n = new Material(vertexShader, fragmentShader);
-		n.colorUniforms = colorUniforms;
-		n.floatUniforms = floatUniforms;
-		n.textureUniforms = textureUniforms;
-		n.uniforms = uniforms;
+		n.colorUniforms = colorUniforms.copy();
+		n.floatUniforms = floatUniforms.copy();
+		n.textureUniforms = textureUniforms.copy();
+		n.uniforms = uniforms.copy();
 		n.cullMode = cullMode;
 		n.depthMode = depthMode;
 		n.depthWrite = depthWrite;
