@@ -64,7 +64,8 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 vec3 CalculateNormal(){
     vec3 textureNormal = texture(_NormalMap, texCoord).xyz;
     textureNormal = textureNormal * 2 - 1;
-    return normalize(TBN * textureNormal);
+//normalize(TBN * textureNormal);
+    return normalize(normal);
 }
 
 void main() {
@@ -88,7 +89,6 @@ void main() {
     vec3 diffuse = PBR(difColor.rgb, GetMainLightColor().rgb, finalNormal, -GetMainLightDirection(), viewDir, _Roughness) * shadow;
 
     vec3 emissive = _Emission.rgb * _Emission.a;
-
 
     vec3 finalColor = diffuse + ambient + emissive;
 

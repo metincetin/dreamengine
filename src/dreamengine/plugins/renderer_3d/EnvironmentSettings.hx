@@ -29,6 +29,7 @@ typedef HeightFog = {
 class EnvironmentSettings{
     public static var active:EnvironmentSettings = new EnvironmentSettings();
 
+
     public function new(){}
     
     public var ambientLightType: AmbientLightType = Sky;

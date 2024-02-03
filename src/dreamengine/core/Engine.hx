@@ -148,18 +148,16 @@ class Engine {
 	}
 
 	function onFrame(framebuffers:Array<kha.Framebuffer>) {
+		renderer.waitingRenderer = false;
 		var t = Scheduler.realTime();
 		for (fr in framebuffers) {
 			renderer.render(fr);
 		}
 		var tdiff = Scheduler.realTime() - t;
 		Time.setRendererDelta(tdiff);
-		renderer.waitingRenderer = false;
 	}
 
 	public function onTick() {
-		if (waitingRenderer)
-			return;
 		for (e in loopEvents) {
 			e();
 		}

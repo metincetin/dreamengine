@@ -22,7 +22,7 @@ class DirectionalLight extends Light {
 		super(color, intensity);
 		data = {
 			position: null,
-			direction: null,
+			direction: [0,0,1],
 			projection: null,
 			viewProjection: null,
 			intensity: intensity,
