@@ -14,13 +14,12 @@ out vec4 FragColor;
 void main(){ 
     vec2 tex_offset = 1.0 / textureSize(tex, 0); // gets size of single texel
     vec3 result = texture(tex, texCoord).rgb * weight[0]; // current fragment's contribution
-        for(int i = 1; i < STEP; ++i)
-        {
-            result += texture(tex, texCoord + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
-            result += texture(tex, texCoord - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
-        }
 
-        result /= STEP;
+    for(int i = 1; i < STEP; ++i)
+    {
+        result += texture(tex, texCoord + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
+        result += texture(tex, texCoord - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
+    }
 
     FragColor = vec4(result, 1);
 }

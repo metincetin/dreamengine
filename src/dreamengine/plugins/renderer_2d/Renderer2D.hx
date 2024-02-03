@@ -1,5 +1,8 @@
 package dreamengine.plugins.renderer_2d;
 
+import kha.Shaders;
+import dreamengine.plugins.renderer_base.Material;
+import dreamengine.plugins.renderer_2d.passes.RenderSprites;
 import dreamengine.plugins.renderer_base.systems.CameraSystem;
 import dreamengine.plugins.renderer_2d.systems.ParticleRenderer2D.ParticleRenderer;
 import kha.graphics4.PipelineState;
@@ -19,8 +22,16 @@ class Renderer2D implements IPlugin{
 	var spriteRenderer = new SpriteRenderer();
 
 	var pipelineState:PipelineState;
+	static var defaultMaterial:Material;
 
-	public function new() {}
+
+	public function new() {
+		defaultMaterial = new Material(Shaders.painter_colored_vert, Shaders.painter_colored_frag);
+	}
+
+	public static function getDefaultMaterial(){
+		return defaultMaterial;
+	}
 
 	public function initialize(engine:Engine) {
 		this.pipelineState = new PipelineState();
@@ -37,6 +48,7 @@ class Renderer2D implements IPlugin{
 		ecs.registerSystem(new CameraSystem());
 		ecs.registerSystem(new SpriteAnimationPlayer());
 		ecs.registerSystem(new CameraSystem());
+		engine.getRenderer().pipeline.push(new RenderSprites());
 
 	}
 

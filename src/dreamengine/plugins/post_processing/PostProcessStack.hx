@@ -42,11 +42,16 @@ class PostProcessStack{
         for(eff in effects){
             if (!eff.enabled) continue;
             eff.execute(intermediate, effectIntermediate, screenTexture);
+
+			intermediate.g2.begin();
+			Scaler.scale(effectIntermediate, intermediate, kha.System.screenRotation);
+			intermediate.g2.end();
+
         }
 
 
         screenTexture.g2.begin();
-        kha.Scaler.scale(intermediate, screenTexture, kha.System.screenRotation);
+        kha.Scaler.scale(effectIntermediate, screenTexture, kha.System.screenRotation);
         screenTexture.g2.end();
     }
 }

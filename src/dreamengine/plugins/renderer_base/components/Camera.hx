@@ -46,10 +46,13 @@ class Camera extends Component{
 
 	public static function orthogonal(size:Float, clippingPlanes:Vector2):Camera {
 		var cam = new Camera();
+		var res = Screen.getResolution();
+		var aspect = res.x / res.y;
+
 		cam.size = size;
 		cam.clippingPlanes = clippingPlanes;
 		cam.projection = Orthographic;
-		cam.projectionMatrix = FastMatrix4.orthogonalProjection(-size, size, -size, size, clippingPlanes.x, clippingPlanes.y);
+		cam.projectionMatrix = FastMatrix4.orthogonalProjection(-size * aspect, size * aspect, -size, size, clippingPlanes.x, clippingPlanes.y);
 		return cam;
 	}
 
@@ -81,7 +84,7 @@ class Camera extends Component{
 
 	function createRenderTexture() {
 		var res = Screen.getResolution();
-		renderTexture = Image.createRenderTarget(Std.int(res.x * 1), Std.int(res.y * 1), TextureFormat.RGBA64, Depth24Stencil8, 1);
+		renderTexture = Image.createRenderTarget(Std.int(res.x * 1), Std.int(res.y * 1), TextureFormat.RGBA128, Depth24Stencil8, 1);
 		depthTexture = Image.createRenderTarget(Std.int(res.x * 1), Std.int(res.y * 1), TextureFormat.L8, DepthOnly, 1);
 	}
 

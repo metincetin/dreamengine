@@ -129,7 +129,7 @@ class RenderOpaques extends RenderPass {
 				if (lastMaterial != mat || i == 0){
 					ShaderGlobals.applyMaterial(pipelineState, g4, mat);
 				}
-				mat.applyParams(g4);
+				mat.applyUniforms(g4);
 
 				g4.drawIndexedVertices();
 

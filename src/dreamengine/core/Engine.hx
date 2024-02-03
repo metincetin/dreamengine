@@ -1,5 +1,6 @@
 package dreamengine.core;
 
+import dreamengine.plugins.renderer_base.Mesh;
 import dreamengine.plugins.renderer_2d.Renderer2D;
 import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
 import dreamengine.plugins.renderer_3d.Primitives;
@@ -44,6 +45,35 @@ class Engine {
 		trace("Setting up Kha");
 		kha.System.start(new SystemOptions("Dream Game", 1920, 1080), function(w) {
 			var primitivesLoaded = 0;
+			var quad = new Mesh();
+
+			quad.vertices = [
+				-0.5, -0.5, 0,
+				-0.5,  0.5, 0,
+				 0.5,  0.5, 0,
+				 0.5, -0.5, 0,
+			];
+			quad.uvs = [
+				0, 1,
+				0, 0,
+				1, 0,
+				1, 1,
+			];
+			quad.indices = [
+				0, 1, 2,
+				2, 0, 3
+			];
+			quad.normals = [
+				0, 0, 1,
+				0, 0, 1,
+				0, 0, 1,
+				0, 0, 1,
+			];
+
+			quad.generate();
+
+			Primitives.quadMesh = quad;
+
 			Assets.loadBlob("engine_primitive_sphere_obj", x -> {
 				Primitives.sphereMesh = ObjLoader.load(x);
 				primitivesLoaded++;

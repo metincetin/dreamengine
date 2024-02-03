@@ -22,6 +22,7 @@ class Renderer{
 
 
     var opaqueIndex = 0;
+    var transparentIndex = 0;
     var cameraIndex = 0;
     var lightIndex = 0;
 
@@ -76,5 +77,10 @@ class Renderer{
     public function addLight(light:LightData) {
         lights[lightIndex] = light;
         lightIndex++;
+    }
+
+    public function addTransparent(renderable: Renderable) {
+        transparents[transparentIndex] = renderable;
+        transparentIndex++;
     }
 }

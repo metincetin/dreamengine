@@ -8,7 +8,6 @@ import kha.graphics2.ImageScaleQuality;
 import kha.graphics5_.TextureFilter;
 import kha.graphics5_.MipMapFilter;
 import kha.graphics5_.TextureAddressing;
-import js.html.audio.DelayNode;
 import kha.System;
 import kha.Scaler;
 import kha.math.FastVector2;
@@ -25,16 +24,19 @@ import kha.Shaders;
 class Bloom extends PostProcessEffect {
 	var radius:Float = 1;
 
-	var downsample = 4;
+	var downsample = 6;
 	var rts:Array<Image>;
-	var tempRts:Array<Image>;
+	var blurRts:Array<Image>;
+	var upscaledRts:Array<Image>;
+	var filterRt:Image;
 
 	var filterPass:BloomFilterPass;
-	var blurPasses:Array<PostProcessEffectPass> = [];
 	var combinePass:PostProcessEffectPass;
 
 	var downsamplePass:PostProcessEffectPass;
 	var upsamplePass:PostProcessEffectPass;
+	var verticalBlurPass:VerticalBlurPass;
+	var horizontalBlurPass:HorizontalBlurPass;
 
 	public function new(radius:Float = 1) {
 		super();
@@ -44,12 +46,11 @@ class Bloom extends PostProcessEffect {
 	override function createPasses():Array<PostProcessEffectPass> {
 		filterPass = new BloomFilterPass();
 
-		for (i in 0...12) {
-			blurPasses.push(new KawaseBlurPass(2.5));
-		}
-
 		downsamplePass = new SimplePostProcessPass(Shaders.bloom_downsample_frag);
 		upsamplePass = new SimplePostProcessPass(Shaders.bloom_upsample_frag);
+
+		horizontalBlurPass = new HorizontalBlurPass();
+		verticalBlurPass = new VerticalBlurPass();
 
 		/*
 			for(i in 0...20){
@@ -66,88 +67,97 @@ class Bloom extends PostProcessEffect {
 
 		if (rts == null) {
 			rts = [];
-			tempRts = [];
+			upscaledRts = [];
+			blurRts = [];
+			var curWidth = screen.width;
+			var curHeight = screen.height;
+
 			for (i in 0...downsample) {
-				var p = (i + 1);
-				p = p * p;
-				rts.push(Image.createRenderTarget(cast screen.width / p, cast screen.height / p, RGBA64));
+				curWidth = Std.int(curWidth / 2);
+				curHeight = Std.int(curHeight / 2);
+				rts.push(Image.createRenderTarget(curWidth, curHeight, RGBA64));
+				blurRts.push(Image.createRenderTarget(curWidth, curHeight, RGBA64));
 
-				tempRts.push(Image.createRenderTarget(cast screen.width / p, cast screen.height / p,RGBA64));
+				upscaledRts.push(Image.createRenderTarget(curWidth, curHeight, RGBA64));
 			}
+
+			filterRt = Image.createRenderTarget(screen.width, screen.height, RGBA64);
 		}
 
-		rts[0].g2.begin();
-		rts[0].g4.setPipeline(filterPass.getPipeline());
-		rts[0].g2.pipeline = filterPass.getPipeline();
-		filterPass.passValues(rts[0].g4);
+		filterRt.g2.begin();
+		filterRt.g4.setPipeline(filterPass.getPipeline());
+		filterRt.g2.pipeline = filterPass.getPipeline();
+		filterPass.passValues(filterRt.g4);
 
-		Scaler.scale(source, rts[0], rot);
+		Scaler.scale(source, filterRt, rot);
 
-		rts[0].g2.end();
+		filterRt.g2.end();
 
-		for (i in 1...downsample) {
-			var rt = rts[i];
+		for (i in 0...rts.length) {
+			var s:Image;
+			var t:Image;
 
-			rt.g2.begin();
-			var pipeline = downsamplePass.getPipeline();
+			if (i == 0) {
+				s = filterRt;
+				t = rts[i];
+			} else {
+				s = rts[i - 1];
+				t = rts[i];
+			}
 
-			rt.g4.setPipeline(pipeline);
-			rt.g2.pipeline = pipeline;
-			var tex = rts[i-1];
+			blurRts[i].g2.begin(false);
+			blurRts[i].g2.pipeline = downsamplePass.getPipeline();
+			blurRts[i].g4.setPipeline(downsamplePass.getPipeline());
+			downsamplePass.passValues(blurRts[i].g4);
+			blurRts[i].g2.imageScaleQuality = High;
+			Scaler.scale(s, blurRts[i], rot);
+			blurRts[i].g2.end();
 
-			rt.g2.imageScaleQuality = High;
-			Scaler.scale(rts[i - 1], rt, rot);
-			rt.g2.end();
+			t.g2.begin(false);
+			t.g2.pipeline = verticalBlurPass.getPipeline();
+			t.g4.setPipeline(verticalBlurPass.getPipeline());
+			verticalBlurPass.passValues(t.g4);
+			t.g2.imageScaleQuality = High;
+			Scaler.scale(blurRts[i], t, rot);
+			t.g2.end();
 		}
 
+		var i = upscaledRts.length - 1;
+		while (i > 0) {
+			var s:Image;
+			var s2:Image;
+			var t:Image;
 
+			t = upscaledRts[i - 1];
 
-		var i = downsample - 2;
-		while (i >= 0) {
-			var rt = tempRts[i];
+			if (i == upscaledRts.length - 1) {
+				s = rts[i];
+				s2 = rts[i - 1];
+			}
+			else{
+				s = upscaledRts[i];
+				s2 = rts[i];
+			}
 
-			rt.g2.begin();
-			var pipeline = upsamplePass.getPipeline();
-			rt.g4.setPipeline(pipeline);
-			rt.g2.pipeline = pipeline;
+			t.g2.begin(false);
+			t.g2.pipeline = upsamplePass.getPipeline();
+			t.g4.setPipeline(upsamplePass.getPipeline());
+			upsamplePass.passValues(t.g4);
+			t.g2.imageScaleQuality = High;
+			t.g4.setTexture(upsamplePass.getPipeline().getTextureUnit("tex2"), s2);
 
-			var t1 = rts[i + 1];
-			var t2 = rts[i];
-
-			rt.g2.imageScaleQuality = High;
-			rt.g4.setTexture(pipeline.getTextureUnit("tex2"),t2);
-			Scaler.scale(t1, rt,rot);
-
-
-			rt.g2.end();
-
-
+			Scaler.scale(s, t, rot);
+			t.g2.end();
 			i--;
 		}
 
-		
-
-
-		source.g2.begin();
-
-		var pip = combinePass.getPipeline();
-
-		source.g2.pipeline = pip;
-		source.g4.setPipeline(pip);
-
-		var i = 0;
-
-		var tex = tempRts[i];
-
-
-		source.g2.imageScaleQuality = High;
-
-		source.g4.setTexture(pip.getTextureUnit("sceneTexture"), screen);
-
-		Scaler.scale(tex, source,rot);
-
-		//source.g2.drawScaledImage(rts[i+1], 0,0, 200,200);
-		source.g2.end();
+		destination.g2.begin();
+		destination.g2.pipeline = combinePass.getPipeline();
+		destination.g4.setPipeline(combinePass.getPipeline());
+		combinePass.passValues(destination.g4);
+		destination.g4.setTexture(combinePass.getPipeline().getTextureUnit("sceneTexture"), source);
+		Scaler.scale(upscaledRts[0], destination, rot);
+		destination.g2.end();
 	}
 }
 

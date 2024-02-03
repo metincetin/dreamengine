@@ -13,19 +13,19 @@ import dreamengine.plugins.ecs.Component;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.VertexShader;
 
-typedef ColorParam = {
+typedef ColorUniform = {
 	name:String,
 	value:FastVector4,
 	?location:ConstantLocation
 }
 
-typedef FloatParam = {
+typedef FloatUniform = {
 	name:String,
 	value:Float,
 	?location:ConstantLocation
 }
 
-typedef TextureParam = {
+typedef TextureUniform = {
 	name:String,
 	value:Image,
 	?location:TextureUnit
@@ -57,15 +57,28 @@ class Material{
 
 	var uniforms:Array<String> = [];
 
-	var colorParams = new Array<ColorParam>();
-	var floatParams = new Array<FloatParam>();
-	var textureParams = new Array<TextureParam>();
+	var colorUniforms = new Array<ColorUniform>();
+	var floatUniforms = new Array<FloatUniform>();
+	var textureUniforms = new Array<TextureUniform>();
 
 
 
 	public function new(vShader:VertexShader, fShader:FragmentShader) {
 		this.fragmentShader = fShader;
 		this.vertexShader = vShader;
+	}
+
+	public function copy() {
+		var n = new Material(vertexShader, fragmentShader);
+		n.colorUniforms = colorUniforms;
+		n.floatUniforms = floatUniforms;
+		n.textureUniforms = textureUniforms;
+		n.uniforms = uniforms;
+		n.cullMode = cullMode;
+		n.depthMode = depthMode;
+		n.depthWrite = depthWrite;
+
+		return n;
 	}
 
 	public function addGlobalUniform(name:String){
@@ -92,69 +105,78 @@ class Material{
 		fragmentShader = value;
 	}
 
-	public function setColorParam(name:String, value:FastVector4) {
-		for(c in colorParams){
+	public function setColorUniform(name:String, value:FastVector4) {
+		for(c in colorUniforms){
 			if (c.name == name){
 				c.value = value;
 				return;
 			}
 		}
 
-		colorParams.push({name:name, value:value});
+		colorUniforms.push({name:name, value:value});
 	}
 
 	public function updateLocations(pipelineState:PipelineState){
-		for(c in colorParams){
+		for(c in colorUniforms){
 			c.location = pipelineState.getConstantLocation(c.name);
 		}
 
-		for(c in floatParams){
+		for(c in floatUniforms){
 			c.location = pipelineState.getConstantLocation(c.name);
 		}
 
-		for(c in textureParams){
+		for(c in textureUniforms){
 			c.location = pipelineState.getTextureUnit(c.name);
 		}
 	}
 
-	public function applyParams(g4:Graphics) {
-		for(c in colorParams){
+	public function applyUniforms(g4:Graphics) {
+		for(c in colorUniforms){
 			g4.setVector4(c.location, c.value);
 		}
 
-		for(c in floatParams){
+		for(c in floatUniforms){
 			g4.setFloat(c.location, c.value);
 		}
 
-		for(c in textureParams){
+		for(c in textureUniforms){
 			g4.setTexture(c.location, c.value);
 		}
 	}
 
 	public function getFloatUniform(name:String, def:Float = 0.0){
-		for(c in floatParams){
+		for(c in floatUniforms){
 			if (c.name == name){
 				return c.value;
 			}
 		}
 		return def;
 	}
-	public function setFloatParam(name:String, value:Float) {
-		for(c in floatParams){
+	public function setFloatUniform(name:String, value:Float) {
+		for(c in floatUniforms){
 			if (c.name == name){
 				c.value = value;
 				return;
 			}
 		}
-		floatParams.push({name:name, value:value});
+		floatUniforms.push({name:name, value:value});
 	}
-	public function setTextureParam(name:String, value:Image){
-		for(c in textureParams){
+	public function setTextureUniform(name:String, value:Image){
+		for(c in textureUniforms){
 			if (c.name == name){
 				c.value = value;
 				return;
 			}
 		}
-		textureParams.push({name:name, value:value});
+		textureUniforms.push({name:name, value:value});
+	}
+
+	public function getTextureUniform(name:String) {
+		for(c in textureUniforms){
+			if (c.name == name){
+				return c.value;
+			}
+		}
+		return null;
 	}
 }

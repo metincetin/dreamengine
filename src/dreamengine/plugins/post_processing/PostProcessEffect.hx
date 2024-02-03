@@ -51,9 +51,6 @@ class PostProcessEffect {
 
 			destination.g2.end();
 
-			source.g2.begin();
-			Scaler.scale(destination, source, kha.System.screenRotation);
-			source.g2.end();
 		}
 	}
 }

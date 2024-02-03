@@ -9,4 +9,5 @@ class Primitives {
 	public static var cubeMesh:Mesh;
 	public static var planeMesh:Mesh;
 	public static var sphereMesh:Mesh;
+	public static var quadMesh:Mesh;
 }
