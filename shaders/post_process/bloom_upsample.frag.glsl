@@ -36,7 +36,5 @@ void main(){
 
     lowMip /= 16;
 
-
-    //FragColor += vec4(lowMip, 1) + texture(tex2, texCoord);
-    FragColor = vec4(mix(texture(tex, texCoord), texture(tex2, texCoord), 0.4).rgb, 1);
+    FragColor = vec4(mix(texture(tex, texCoord), texture(tex2, texCoord), 0.25).rgb, 1);
 }
