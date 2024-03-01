@@ -38,6 +38,8 @@ class Bloom extends PostProcessEffect {
 	var verticalBlurPass:VerticalBlurPass;
 	var horizontalBlurPass:HorizontalBlurPass;
 
+	var kawaseBlurPass:KawaseBlurPass;
+
 	public function new(radius:Float = 1) {
 		super();
 		this.radius = radius;
@@ -45,6 +47,8 @@ class Bloom extends PostProcessEffect {
 
 	override function createPasses():Array<PostProcessEffectPass> {
 		filterPass = new BloomFilterPass();
+
+		kawaseBlurPass = new KawaseBlurPass(1.5);
 
 		downsamplePass = new SimplePostProcessPass(Shaders.bloom_downsample_frag);
 		upsamplePass = new SimplePostProcessPass(Shaders.bloom_upsample_frag);
@@ -111,8 +115,19 @@ class Bloom extends PostProcessEffect {
 			downsamplePass.passValues(blurRts[i].g4);
 			blurRts[i].g2.imageScaleQuality = High;
 			Scaler.scale(s, blurRts[i], rot);
+
 			blurRts[i].g2.end();
 
+
+			t.g2.begin(false);
+			t.g2.pipeline = kawaseBlurPass.getPipeline();
+			t.g4.setPipeline(kawaseBlurPass.getPipeline());
+			kawaseBlurPass.passValues(t.g4);
+			t.g2.imageScaleQuality = High;
+			Scaler.scale(blurRts[i], t, rot);
+			t.g2.end();
+
+			/*
 			t.g2.begin(false);
 			t.g2.pipeline = verticalBlurPass.getPipeline();
 			t.g4.setPipeline(verticalBlurPass.getPipeline());
@@ -120,6 +135,15 @@ class Bloom extends PostProcessEffect {
 			t.g2.imageScaleQuality = High;
 			Scaler.scale(blurRts[i], t, rot);
 			t.g2.end();
+			
+			t.g2.begin(false);
+			t.g2.pipeline = horizontalBlurPass.getPipeline();
+			t.g4.setPipeline(horizontalBlurPass.getPipeline());
+			horizontalBlurPass.passValues(t.g4);
+			t.g2.imageScaleQuality = High;
+			Scaler.scale(blurRts[i], t, rot);
+			t.g2.end();
+			*/
 		}
 
 		var i = upscaledRts.length - 1;
