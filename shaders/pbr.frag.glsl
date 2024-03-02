@@ -1,5 +1,6 @@
 #version 450
 #include "include/lighting.inc.glsl"
+#include "include/common.inc.glsl"
 
 in vec3 fragmentColor;
 
@@ -82,9 +83,8 @@ void main() {
     
     vec4 difColor = texture(_BaseMap, texCoord) * _BaseColor;
 
-
     float ao = texture(_AmbientOcclusionMap, texCoord).r;
-    vec3 ambient = GetMainLightColor() * _AmbientColor.rgb * difColor.rgb * ao;
+    vec3 ambient = _AmbientColor.rgb * difColor.rgb * ao;
 
     vec3 diffuse = PBR(difColor.rgb, GetMainLightColor().rgb, finalNormal, -GetMainLightDirection(), viewDir, _Roughness) * shadow;
 

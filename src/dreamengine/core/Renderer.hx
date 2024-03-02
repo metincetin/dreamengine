@@ -1,13 +1,8 @@
 package dreamengine.core;
 
-import dreamengine.plugins.renderer_3d.passes.RenderSkybox;
-import dreamengine.plugins.dreamui.events.IFocusable;
-import kha.System;
-import dreamengine.plugins.renderer_3d.components.DirectionalLight;
-import dreamengine.plugins.renderer_3d.components.Light;
-import dreamengine.plugins.renderer_3d.passes.RenderShadows;
+import kha.graphics4.*;
+import kha.Shaders;
 import dreamengine.plugins.renderer_base.Material;
-import dreamengine.plugins.renderer_3d.passes.RenderOpaques;
 import kha.Scaler;
 import kha.Framebuffer;
 import dreamengine.plugins.renderer_base.components.Camera;
@@ -44,19 +39,16 @@ class Renderer{
             g.end();
         }
 
-        framebuffer.g2.begin();
-        framebuffer.g2.clear();
-        framebuffer.g2.end();
-
         for(p in pipeline){
             p.execute(this);
         }
 
-        framebuffer.g2.begin(false);
+        framebuffer.g2.begin(true);
 
         for(c in cameras){
             Scaler.scale(c.getRenderTarget(), framebuffer, kha.System.screenRotation);
         }
+
         framebuffer.g2.end();
 
         opaqueIndex = 0;

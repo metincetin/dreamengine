@@ -5,16 +5,15 @@ in vec2 texCoord;
 
 
 out vec4 FragColor;
+// https://www.shadertoy.com/view/lslGzl
 
 void main(){
     const float gamma = 2.2;
-    vec3 hdrColor = texture(tex, texCoord).rgb;
-  
-    // reinhard tone mapping
-    vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
+    vec3 color = texture(tex, texCoord).rgb;
 
-    // gamma correction 
-    //mapped = pow(mapped, vec3(1.0 / gamma));
-  
-    FragColor = vec4(mapped, 1.0);
+    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+	float toneMappedLuma = luma / (1. + luma);
+	color *= toneMappedLuma / luma;
+
+    FragColor = vec4(color, 1);
 }

@@ -67,7 +67,7 @@ vec3 CookTorrance(vec3 H, vec3 V, vec3 N, vec3 L, float roughness, vec3 F0){
 }
 
 
-vec3 BRDF(vec3 lambert, vec3 N, vec3 L, vec3 V, vec3 H, float roughness){
+vec3 BRDF(vec3 lambert, vec3 N, vec3 L, vec3 V, vec3 H, float roughness, vec3 lightColor){
 
 
 	float ior = 1.4 + 1;
@@ -83,15 +83,15 @@ vec3 BRDF(vec3 lambert, vec3 N, vec3 L, vec3 V, vec3 H, float roughness){
     
     vec3 spec = CookTorrance(H, V, N, L, roughness,F0);
 
-    return Kd * lambert + spec;
+    return Kd * lambert + spec * lightColor;
 }
 
 vec3 PBR(vec3 color, vec3 lightColor, vec3 N, vec3 L, vec3 V, float roughness){
     vec3 H = normalize(L + V);
 
-    vec3 lambert = color;
+    vec3 lambert = color * lightColor;
 
-    return BRDF(lambert, N, L, V, H, roughness) * max(dot(L, N), 0);
+    return BRDF(lambert, N, L, V, H, roughness, lightColor) * max(dot(L, N), 0);
 }
 
 
