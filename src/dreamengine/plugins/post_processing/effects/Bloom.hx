@@ -38,7 +38,7 @@ class Bloom extends PostProcessEffect {
 	var verticalBlurPass:VerticalBlurPass;
 	var horizontalBlurPass:HorizontalBlurPass;
 
-	var kawaseBlurPass:KawaseBlurPass;
+	var kawaseBlurPasses = new Array<KawaseBlurPass>();
 
 	public function new(radius:Float = 1) {
 		super();
@@ -48,7 +48,7 @@ class Bloom extends PostProcessEffect {
 	override function createPasses():Array<PostProcessEffectPass> {
 		filterPass = new BloomFilterPass();
 
-		kawaseBlurPass = new KawaseBlurPass(1.5);
+		kawaseBlurPasses = [new KawaseBlurPass(0.5)];
 
 		downsamplePass = new SimplePostProcessPass(Shaders.bloom_downsample_frag);
 		upsamplePass = new SimplePostProcessPass(Shaders.bloom_upsample_frag);
@@ -56,10 +56,6 @@ class Bloom extends PostProcessEffect {
 		horizontalBlurPass = new HorizontalBlurPass();
 		verticalBlurPass = new VerticalBlurPass();
 
-		/*
-			for(i in 0...20){
-				passes.push(new KawaseBlurPass(Math.pow(i * 0.1,2)));
-		}*/
 		combinePass = new SimplePostProcessPass(Shaders.bloom_combine_frag);
 		return [];
 	}
@@ -118,32 +114,13 @@ class Bloom extends PostProcessEffect {
 
 			blurRts[i].g2.end();
 
-
 			t.g2.begin(false);
-			t.g2.pipeline = kawaseBlurPass.getPipeline();
-			t.g4.setPipeline(kawaseBlurPass.getPipeline());
-			kawaseBlurPass.passValues(t.g4);
 			t.g2.imageScaleQuality = High;
+			t.g2.pipeline = kawaseBlurPasses[0].getPipeline();
+			t.g4.setPipeline(kawaseBlurPasses[0].getPipeline());
+			kawaseBlurPasses[0].passValues(t.g4);
 			Scaler.scale(blurRts[i], t, rot);
 			t.g2.end();
-
-			/*
-			t.g2.begin(false);
-			t.g2.pipeline = verticalBlurPass.getPipeline();
-			t.g4.setPipeline(verticalBlurPass.getPipeline());
-			verticalBlurPass.passValues(t.g4);
-			t.g2.imageScaleQuality = High;
-			Scaler.scale(blurRts[i], t, rot);
-			t.g2.end();
-			
-			t.g2.begin(false);
-			t.g2.pipeline = horizontalBlurPass.getPipeline();
-			t.g4.setPipeline(horizontalBlurPass.getPipeline());
-			horizontalBlurPass.passValues(t.g4);
-			t.g2.imageScaleQuality = High;
-			Scaler.scale(blurRts[i], t, rot);
-			t.g2.end();
-			*/
 		}
 
 		var i = upscaledRts.length - 1;
@@ -157,8 +134,7 @@ class Bloom extends PostProcessEffect {
 			if (i == upscaledRts.length - 1) {
 				s = rts[i];
 				s2 = rts[i - 1];
-			}
-			else{
+			} else {
 				s = upscaledRts[i];
 				s2 = rts[i];
 			}
@@ -179,6 +155,7 @@ class Bloom extends PostProcessEffect {
 		destination.g2.pipeline = combinePass.getPipeline();
 		destination.g4.setPipeline(combinePass.getPipeline());
 		combinePass.passValues(destination.g4);
+
 		destination.g4.setTexture(combinePass.getPipeline().getTextureUnit("sceneTexture"), source);
 		Scaler.scale(upscaledRts[0], destination, rot);
 		destination.g2.end();
