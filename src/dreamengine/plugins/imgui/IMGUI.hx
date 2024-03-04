@@ -15,7 +15,7 @@ class IMGUI {
 	}
 
 	public static function box(rect:Rect, color:Color = Color.White) {
-		RenderStack.add(new BoxRenderer(rect, color));
+		RenderStack.add(new BoxRenderer(rect));
 	}
 
 	public static function button(rect:Rect, text:String):Bool {
@@ -67,7 +67,7 @@ class ButtonRenderer extends IMGUIRenderer {
 	public function new(rect:Rect, text:String) {
 		super(rect);
 		this.text = text;
-		boxRenderer = new BoxRenderer(rect, Color.Black);
+		boxRenderer = new BoxRenderer(rect);
 		textRenderer = new TextRenderer(rect, text);
 	}
 
@@ -93,15 +93,12 @@ class TextRenderer extends IMGUIRenderer {
 }
 
 class BoxRenderer extends IMGUIRenderer {
-	public var color:Color;
-
-	public function new(rect:Rect, color:Color) {
+	public function new(rect:Rect) {
 		super(rect);
-		this.color = color;
 	}
 
 	override function render(graphics:Graphics) {
-		graphics.color = color;
+		graphics.color = IMGUI.color;
 		var position = rect.getPosition();
 		var size = rect.getSize();
 		graphics.fillRect(position.x, position.y, size.x, size.y);
