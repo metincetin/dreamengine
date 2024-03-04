@@ -6,6 +6,7 @@ class RenderStack {
 	public static var renderers:Array<IMGUIRenderer> = new Array<IMGUIRenderer>();
 
 	public static function add(renderer:IMGUIRenderer) {
+		if (IMGUIRenderPass.waitingRenderer) return;
 		renderers.push(renderer);
 	}
 

@@ -1,5 +1,6 @@
 package dreamengine.core;
 
+import kha.Display;
 import dreamengine.plugins.renderer_base.Mesh;
 import dreamengine.plugins.renderer_2d.Renderer2D;
 import dreamengine.plugins.renderer_3d.loaders.ObjLoader;
@@ -24,6 +25,7 @@ class Engine {
 	var shouldExit = false;
 
 	var loopEvents:Array<Void->Void> = new Array<Void->Void>();
+	var preLoopEvents:Array<Void->Void> = new Array<Void->Void>();
 	var postLoopEvents:Array<Void->Void> = new Array<Void->Void>();
 
 	var mainWindow:kha.Window;
@@ -109,6 +111,7 @@ class Engine {
 	function onSystemStarted(window:Window, onStarted:Engine->Void) {
 		mainWindow = window;
 		trace("Setting up game loop");
+		trace(Display.primary.frequency);
 		Scheduler.addTimeTask(onTick, 0, 1 / 60);
 		kha.System.notifyOnFrames(onFrame);
 
@@ -129,6 +132,14 @@ class Engine {
 
 	public function createTimeTask(task:Void->Void, period:Float) {
 		Scheduler.addTimeTask(task, 0, period);
+	}
+
+	public function registerPreLoopEvent(event:Void->Void) {
+		preLoopEvents.push(event);
+	}
+
+	public function unregisterPreLoopEvent(event:Void->Void) {
+		preLoopEvents.remove(event);
 	}
 
 	public function registerLoopEvent(event:Void->Void) {
@@ -158,6 +169,9 @@ class Engine {
 	}
 
 	public function onTick() {
+		for (e in preLoopEvents) {
+			e();
+		}
 		for (e in loopEvents) {
 			e();
 		}

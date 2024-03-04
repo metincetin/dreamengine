@@ -8,11 +8,26 @@ import dreamengine.core.Plugin.IPlugin;
 class IMGUIPlugin implements IPlugin {
 	public function new() {}
 
+	var engine:Engine;
 	public function initialize(engine:Engine) {
+		this.engine = engine;
 		engine.getRenderer().pipeline.push(new IMGUIRenderPass());
+		engine.registerPostLoopEvent(onTickLate);
+		engine.registerPreLoopEvent(onTickPre);
 	}
 
-	public function finalize() {}
+	function onTickPre(){
+        RenderStack.clear();
+	}
+
+	function onTickLate(){
+		IMGUIRenderPass.waitingRenderer = true;
+	}
+
+	public function finalize() {
+		engine.unregisterPreLoopEvent(onTickPre);
+		engine.unregisterPostLoopEvent(onTickLate);
+	}
 
 	public function getName():String {
 		return "IMGUI";
