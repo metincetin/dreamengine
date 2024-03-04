@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing;
 
+import dreamengine.plugins.renderer_base.components.Camera;
 import kha.Image;
 import kha.graphics4.*;
 
@@ -7,8 +8,6 @@ class PostProcessEffectPass {
 	var pipeline:PipelineState;
 
 	var enabled = true;
-
-	var renderTarget:Image;
 
 	public function new() {
 		createPipeline();
@@ -31,19 +30,14 @@ class PostProcessEffectPass {
 		pipeline.compile();
 	}
 
-	public function getRenderTarget(){
-		return renderTarget;
-	}
-
-	public function createRenderTarget(source:Image){
-		renderTarget = Image.createRenderTarget(source.width, source.height, source.format);
-		return renderTarget;
+	public function getCustomRenderTarget(): Image{
+		return null;
 	}
 
 	public function getPipeline(){
 		return pipeline;
 	}
 
-	public function passValues(graphics:Graphics) {
+	public function passValues(graphics:Graphics, camera:Camera) {
 	}
 }

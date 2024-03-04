@@ -10,7 +10,7 @@ in vec4 color;
 out vec4 FragColor;
 
 void main(){
-    float treshold = .9;
+    float treshold = 1.0;
 
     vec4 col = min(vec4(100), texture(tex, texCoord));
 

@@ -43,7 +43,7 @@ class Renderer3D implements IPlugin{
 		ecs.registerSystem(new DirectionalLightSystem());
 		ecs.registerSystem(new CameraSystem());
 
-		//engine.getRenderer().pipeline.push(new DrawDepth());
+		engine.getRenderer().pipeline.push(new DrawDepth());
         engine.getRenderer().pipeline.push(new RenderOpaques());
         engine.getRenderer().pipeline.push(new RenderShadows());
 		engine.getRenderer().pipeline.push(new RenderSkybox());

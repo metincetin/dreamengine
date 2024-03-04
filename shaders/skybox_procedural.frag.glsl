@@ -1,5 +1,5 @@
 #version 450
-//https://www.shadertoy.com/view/Ml2cWG
+//https://github.com/shff/opengl_sky
 
 
 in vec3 normal;
@@ -62,15 +62,14 @@ void main(){
 
 	vec3 fsun = -GetMainLightDirection();
 	vec3 p = normalize(normal);
-	if (p.y < 0)
-	{
-		FragColor.rgb = vec3(0);
-		return;
-	}
+
+	vec3 sunColor = GetMainLightColor();
+
 	// Atmosphere Scattering
 	float mu = dot(normalize(p), normalize(fsun));
 	float rayleigh = 3.0 / (8.0 * 3.14) * (1.0 + mu * mu);
 	vec3 mie = (Kr + Km * (1.0 - g * g) / (2.0 + g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5)) / (Br + Bm);
+
 
 	vec3 day_extinction = exp(-exp(-((p.y + fsun.y * 4.0) * (exp(-p.y * 16.0) + 0.1) / 80.0) / Br) * (exp(-p.y * 16.0) + 0.1) * Kr / Br) * exp(-p.y * exp(-p.y * 8.0 ) * 4.0) * exp(-p.y * 2.0) * 4.0;
 	vec3 night_extinction = vec3(1.0 - exp(fsun.y)) * 0.2;
@@ -81,4 +80,12 @@ void main(){
 	FragColor.rgb += noise(p* 1000) * 0.01;
 	FragColor.xyz = FragColor.xyz / (FragColor.xyz + vec3(1.0));
 	FragColor.xyz = pow(FragColor.xyz, vec3(1.0/2.2));
+
+	if (p.y < 0)
+	{
+		FragColor.rgb *= smoothstep(-0.5, 0, p.y);
+		FragColor.rgb = vec3(0);
+	}
+
+	FragColor.rgb = max(vec3(0), FragColor.rgb);
 }

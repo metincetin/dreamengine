@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing;
 
+import dreamengine.plugins.renderer_base.components.Camera;
 import kha.graphics5_.TextureFormat;
 import kha.System;
 import kha.Scaler;
@@ -29,7 +30,8 @@ class PostProcessStack{
         return null;
     }
 
-    public function render(screenTexture:Image){
+    public function render(camera:Camera){
+        var screenTexture = camera.renderTexture;
         if (intermediate == null){
             intermediate = Image.createRenderTarget(screenTexture.width, screenTexture.height, TextureFormat.RGBA64);
         }
@@ -41,7 +43,7 @@ class PostProcessStack{
         intermediate.g2.end();
         for(eff in effects){
             if (!eff.enabled) continue;
-            eff.execute(intermediate, effectIntermediate, screenTexture);
+            eff.execute(intermediate, effectIntermediate, screenTexture, camera);
 
 			intermediate.g2.begin();
 			Scaler.scale(effectIntermediate, intermediate, kha.System.screenRotation);
@@ -51,7 +53,7 @@ class PostProcessStack{
 
 
         screenTexture.g2.begin();
-        kha.Scaler.scale(effectIntermediate, screenTexture, kha.System.screenRotation);
+        kha.Scaler.scale(intermediate, screenTexture, kha.System.screenRotation);
         screenTexture.g2.end();
     }
 }

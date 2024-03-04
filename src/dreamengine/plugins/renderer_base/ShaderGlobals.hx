@@ -107,6 +107,10 @@ class ShaderGlobals {
 		return textureEntries[s];
 	}
 
+	public static function getFloat3(s:String) {
+		return float3Entries[s];
+	}
+
 	public static function setMatrix(s:String, value:FastMatrix4) {
 		matrixEntries.set(s, value);
 	}

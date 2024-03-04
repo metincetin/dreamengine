@@ -14,7 +14,7 @@ out vec4 FragColor;
 
 void main(){
     vec4 main = texture(sceneTexture, texCoord);
-    vec4 bloom = texture(tex, texCoord);
+    vec4 blend = texture(tex, texCoord);
 
-    FragColor = main + bloom;
+    FragColor = main + blend;
 }

@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing.passes;
 
+import kha.Image;
 import dreamengine.core.Renderer;
 import dreamengine.core.RenderPass;
 
@@ -16,7 +17,7 @@ class PostProcessPass extends RenderPass{
         for(cam in renderer.cameras){
             var stack = plugin.getStack();
             if (stack != null)
-                stack.render(cam.getRenderTarget());
+                stack.render(cam);
         }
     }
 

@@ -34,11 +34,14 @@ class CameraSystem extends System {
 				0,0,0,1
 			);*/
 
+
 			var view = FastMatrix4.lookAt(pos, pos + fw, up);
+
 
 			ShaderGlobals.setFloat3("_CameraPosition", pos);
 
 			camera.setViewMatrix(view);
+			camera.setViewProjectionMatrix(camera.getProjectionMatrix().multmat(view));
 
 			engine.getRenderer().setCamera(camera);
 		}

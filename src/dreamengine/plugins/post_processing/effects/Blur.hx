@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing.effects;
 
+import dreamengine.plugins.renderer_base.components.Camera;
 import kha.graphics4.Graphics;
 import kha.graphics4.PipelineState;
 import kha.Scaler;
@@ -25,7 +26,7 @@ class KawaseBlurPass extends PostProcessEffectPass {
 		return Shaders.kawase_blur_frag;
 	}
 
-	override function passValues(graphics:Graphics) {
+	override function passValues(graphics:Graphics, cameara:Camera) {
         graphics.setFloat(getPipeline().getConstantLocation("offset"), offset);
     }
 }

@@ -33,7 +33,7 @@ class DrawDepth extends RenderPass {
 		for (camera in renderer.cameras) {
 			var g = camera.depthTexture.g4;
 			g.begin();
-			g.clear(Black, Math.POSITIVE_INFINITY);
+			g.clear(White, Math.POSITIVE_INFINITY);
 			for (renderable in renderer.opaques) {
 				g.setPipeline(pipelineState);
 				g.setVertexBuffer(renderable.mesh.getVertexBuffer());

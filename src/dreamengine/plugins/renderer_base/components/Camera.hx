@@ -24,6 +24,7 @@ class Camera extends Component{
 
 	var projectionMatrix:FastMatrix4;
 	var viewMatrix:FastMatrix4;
+	var viewProjectionMatrix:FastMatrix4;
 
 	public var msaa:Int = 0;
 
@@ -65,9 +66,11 @@ class Camera extends Component{
 	}
 
 	public function getViewProjectionMatrix():FastMatrix4 {
-		var vp = projectionMatrix;
-		vp = vp.multmat(viewMatrix);
-		return vp;
+		return viewProjectionMatrix;
+	}
+
+	public function setViewProjectionMatrix(value:FastMatrix4){
+		viewProjectionMatrix = value;
 	}
 
 	public function setViewMatrix(view:FastMatrix4) {
