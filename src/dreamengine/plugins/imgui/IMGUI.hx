@@ -79,14 +79,17 @@ class ButtonRenderer extends IMGUIRenderer {
 
 class TextRenderer extends IMGUIRenderer {
 	public var text:String;
+	var fontSize:Int;
 
 	public function new(rect:Rect, text:String) {
 		super(rect);
+		fontSize = IMGUI.fontSize;
 		this.text = text;
 	}
 
 	override function render(graphics:Graphics) {
 		graphics.font = Assets.fonts.OpenSans_Regular;
+		graphics.fontSize = fontSize;
 		var position = rect.getPosition();
 		graphics.drawString(text, position.x, position.y);
 	}

@@ -47,7 +47,6 @@ class Renderer2D implements IPlugin{
 		ecs.registerSystem(new ParticleRenderer());
 		ecs.registerSystem(new CameraSystem());
 		ecs.registerSystem(new SpriteAnimationPlayer());
-		ecs.registerSystem(new CameraSystem());
 		engine.getRenderer().pipeline.push(new RenderSprites());
 
 	}
