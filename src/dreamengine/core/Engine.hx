@@ -1,5 +1,6 @@
 package dreamengine.core;
 
+import kha.math.Random;
 import kha.Display;
 import dreamengine.plugins.renderer_base.Mesh;
 import dreamengine.plugins.renderer_2d.Renderer2D;
@@ -45,6 +46,7 @@ class Engine {
 		trace("Initializing Engine");
 
 		trace("Setting up Kha");
+		Random.init(cast Date.now().getTime());
 		kha.System.start(new SystemOptions("Dream Game", 1920, 1080), function(w) {
 			var primitivesLoaded = 0;
 			var quad = new Mesh();
