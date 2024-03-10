@@ -55,7 +55,7 @@ class Sprite extends Component {
 		this.ppu = ppu;
 		renderable = new Renderable();
 		renderable.material = Renderer2D.getDefaultMaterial().copy();
-		renderable.material.setTextureUniform("u_Texture", image);
+		renderable.material.setTextureUniform("u_texture", image);
 		renderable.mesh = Primitives.quadMesh;
 	}
 

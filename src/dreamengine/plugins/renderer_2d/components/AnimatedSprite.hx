@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d.components;
 
+import dreamengine.core.math.Vector2i;
 import dreamengine.core.Time;
 import kha.Image;
 

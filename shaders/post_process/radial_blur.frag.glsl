@@ -30,7 +30,7 @@ void main(){
 
     vec4 col = vec4(0);
     for(int i = 0; i < u_samples; i++){
-        float power = 1 - (i / float(u_samples)) * length;
+        float power = 1 - (i / float(u_samples)) * (length + 1);
         col += texture(tex, dir * power + u_origin);
     }
 
@@ -42,6 +42,6 @@ void main(){
         col *= falloff;
     }
 
-    FragColor = col;
+    FragColor = col * vec4(0.9255, 0.7059, 0.549, 1.0);
     FragColor.a = 1;
 }

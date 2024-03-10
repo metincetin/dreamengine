@@ -3,7 +3,6 @@ package dreamengine;
 import kha.math.Vector3;
 import kha.math.FastMatrix3;
 import dreamengine.device.Screen;
-import dreamengine.plugins.renderer_base.ActiveCamera;
 import dreamengine.core.math.Vector2;
 import kha.Framebuffer;
 
@@ -21,6 +20,7 @@ class Gizmos{
         drawLine(from, to);
     }
 
+    /*
     public static function drawLine(from:Vector2, to:Vector2){
         commands.push(function(fb){
             fb.g2.begin(false);
@@ -36,6 +36,7 @@ class Gizmos{
             fb.g2.end();
         });
     }
+*/
 
     public static function render(framebuffer:Framebuffer){
         for(command in commands){

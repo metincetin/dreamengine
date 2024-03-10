@@ -10,9 +10,6 @@ in vec2 texCoord;
 uniform mat4 MVP;
 uniform mat4 Model;
 uniform mat4 V;
-uniform vec3 cameraPosition;
-
-uniform vec2 resolution;
 
 #include "include/lighting.inc.glsl"
 

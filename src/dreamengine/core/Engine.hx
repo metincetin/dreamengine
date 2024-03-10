@@ -65,7 +65,7 @@ class Engine {
 			];
 			quad.indices = [
 				0, 1, 2,
-				2, 0, 3
+				2, 3, 0
 			];
 			quad.normals = [
 				0, 0, 1,

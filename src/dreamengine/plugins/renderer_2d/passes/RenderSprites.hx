@@ -42,7 +42,7 @@ class RenderSprites extends RenderPass {
 
 
         mvpLocation = pipeline.getConstantLocation("MVP");
-        textureLocation = pipeline.getTextureUnit("u_Texture");
+        textureLocation = pipeline.getTextureUnit("u_texture");
     }
 
 	override function execute(renderer:Renderer) {
@@ -58,7 +58,7 @@ class RenderSprites extends RenderPass {
                 var mvp = vp.multmat(rend.modelMatrix);
                 g4.setMatrix(mvpLocation, mvp);
 
-                var tex = rend.material.getTextureUniform("u_Texture");
+                var tex = rend.material.getTextureUniform("u_texture");
 
                 g4.setTexture(textureLocation, tex);
                 //rend.material.applyUniforms(g4);

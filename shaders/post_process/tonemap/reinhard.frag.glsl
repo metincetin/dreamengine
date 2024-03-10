@@ -15,5 +15,7 @@ void main(){
 	float toneMappedLuma = luma / (1. + luma);
 	color *= toneMappedLuma / luma;
 
+    color = pow(color, vec3(1 / gamma));
+
     FragColor = vec4(color, 1);
 }

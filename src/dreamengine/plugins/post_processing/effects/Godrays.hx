@@ -1,5 +1,7 @@
 package dreamengine.plugins.post_processing.effects;
 
+import dreamengine.plugins.post_processing.effects.Blur.VerticalBlurPass;
+import dreamengine.plugins.post_processing.effects.Blur.HorizontalBlurPass;
 import dreamengine.plugins.post_processing.effects.Blur.KawaseBlurPass;
 import kha.Shaders;
 import dreamengine.plugins.post_processing.passes.RadialBlur;
@@ -16,9 +18,9 @@ class Godrays extends PostProcessEffect {
 		depthUnit = pipeline.getTextureUnit("u_depthMap");
 		return [
 			pass,
-			new RadialBlur(32, true, 16),
-			//new RadialBlur(32, true, 1),
-            //new SimplePostProcessPass(Shaders.additive_blend_frag)
+			new RadialBlur(32, false, 16),
+			new RadialBlur(64, true, 1),
+			new SimplePostProcessPass(Shaders.additive_blend_frag)
 		]; 
 	}
 

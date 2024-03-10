@@ -33,7 +33,6 @@ class RenderSkybox extends RenderPass {
 
 	// todo: def not good here
 	var environment:kha.graphics4.CubeMap;
-	var screenResolutionLocation:ConstantLocation;
 	var projectionLocation:ConstantLocation;
 	var viewLocation:ConstantLocation;
 
@@ -71,7 +70,6 @@ class RenderSkybox extends RenderPass {
 		vertexBuffer = mesh.getVertexBuffer();
 		indexBuffer = mesh.getIndexBuffer();
 
-		screenResolutionLocation = pipeline.getConstantLocation("resolution");
 		viewLocation = pipeline.getConstantLocation("ViewMatrix");
 		projectionLocation = pipeline.getConstantLocation("ProjectionMatrix");
 		//cameraPosLocation = pipeline.getConstantLocation("cameraPosition");
@@ -83,8 +81,6 @@ class RenderSkybox extends RenderPass {
             g.setMatrix(viewLocation, view);
             g.setMatrix(projectionLocation, projection);
 
-			var res = Screen.getResolution();
-			g.setVector2(screenResolutionLocation, new FastVector2(res.x, res.y));
 			ShaderGlobals.apply(pipeline, g);
 
             g.setVertexBuffer(vertexBuffer);

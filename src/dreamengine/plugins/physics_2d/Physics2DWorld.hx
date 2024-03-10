@@ -61,7 +61,7 @@ class Physics2DWorld {
 
 		input.p2 = new B2Vec2(v2.x, v2.y);
 		
-		Gizmos.drawLine(new Vector2(input.p1.x, input.p1.y), new Vector2(input.p2.x, input.p2.y));
+		//Gizmos.drawLine(new Vector2(input.p1.x, input.p1.y), new Vector2(input.p2.x, input.p2.y));
 		
 		input.maxFraction = 1;
 
