@@ -1,5 +1,6 @@
 package dreamengine.plugins.renderer_2d.passes;
 
+import kha.graphics4.ConstantLocation;
 import kha.SystemImpl;
 import kha.Shaders;
 import kha.graphics4.VertexStructure;
@@ -13,6 +14,8 @@ class RenderSprites extends RenderPass {
 	var projectionMatrixLocation:kha.graphics4.ConstantLocation;
 	var textureLocation:kha.graphics4.TextureUnit;
 	var mvpLocation:kha.graphics4.ConstantLocation;
+	var regionLocation:ConstantLocation;
+
 
 
     public function new(){
@@ -43,6 +46,7 @@ class RenderSprites extends RenderPass {
 
         mvpLocation = pipeline.getConstantLocation("MVP");
         textureLocation = pipeline.getTextureUnit("u_texture");
+        regionLocation = pipeline.getConstantLocation("u_region");
     }
 
 	override function execute(renderer:Renderer) {
@@ -61,7 +65,8 @@ class RenderSprites extends RenderPass {
                 var tex = rend.material.getTextureUniform("u_texture");
 
                 g4.setTexture(textureLocation, tex);
-                //rend.material.applyUniforms(g4);
+                rend.material.updateLocations(pipeline);
+                rend.material.applyUniforms(g4);
 
                 g4.setIndexBuffer(rend.mesh.getIndexBuffer());
                 g4.setVertexBuffer(rend.mesh.getVertexBuffer());

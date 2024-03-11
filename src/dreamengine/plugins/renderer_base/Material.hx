@@ -25,13 +25,19 @@ typedef FloatUniform = {
 	?location:ConstantLocation
 }
 
+typedef Float4Uniform = {
+	name:String,
+	value:Array<Float>,
+	?location:ConstantLocation
+}
+
 typedef TextureUniform = {
 	name:String,
 	value:Image,
 	?location:TextureUnit
 }
 
-enum UniformType{
+enum UniformType {
 	Vector;
 	Float;
 }
@@ -41,27 +47,30 @@ typedef GlobalUniform = {
 	name:String
 }
 
-class Material{
+class Material {
 	var fragmentShader:FragmentShader;
 	var vertexShader:VertexShader;
 
-	public var cullMode: CullMode = Clockwise;
+	public var cullMode:CullMode = Clockwise;
 	public var depthMode:CompareMode = LessEqual;
 	public var depthWrite = true;
 
 	private static var defaultMaterial:Material;
 
-	public static function getDefault(){ return defaultMaterial; }
-	public static function setDefault(mat:Material){ return defaultMaterial = mat; }
+	public static function getDefault() {
+		return defaultMaterial;
+	}
 
+	public static function setDefault(mat:Material) {
+		return defaultMaterial = mat;
+	}
 
 	var uniforms:Array<String> = [];
 
 	var colorUniforms = new Array<ColorUniform>();
 	var floatUniforms = new Array<FloatUniform>();
+	var float4Uniforms = new Array<Float4Uniform>();
 	var textureUniforms = new Array<TextureUniform>();
-
-
 
 	public function new(vShader:VertexShader, fShader:FragmentShader) {
 		this.fragmentShader = fShader;
@@ -81,11 +90,13 @@ class Material{
 		return n;
 	}
 
-	public function addGlobalUniform(name:String){
-		if (hasGlobalUniform(name)) return;
+	public function addGlobalUniform(name:String) {
+		if (hasGlobalUniform(name))
+			return;
 		uniforms.push(name);
 	}
-	public function hasGlobalUniform(name:String){
+
+	public function hasGlobalUniform(name:String) {
 		return uniforms.contains(name);
 	}
 
@@ -106,77 +117,96 @@ class Material{
 	}
 
 	public function setColorUniform(name:String, value:FastVector4) {
-		for(c in colorUniforms){
-			if (c.name == name){
+		for (c in colorUniforms) {
+			if (c.name == name) {
 				c.value = value;
 				return;
 			}
 		}
 
-		colorUniforms.push({name:name, value:value});
+		colorUniforms.push({name: name, value: value});
 	}
 
-	public function updateLocations(pipelineState:PipelineState){
-		for(c in colorUniforms){
+	public function updateLocations(pipelineState:PipelineState) {
+		for (c in colorUniforms) {
 			c.location = pipelineState.getConstantLocation(c.name);
 		}
 
-		for(c in floatUniforms){
+		for (c in floatUniforms) {
+			c.location = pipelineState.getConstantLocation(c.name);
+		}
+		for (c in float4Uniforms) {
 			c.location = pipelineState.getConstantLocation(c.name);
 		}
 
-		for(c in textureUniforms){
+		for (c in textureUniforms) {
 			c.location = pipelineState.getTextureUnit(c.name);
 		}
 	}
 
 	public function applyUniforms(g4:Graphics) {
-		for(c in colorUniforms){
+		for (c in colorUniforms) {
 			g4.setVector4(c.location, c.value);
 		}
 
-		for(c in floatUniforms){
+		for (c in floatUniforms) {
 			g4.setFloat(c.location, c.value);
 		}
+		for (c in float4Uniforms) {
+			var v = new FastVector4(c.value[0], c.value[1], c.value[2], c.value[3]);
+			g4.setVector4(c.location, v);
+		}
 
-		for(c in textureUniforms){
+		for (c in textureUniforms) {
 			g4.setTexture(c.location, c.value);
 		}
 	}
 
-	public function getFloatUniform(name:String, def:Float = 0.0){
-		for(c in floatUniforms){
-			if (c.name == name){
+	public function getFloatUniform(name:String, def:Float = 0.0) {
+		for (c in floatUniforms) {
+			if (c.name == name) {
 				return c.value;
 			}
 		}
 		return def;
 	}
+
 	public function setFloatUniform(name:String, value:Float) {
-		for(c in floatUniforms){
-			if (c.name == name){
+		for (c in floatUniforms) {
+			if (c.name == name) {
 				c.value = value;
 				return;
 			}
 		}
-		floatUniforms.push({name:name, value:value});
+		floatUniforms.push({name: name, value: value});
 	}
-	public function setTextureUniform(name:String, value:Image){
-		for(c in textureUniforms){
-			if (c.name == name){
+
+	public function setTextureUniform(name:String, value:Image) {
+		for (c in textureUniforms) {
+			if (c.name == name) {
 				c.value = value;
 				return;
 			}
 		}
-		textureUniforms.push({name:name, value:value});
+		textureUniforms.push({name: name, value: value});
 	}
 
 	public function getTextureUniform(name:String) {
-		for(c in textureUniforms){
-			if (c.name == name){
+		for (c in textureUniforms) {
+			if (c.name == name) {
 				return c.value;
 			}
 		}
 		return null;
+	}
+
+	public function setFloat4Uniform(name:String, value:Array<Float>) {
+		for (c in float4Uniforms) {
+			if (c.name == name) {
+				c.value = value;
+				return;
+			}
+		}
+		float4Uniforms.push({name: name, value: value});
 	}
 }

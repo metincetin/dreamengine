@@ -1,30 +1,36 @@
 package dreamengine.plugins.renderer_2d.components;
 
-import dreamengine.core.math.Vector2i;
+import dreamengine.core.math.Vector2;
 import dreamengine.core.Time;
+import dreamengine.core.math.Rect;
 import kha.Image;
+import dreamengine.core.math.Vector2i;
+import dreamengine.plugins.renderer_2d.components.AnimatedSprite.AnimationPlayType;
 
-class AnimatedSprite extends Sprite{
-	var frames:Array<Image>;
-
+class SpritesheetAnimatedSprite extends Sprite {
 	var isPlaying = true;
-	var time = 0.0;
-
-	public var isLooped = true;
-	public var animationPlayType:AnimationPlayType = Forward;
-
+	var time:Float = 0;
+	var cachedTime = 0.0;
+	var animationPlayType: AnimationPlayType = Forward;
 	var animationPlayState = 0;
+	var isLooped = true;
+	var duration: Float;
+	var columnRowCount:Vector2i;
+	var cellSize:Vector2i;
 
-	var cachedTime:Float;
 
-	public var duration:Float = 3;
+	public function new(image:Image, cellSize:Vector2i, columnRowCount: Vector2i, frameDuration:Float, ppu:Float = 100, flipped = false){
+		super(image, ppu, flipped);
 
-	public function new(frames:Array<Image>, ppu = 100, flip = false) {
-		super(frames[0], flip);
-		this.frames = frames;
-		this.ppu = ppu;
+		this.columnRowCount = columnRowCount;
+		this.cellSize = cellSize;
+
+        duration = frameDuration;
+
+		setRegion(Rect.create(
+			0,0, image.width / cellSize.x, image.height / cellSize.y
+		));
 	}
-
 	public function getIsPlaying() {
 		return isPlaying;
 	}
@@ -105,20 +111,33 @@ class AnimatedSprite extends Sprite{
 	}
 
 	function setCurrentFrame() {
-		setImage(frames[getFrameIndex()]);
+		var i = getFrameIndex();
+
+		var rowIndex = i / columnRowCount.y;
+		var columnIndex = i % columnRowCount.y;
+		setRegion(Rect.create(
+			cellSize.x * rowIndex,
+			cellSize.y * columnIndex,
+			cellSize.x,
+			cellSize.y
+		));
 	}
 
 	public function getFrameIndex() {
 		var iF = (time * duration) / duration;
 		iF = Math.min(1, iF);
-		iF *= Math.max(0, frames.length - 1);
+		iF *= Math.max(0, columnRowCount.x * columnRowCount.y - 1);
 		var i:Int = Math.round(iF);
+
 		return i;
 	}
-}
 
-enum AnimationPlayType {
-	Forward;
-	Backwards;
-	BackAndForth;
+	override function getSpriteSize():Vector2 {
+		var aspect = cellSize.x / cellSize.y;
+		var ppu = getPPUScale();
+
+		var r = new Vector2(1 / (cellSize.x *0.05), 1 / (cellSize.y * 0.05) * aspect);
+
+		return r;
+	}
 }

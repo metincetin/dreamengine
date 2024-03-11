@@ -26,7 +26,7 @@ class Renderer2D implements IPlugin{
 
 
 	public function new() {
-		defaultMaterial = new Material(Shaders.painter_colored_vert, Shaders.painter_colored_frag);
+		defaultMaterial = new Material(Shaders.sprite_vert, Shaders.sprite_frag);
 	}
 
 	public static function getDefaultMaterial(){

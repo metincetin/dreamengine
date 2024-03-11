@@ -5,6 +5,7 @@ uniform sampler2D tex;
 uniform vec2 u_origin;
 uniform int u_samples = 4;
 uniform bool u_falloff;
+uniform float u_time;
 
 
 in vec2 texCoord;

@@ -29,7 +29,7 @@ class SpriteRenderer extends System {
 			var trMatrix = FastMatrix4.translation(position.x, position.y, position.z);
 			var rotMatrix = rotation.toMatrix();
 			var scaleMatrix = FastMatrix4.scale(scale.x, scale.y, scale.z);
-			var ppuScale = sprite.getPPUScale();
+			var ppuScale = sprite.getPPUScale() * sprite.getSpriteSize();
 			var ppuScaleMatrix = FastMatrix4.scale(ppuScale.x, ppuScale.y, 1);
 
 			sprite.getRenderable().modelMatrix = trMatrix.multmat(ppuScaleMatrix).multmat(rotMatrix).multmat(scaleMatrix);

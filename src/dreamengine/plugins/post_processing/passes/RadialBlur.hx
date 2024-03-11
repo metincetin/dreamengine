@@ -1,5 +1,6 @@
 package dreamengine.plugins.post_processing.passes;
 
+import dreamengine.core.Time;
 import kha.math.FastVector4;
 import kha.math.FastMatrix4;
 import dreamengine.core.math.Vector2;
@@ -69,6 +70,7 @@ class RadialBlur extends SimplePostProcessPass{
             );
             graphics.setVector2(originLocation, new FastVector2(screenSpace.x, screenSpace.y));
         }
+        graphics.setFloat(pipeline.getConstantLocation("u_time"), Time.getTime());
     }
 
     override function getCustomRenderTarget():Image {
